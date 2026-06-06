@@ -35,8 +35,7 @@ class FilmGalleryScreen extends StatelessWidget {
             onTap: () {
               unawaited(
                 Navigator.of(context).pushNamed(
-                  AppRoutes.filmDetail,
-                  arguments: 'placeholder-film-id',
+                  AppRoutes.filmDetailPath('placeholder-film-id'),
                 ),
               );
             },

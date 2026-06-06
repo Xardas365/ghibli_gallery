@@ -7,6 +7,10 @@ abstract final class AppRoutes {
   static const gallery = '/';
   static const filmDetail = '/film';
   static const favorites = '/favorites';
+
+  static String filmDetailPath(String filmId) {
+    return '$filmDetail/${Uri.encodeComponent(filmId)}';
+  }
 }
 
 abstract final class AppRouter {
@@ -23,9 +27,27 @@ abstract final class AppRouter {
           case AppRoutes.favorites:
             return const FavoriteFilmsScreen();
           default:
+            final filmId = _filmIdFromRouteName(settings.name);
+            if (filmId != null) {
+              return FilmDetailScreen(filmId: filmId);
+            }
+
             return const FilmGalleryScreen();
         }
       },
     );
   }
+}
+
+String? _filmIdFromRouteName(String? routeName) {
+  if (routeName == null || !routeName.startsWith('${AppRoutes.filmDetail}/')) {
+    return null;
+  }
+
+  final filmId = routeName.substring(AppRoutes.filmDetail.length + 1);
+  if (filmId.isEmpty) {
+    return null;
+  }
+
+  return Uri.decodeComponent(filmId);
 }
