@@ -80,6 +80,31 @@ void main() {
       expect(film.runningTimeMinutes, isNull);
       expect(film.rtScore, isNull);
     });
+
+    test('maps empty DTO numeric strings to null domain values', () {
+      final film = FilmDto.fromJson({
+        ...castleInTheSkyJson,
+        'release_date': '',
+        'running_time': '',
+        'rt_score': '',
+      }).toDomain();
+
+      expect(film.releaseYear, isNull);
+      expect(film.runningTimeMinutes, isNull);
+      expect(film.rtScore, isNull);
+    });
+
+    test('maps imperfect API numeric data without throwing', () {
+      expect(
+        () => FilmDto.fromJson({
+          ...castleInTheSkyJson,
+          'release_date': null,
+          'running_time': 'not available',
+          'rt_score': '',
+        }).toDomain(),
+        returnsNormally,
+      );
+    });
   });
 }
 
