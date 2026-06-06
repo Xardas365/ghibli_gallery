@@ -48,7 +48,7 @@ Read only the context needed for the task:
 For code changes, run the relevant checks before finishing. If model files, generated annotations, or JSON mapping changed, run code generation before format/analyze/test:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 ```bash

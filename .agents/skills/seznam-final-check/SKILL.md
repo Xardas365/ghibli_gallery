@@ -38,7 +38,7 @@ Check:
 For final code-submission validation, run or request these commands if possible:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 dart format --set-exit-if-changed .
 flutter analyze
 flutter test

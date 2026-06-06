@@ -2,7 +2,7 @@
 
 A Flutter skeleton for the Seznam Flutter Developer Studio Ghibli entry assignment.
 
-The current state is intentionally a clean project foundation, not a finished implementation. It provides the app shell, feature-first folders, placeholder screens, Riverpod wiring, domain/data contracts, and a basic widget test.
+The current state is intentionally a clean project foundation, not a finished implementation. It provides the app shell, feature-first folders, placeholder screens, Riverpod wiring, DTO/domain models, mapper extensions, generated model code, and basic tests.
 
 ## Assignment Target
 
@@ -28,18 +28,18 @@ Implemented now:
 - Gallery, detail, and favorites placeholder screens.
 - Shared UI widgets for film cards, favorite button, rating stars, and metadata sections.
 - Data/domain/repository contract files.
+- Freezed/json_serializable DTO and domain models.
+- Mapper extensions from DTOs to domain models.
 - Local storage and API client placeholders.
 - Riverpod rating filter provider.
-- Smoke widget test for the gallery shell.
+- DTO parsing and gallery shell tests.
 
 Not implemented yet:
 
 - Studio Ghibli API integration.
-- DTO JSON parsing.
 - Repository logic.
 - Local persistence.
 - Real gallery/detail/favorites state.
-- Generated Freezed/json_serializable models.
 - CI workflow.
 
 ## API
@@ -47,7 +47,7 @@ Not implemented yet:
 The assignment API source of truth is:
 
 ```text
-https://ghibliapi.vercel.app/films
+https://ghibli-api.vercel.app/api/films
 ```
 
 Film detail must later resolve referenced:
@@ -94,16 +94,20 @@ test/
 Current dependencies:
 
 - Flutter
+- `cached_network_image`
+- `dio`
+- `flutter_animate`
 - `flutter_riverpod`
-- `flutter_lints`
+- `freezed_annotation`
+- `go_router`
+- `json_annotation`
+- `shared_preferences`
+- `very_good_analysis`
 - Flutter test tooling
 
 Planned dependencies should be added only when their implementation step needs them:
 
-- `dio` for HTTP and optional logging,
-- `shared_preferences` or `hive` for local persistence,
-- `freezed` and `json_serializable` for DTOs, persistence models, and selected state classes,
-- `build_runner` for code generation.
+- `hive` if SharedPreferences becomes insufficient for persistence.
 
 ## Getting Started
 
@@ -123,7 +127,7 @@ flutter test
 Run code generation only after generated models are introduced:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 ## Next Steps
@@ -137,4 +141,3 @@ Suggested implementation order:
 5. Wire Riverpod providers to real data.
 6. Replace placeholder screens with real gallery, detail, and favorites UI.
 7. Add final README details and CI if useful.
-

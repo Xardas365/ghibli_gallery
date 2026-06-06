@@ -5,7 +5,7 @@
 For code changes, run the relevant checks before finishing. If model files, generated annotations, or JSON mapping changed, run code generation before format/analyze/test:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 ```bash
@@ -21,13 +21,13 @@ For documentation-only or agent-instruction-only changes, full Flutter checks ar
 When adding or changing generated models, run:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 For active development, watch mode is allowed:
 
 ```bash
-dart run build_runner watch --delete-conflicting-outputs
+dart run build_runner watch
 ```
 
 Never edit generated files manually:
@@ -73,7 +73,7 @@ Before considering the assignment complete, verify:
 - Loading, error, and empty states exist.
 - Generated files are up to date.
 - No generated files were edited manually.
-- `dart run build_runner build --delete-conflicting-outputs` was run after model changes.
+- `dart run build_runner build` was run after model changes.
 - `dart format .` was run for code changes.
 - `flutter analyze` passes for code changes.
 - `flutter test` passes for code changes, or failures are explained.

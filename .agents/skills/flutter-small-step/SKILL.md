@@ -28,7 +28,7 @@ Rules:
 After implementation, run the relevant checks for the kind of change. If model files, generated annotations, or JSON mapping changed, run code generation first:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 ```bash
