@@ -1,5 +1,9 @@
 import 'package:ghibli_entry/core/network/api_client.dart';
 import 'package:ghibli_entry/features/films/data/models/film_dto.dart';
+import 'package:ghibli_entry/features/films/data/models/location_dto.dart';
+import 'package:ghibli_entry/features/films/data/models/person_dto.dart';
+import 'package:ghibli_entry/features/films/data/models/species_dto.dart';
+import 'package:ghibli_entry/features/films/data/models/vehicle_dto.dart';
 
 class FilmApi {
   const FilmApi(this.client);
@@ -10,6 +14,34 @@ class FilmApi {
     return client.get<List<FilmDto>>(
       '/films',
       parser: _parseFilms,
+    );
+  }
+
+  Future<PersonDto> fetchPersonByUrl(String url) {
+    return client.get<PersonDto>(
+      url,
+      parser: (json) => PersonDto.fromJson(_parseObject(json)),
+    );
+  }
+
+  Future<SpeciesDto> fetchSpeciesByUrl(String url) {
+    return client.get<SpeciesDto>(
+      url,
+      parser: (json) => SpeciesDto.fromJson(_parseObject(json)),
+    );
+  }
+
+  Future<LocationDto> fetchLocationByUrl(String url) {
+    return client.get<LocationDto>(
+      url,
+      parser: (json) => LocationDto.fromJson(_parseObject(json)),
+    );
+  }
+
+  Future<VehicleDto> fetchVehicleByUrl(String url) {
+    return client.get<VehicleDto>(
+      url,
+      parser: (json) => VehicleDto.fromJson(_parseObject(json)),
     );
   }
 }
@@ -27,9 +59,13 @@ List<FilmDto> _parseFilms(Object? json) {
 }
 
 FilmDto _parseFilm(Object? json) {
-  if (json is! Map<String, dynamic>) {
-    throw const FormatException('Expected each film item to be an object.');
-  }
+  return FilmDto.fromJson(_parseObject(json));
+}
 
-  return FilmDto.fromJson(json);
+Map<String, dynamic> _parseObject(Object? json) {
+  return switch (json) {
+    final Map<String, dynamic> object => object,
+    {'data': final Map<String, dynamic> object} => object,
+    _ => throw const FormatException('Expected response to be an object.'),
+  };
 }
