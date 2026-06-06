@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ghibli_entry/app/router.dart';
 import 'package:ghibli_entry/features/films/domain/film.dart';
+import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_entry/features/films/presentation/widgets/film_card.dart';
 
 class FilmGalleryScreen extends ConsumerWidget {
   const FilmGalleryScreen({super.key});
@@ -130,25 +132,52 @@ class _GalleryFilmList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemBuilder: (context, index) {
-        final film = films[index];
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = switch (constraints.maxWidth) {
+          >= 900 => 5,
+          >= 680 => 4,
+          >= 460 => 3,
+          _ => 2,
+        };
 
-        return ListTile(
-          title: Text(film.title),
-          subtitle: Text(film.director),
-          onTap: () {
-            unawaited(
-              Navigator.of(context).pushNamed(
-                AppRoutes.filmDetailPath(film.id),
-              ),
-            );
+        return GridView.builder(
+          padding: const EdgeInsets.all(16),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: 0.62,
+          ),
+          itemBuilder: (context, index) {
+            return _GalleryFilmCard(film: films[index]);
           },
+          itemCount: films.length,
         );
       },
-      separatorBuilder: (context, index) => const Divider(height: 1),
-      itemCount: films.length,
+    );
+  }
+}
+
+class _GalleryFilmCard extends ConsumerWidget {
+  const _GalleryFilmCard({required this.film});
+
+  final Film film;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userDataState = ref.watch(favoriteMovieByFilmIdProvider(film.id));
+
+    return FilmCard(
+      film: film,
+      userData: userDataState.value,
+      onTap: () {
+        unawaited(
+          Navigator.of(context).pushNamed(
+            AppRoutes.filmDetailPath(film.id),
+          ),
+        );
+      },
     );
   }
 }
