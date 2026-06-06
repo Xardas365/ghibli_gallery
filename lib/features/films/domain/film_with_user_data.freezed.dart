@@ -49,7 +49,7 @@ $Res call({
 });
 
 
-$FilmCopyWith<$Res> get film;$FavoriteMovieCopyWith<$Res>? get userData;
+$FilmCopyWith<$Res> get film;
 
 }
 /// @nodoc
@@ -77,18 +77,6 @@ $FilmCopyWith<$Res> get film {
   
   return $FilmCopyWith<$Res>(_self.film, (value) {
     return _then(_self.copyWith(film: value));
-  });
-}/// Create a copy of FilmWithUserData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$FavoriteMovieCopyWith<$Res>? get userData {
-    if (_self.userData == null) {
-    return null;
-  }
-
-  return $FavoriteMovieCopyWith<$Res>(_self.userData!, (value) {
-    return _then(_self.copyWith(userData: value));
   });
 }
 }
@@ -268,7 +256,7 @@ $Res call({
 });
 
 
-@override $FilmCopyWith<$Res> get film;@override $FavoriteMovieCopyWith<$Res>? get userData;
+@override $FilmCopyWith<$Res> get film;
 
 }
 /// @nodoc
@@ -297,18 +285,6 @@ $FilmCopyWith<$Res> get film {
   
   return $FilmCopyWith<$Res>(_self.film, (value) {
     return _then(_self.copyWith(film: value));
-  });
-}/// Create a copy of FilmWithUserData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$FavoriteMovieCopyWith<$Res>? get userData {
-    if (_self.userData == null) {
-    return null;
-  }
-
-  return $FavoriteMovieCopyWith<$Res>(_self.userData!, (value) {
-    return _then(_self.copyWith(userData: value));
   });
 }
 }
