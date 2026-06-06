@@ -153,6 +153,111 @@ void main() {
     expect(find.text('93%'), findsOneWidget);
   });
 
+  testWidgets('detail people section renders mapped people', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+
+    expect(find.text('People'), findsOneWidget);
+    expect(find.text('Satsuki'), findsOneWidget);
+    expect(find.text('Mei'), findsOneWidget);
+  });
+
+  testWidgets('detail species section renders mapped species', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+
+    expect(find.text('Species'), findsOneWidget);
+    expect(find.text('Totoro'), findsOneWidget);
+  });
+
+  testWidgets('detail locations section renders mapped locations', (
+    tester,
+  ) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+
+    expect(find.text('Locations'), findsOneWidget);
+    expect(find.text('Forest'), findsOneWidget);
+  });
+
+  testWidgets('detail vehicles section renders mapped vehicles', (
+    tester,
+  ) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+
+    expect(find.text('Vehicles'), findsOneWidget);
+    expect(find.text('Catbus'), findsOneWidget);
+  });
+
+  testWidgets('detail empty related sections show empty-state copy', (
+    tester,
+  ) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetailsWithoutRelatedData,
+    );
+    await tester.pump();
+
+    expect(find.text('People'), findsOneWidget);
+    expect(find.text('Species'), findsOneWidget);
+    expect(find.text('Locations'), findsOneWidget);
+    expect(find.text('Vehicles'), findsOneWidget);
+    expect(find.text('No data available'), findsNWidgets(4));
+  });
+
+  testWidgets('detail does not show raw related resource URLs', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetailsWithRawUrls,
+    );
+    await tester.pump();
+
+    expect(find.text('Satsuki'), findsOneWidget);
+    expect(find.text('Catbus'), findsOneWidget);
+    expect(
+      find.text('https://ghibli-api.vercel.app/api/people/'),
+      findsNothing,
+    );
+    expect(
+      find.text('https://ghibli-api.vercel.app/api/species/species-id'),
+      findsNothing,
+    );
+    expect(
+      find.text('https://ghibli-api.vercel.app/api/locations/location-id'),
+      findsNothing,
+    );
+    expect(
+      find.text('https://ghibli-api.vercel.app/api/vehicles/vehicle-id'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('detail still renders when all related lists are empty', (
+    tester,
+  ) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetailsWithoutRelatedData,
+    );
+    await tester.pump();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.text('No data available'), findsNWidgets(4));
+  });
+
   testWidgets('retry refetches detail provider', (tester) async {
     var calls = 0;
 
@@ -306,6 +411,36 @@ const totoroDetailsWithoutImage = FilmDetails(
   species: ['Totoro'],
   locations: ['Forest'],
   vehicles: ['Catbus'],
+);
+
+const totoroDetailsWithoutRelatedData = FilmDetails(
+  film: totoro,
+  originalTitle: 'となりのトトロ',
+  originalTitleRomanised: 'Tonari no Totoro',
+  people: [],
+  species: [],
+  locations: [],
+  vehicles: [],
+);
+
+const totoroDetailsWithRawUrls = FilmDetails(
+  film: totoro,
+  originalTitle: 'となりのトトロ',
+  originalTitleRomanised: 'Tonari no Totoro',
+  people: [
+    'Satsuki',
+    'https://ghibli-api.vercel.app/api/people/',
+  ],
+  species: [
+    'https://ghibli-api.vercel.app/api/species/species-id',
+  ],
+  locations: [
+    'https://ghibli-api.vercel.app/api/locations/location-id',
+  ],
+  vehicles: [
+    'Catbus',
+    'https://ghibli-api.vercel.app/api/vehicles/vehicle-id',
+  ],
 );
 
 class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {

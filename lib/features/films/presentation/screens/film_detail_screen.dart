@@ -169,10 +169,78 @@ class _DetailContent extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
+              _RelatedSection(
+                title: 'People',
+                values: details.people,
+              ),
+              _RelatedSection(
+                title: 'Species',
+                values: details.species,
+              ),
+              _RelatedSection(
+                title: 'Locations',
+                values: details.locations,
+              ),
+              _RelatedSection(
+                title: 'Vehicles',
+                values: details.vehicles,
+              ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class _RelatedSection extends StatelessWidget {
+  const _RelatedSection({
+    required this.title,
+    required this.values,
+  });
+
+  final String title;
+  final List<String> values;
+
+  @override
+  Widget build(BuildContext context) {
+    final displayValues = values
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty && !_looksLikeUrl(value))
+        .toList(growable: false);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (displayValues.isEmpty)
+            Text(
+              'No data available',
+              style: Theme.of(context).textTheme.bodyMedium,
+            )
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final value in displayValues)
+                  Chip(
+                    label: Text(value),
+                    visualDensity: VisualDensity.compact,
+                  ),
+              ],
+            ),
+        ],
+      ),
     );
   }
 }
@@ -317,4 +385,9 @@ String _formatScore(int? score) {
   }
 
   return '$score%';
+}
+
+bool _looksLikeUrl(String value) {
+  final uri = Uri.tryParse(value);
+  return uri != null && uri.hasScheme && uri.host.isNotEmpty;
 }
