@@ -153,6 +153,198 @@ void main() {
     expect(find.text('93%'), findsOneWidget);
   });
 
+  testWidgets('detail shows favorite button', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Favorite'), findsOneWidget);
+    expect(find.byIcon(Icons.favorite_outline), findsOneWidget);
+  });
+
+  testWidgets('tapping favorite button marks film as favorite', (
+    tester,
+  ) async {
+    final storage = _FakeFavoriteMovieStorage();
+
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+      storage: storage,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.ensureVisible(find.text('Favorite'));
+    await tester.pump();
+    await tester.tap(find.text('Favorite'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Favorited'), findsOneWidget);
+    expect(find.byIcon(Icons.favorite), findsOneWidget);
+    expect(
+      await storage.getByFilmId(totoro.id),
+      FavoriteMovie(filmId: totoro.id, isFavorite: true),
+    );
+  });
+
+  testWidgets('tapping favorite button again removes favorite', (
+    tester,
+  ) async {
+    final storage = _FakeFavoriteMovieStorage(
+      movies: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true),
+      ],
+    );
+
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+      storage: storage,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.ensureVisible(find.text('Favorited'));
+    await tester.pump();
+    await tester.tap(find.text('Favorited'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Favorite'), findsOneWidget);
+    expect(find.byIcon(Icons.favorite_outline), findsOneWidget);
+    expect(
+      await storage.getByFilmId(totoro.id),
+      FavoriteMovie(filmId: totoro.id, isFavorite: false),
+    );
+  });
+
+  testWidgets('removing favorite preserves rating on detail', (tester) async {
+    final storage = _FakeFavoriteMovieStorage(
+      movies: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 4),
+      ],
+    );
+
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+      storage: storage,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.ensureVisible(find.text('Favorited'));
+    await tester.pump();
+    await tester.tap(find.text('Favorited'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Favorite'), findsOneWidget);
+    expect(find.byIcon(Icons.star), findsNWidgets(4));
+    expect(
+      await storage.getByFilmId(totoro.id),
+      FavoriteMovie(filmId: totoro.id, isFavorite: false, rating: 4),
+    );
+  });
+
+  testWidgets('detail shows rating stars', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byTooltip('Rate 1 star'), findsOneWidget);
+    expect(find.byTooltip('Rate 2 stars'), findsOneWidget);
+    expect(find.byTooltip('Rate 3 stars'), findsOneWidget);
+    expect(find.byTooltip('Rate 4 stars'), findsOneWidget);
+    expect(find.byTooltip('Rate 5 stars'), findsOneWidget);
+    expect(find.byIcon(Icons.star_border), findsNWidgets(5));
+  });
+
+  testWidgets('tapping a rating star updates rating', (tester) async {
+    final storage = _FakeFavoriteMovieStorage();
+
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+      storage: storage,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.ensureVisible(find.byTooltip('Rate 3 stars'));
+    await tester.pump();
+    await tester.tap(find.byTooltip('Rate 3 stars'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byIcon(Icons.star), findsNWidgets(3));
+    expect(
+      await storage.getByFilmId(totoro.id),
+      FavoriteMovie(filmId: totoro.id, isFavorite: false, rating: 3),
+    );
+  });
+
+  testWidgets('selected rating is visible', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+      storage: _FakeFavoriteMovieStorage(
+        movies: [
+          FavoriteMovie(filmId: totoro.id, isFavorite: false, rating: 5),
+        ],
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byIcon(Icons.star), findsNWidgets(5));
+    expect(find.text('Clear rating'), findsOneWidget);
+  });
+
+  testWidgets('invalid rating is not possible from detail UI', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byTooltip('Rate 0 stars'), findsNothing);
+    expect(find.byTooltip('Rate 6 stars'), findsNothing);
+  });
+
+  testWidgets('provider storage error does not crash detail screen', (
+    tester,
+  ) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+      storage: _FakeFavoriteMovieStorage(throwOnSetFavorite: true),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.ensureVisible(find.text('Favorite'));
+    await tester.pump();
+    await tester.tap(find.text('Favorite'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(
+      find.text('Could not save your favorite or rating.'),
+      findsWidgets,
+    );
+  });
+
   testWidgets('detail people section renders mapped people', (tester) async {
     await _pumpDetailScreen(
       tester,
@@ -343,7 +535,7 @@ Future<void> _pumpApp(
         filmsProvider.overrideWith(films),
         if (details != null) filmDetailsProvider.overrideWith(details),
         favoriteMovieStorageProvider.overrideWith((ref) async {
-          return _FakeFavoriteMovieStorage(userData);
+          return _FakeFavoriteMovieStorage(movies: userData);
         }),
       ],
       child: const GhibliApp(),
@@ -354,11 +546,15 @@ Future<void> _pumpApp(
 Future<void> _pumpDetailScreen(
   WidgetTester tester, {
   required FutureOr<FilmDetails> Function(dynamic ref, String filmId) details,
+  _FakeFavoriteMovieStorage? storage,
 }) {
   return tester.pumpWidget(
     ProviderScope(
       overrides: [
         filmDetailsProvider.overrideWith(details),
+        favoriteMovieStorageProvider.overrideWith((ref) async {
+          return storage ?? _FakeFavoriteMovieStorage();
+        }),
       ],
       child: const MaterialApp(
         home: FilmDetailScreen(filmId: 'totoro-id'),
@@ -444,13 +640,17 @@ const totoroDetailsWithRawUrls = FilmDetails(
 );
 
 class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
-  _FakeFavoriteMovieStorage(List<FavoriteMovie> movies) {
+  _FakeFavoriteMovieStorage({
+    List<FavoriteMovie> movies = const [],
+    this.throwOnSetFavorite = false,
+  }) {
     for (final movie in movies) {
       _moviesByFilmId[movie.filmId] = movie;
     }
   }
 
   final _moviesByFilmId = <String, FavoriteMovie>{};
+  final bool throwOnSetFavorite;
 
   @override
   Future<List<FavoriteMovie>> getAll() async {
@@ -472,6 +672,10 @@ class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
     String filmId, {
     required bool isFavorite,
   }) async {
+    if (throwOnSetFavorite) {
+      throw StateError('favorite failed');
+    }
+
     final movie =
         _moviesByFilmId[filmId]?.copyWith(
           isFavorite: isFavorite,

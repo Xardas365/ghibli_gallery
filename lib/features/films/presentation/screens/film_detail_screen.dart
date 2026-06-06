@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ghibli_entry/features/films/domain/film_details.dart';
+import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
 
 class FilmDetailScreen extends ConsumerWidget {
@@ -149,6 +150,8 @@ class _DetailContent extends StatelessWidget {
               _OptionalText(value: details.originalTitle),
               _OptionalText(value: details.originalTitleRomanised),
               const SizedBox(height: 16),
+              _FilmUserActions(filmId: film.id),
+              const SizedBox(height: 16),
               Text(film.description),
               const SizedBox(height: 24),
               _DetailMetadata(
@@ -190,6 +193,140 @@ class _DetailContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _FilmUserActions extends ConsumerWidget {
+  const _FilmUserActions({required this.filmId});
+
+  final String filmId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userDataState = ref.watch(favoriteMovieByFilmIdProvider(filmId));
+    final userData = userDataState.value;
+    final isBusy = userDataState.isLoading;
+    final hasError = userDataState.hasError;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            _FavoriteToggleButton(
+              isFavorite: userData?.isFavorite ?? false,
+              isEnabled: !isBusy,
+              onPressed: () async {
+                await _runUserDataAction(
+                  context,
+                  () => ref
+                      .read(favoriteMovieControllerProvider.notifier)
+                      .toggleFavorite(filmId),
+                );
+              },
+            ),
+            _RatingStars(
+              rating: userData?.rating,
+              isEnabled: !isBusy,
+              onChanged: (rating) async {
+                await _runUserDataAction(
+                  context,
+                  () => ref
+                      .read(favoriteMovieControllerProvider.notifier)
+                      .setRating(filmId, rating),
+                );
+              },
+            ),
+          ],
+        ),
+        if (hasError) ...[
+          const SizedBox(height: 8),
+          Text(
+            'Could not save your favorite or rating.',
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _FavoriteToggleButton extends StatelessWidget {
+  const _FavoriteToggleButton({
+    required this.isFavorite,
+    required this.isEnabled,
+    required this.onPressed,
+  });
+
+  final bool isFavorite;
+  final bool isEnabled;
+  final Future<void> Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: isEnabled ? onPressed : null,
+      icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline),
+      label: Text(isFavorite ? 'Favorited' : 'Favorite'),
+    );
+  }
+}
+
+class _RatingStars extends StatelessWidget {
+  const _RatingStars({
+    required this.rating,
+    required this.isEnabled,
+    required this.onChanged,
+  });
+
+  final int? rating;
+  final bool isEnabled;
+  final Future<void> Function(int? rating) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 2,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        for (var value = 1; value <= 5; value += 1)
+          IconButton(
+            tooltip: 'Rate $value star${value == 1 ? '' : 's'}',
+            onPressed: isEnabled ? () => onChanged(value) : null,
+            icon: Icon(
+              value <= (rating ?? 0) ? Icons.star : Icons.star_border,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        if (rating != null)
+          TextButton(
+            onPressed: isEnabled ? () => onChanged(null) : null,
+            child: const Text('Clear rating'),
+          ),
+      ],
+    );
+  }
+}
+
+Future<void> _runUserDataAction(
+  BuildContext context,
+  Future<void> Function() action,
+) async {
+  try {
+    await action();
+  } on Object {
+    if (!context.mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Could not save your favorite or rating.'),
+      ),
     );
   }
 }
