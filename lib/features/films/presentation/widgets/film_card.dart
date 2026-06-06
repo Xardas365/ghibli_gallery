@@ -19,7 +19,9 @@ class FilmCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
+      elevation: 2,
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: InkWell(
         onTap: onTap,
         child: Column(
@@ -54,14 +56,19 @@ class FilmCard extends StatelessWidget {
                     film.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      height: 1.15,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     _metadataLabel(film),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -103,10 +110,12 @@ class _PosterFallback extends StatelessWidget {
 
     return ColoredBox(
       color: colorScheme.surfaceContainerHighest,
-      child: Icon(
-        Icons.movie_creation_outlined,
-        size: 44,
-        color: colorScheme.onSurfaceVariant,
+      child: Center(
+        child: Icon(
+          Icons.movie_creation_outlined,
+          size: 44,
+          color: colorScheme.onSurfaceVariant,
+        ),
       ),
     );
   }
@@ -117,16 +126,18 @@ class _FavoriteIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: colorScheme.primaryContainer,
         shape: BoxShape.circle,
       ),
-      child: const Padding(
-        padding: EdgeInsets.all(6),
+      child: Padding(
+        padding: const EdgeInsets.all(6),
         child: Icon(
           Icons.favorite,
-          color: Colors.white,
+          color: colorScheme.onPrimaryContainer,
           size: 16,
         ),
       ),

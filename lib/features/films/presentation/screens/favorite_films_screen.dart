@@ -55,7 +55,7 @@ class _RatingFilterBar extends ConsumerWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(
-              'Filter by rating',
+              'Rating filter',
               style: Theme.of(context).textTheme.labelLarge,
             ),
             ChoiceChip(
@@ -133,7 +133,7 @@ class _FavoritesLoadingState extends StatelessWidget {
         children: [
           CircularProgressIndicator(),
           SizedBox(height: 16),
-          Text('Loading favorites...'),
+          Text('Loading favorite films...'),
         ],
       ),
     );
@@ -149,7 +149,7 @@ class _FavoritesErrorState extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(24),
         child: Text(
-          'We could not load your favorite films right now.',
+          'Your favorite films could not be loaded right now.',
           textAlign: TextAlign.center,
         ),
       ),
@@ -165,8 +165,8 @@ class _FavoritesEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final message = selectedRating == null
-        ? 'No favorite films yet.'
-        : 'No favorite films match this rating.';
+        ? 'No favorite films yet. Mark films as favorites from their detail pages.'
+        : 'No favorites match this rating yet.';
 
     return Center(
       child: Padding(
@@ -194,10 +194,10 @@ class _FavoriteFilmGrid extends StatelessWidget {
         };
 
         return GridView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 16,
+            mainAxisSpacing: 18,
             crossAxisSpacing: 16,
             childAspectRatio: 0.62,
           ),

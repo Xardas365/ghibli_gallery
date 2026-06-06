@@ -23,14 +23,17 @@ void main() {
     );
 
     expect(find.text('Ghibli Gallery'), findsOneWidget);
-    expect(find.text('Loading films...'), findsOneWidget);
+    expect(find.text('Loading the Ghibli collection...'), findsOneWidget);
   });
 
   testWidgets('gallery shows empty state', (tester) async {
     await _pumpApp(tester, films: (ref) async => const []);
     await tester.pump();
 
-    expect(find.text('No films are available right now.'), findsOneWidget);
+    expect(
+      find.text('No films are available right now. Please try again later.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('gallery shows error state with retry button', (tester) async {
@@ -40,8 +43,11 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('We could not load the film gallery.'), findsOneWidget);
-    expect(find.text('Retry'), findsOneWidget);
+    expect(
+      find.text('The film gallery could not be loaded right now.'),
+      findsOneWidget,
+    );
+    expect(find.text('Try again'), findsOneWidget);
   });
 
   testWidgets('gallery renders cards for film data', (tester) async {
@@ -545,7 +551,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Favorites'), findsOneWidget);
-    expect(find.text('No favorite films yet.'), findsOneWidget);
+    expect(
+      find.text(
+        'No favorite films yet. Mark films as favorites from their detail pages.',
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('favorites screen shows favorited films', (tester) async {
@@ -580,7 +591,7 @@ void main() {
     await tester.tap(find.byTooltip('Favorites'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Filter by rating'), findsOneWidget);
+    expect(find.text('Rating filter'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, 'All'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '5'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '3'), findsOneWidget);
@@ -717,7 +728,7 @@ void main() {
     await tester.tap(find.widgetWithText(ChoiceChip, '1'));
     await tester.pumpAndSettle();
 
-    expect(find.text('No favorite films match this rating.'), findsOneWidget);
+    expect(find.text('No favorites match this rating yet.'), findsOneWidget);
     expect(find.text('My Neighbor Totoro'), findsNothing);
     expect(find.text("Kiki's Delivery Service"), findsNothing);
   });
@@ -808,7 +819,7 @@ void main() {
     );
 
     expect(find.text('Favorites'), findsOneWidget);
-    expect(find.text('Loading favorites...'), findsOneWidget);
+    expect(find.text('Loading favorite films...'), findsOneWidget);
   });
 
   testWidgets('favorites screen error state does not crash', (tester) async {
@@ -820,7 +831,7 @@ void main() {
 
     expect(find.text('Favorites'), findsOneWidget);
     expect(
-      find.text('We could not load your favorite films right now.'),
+      find.text('Your favorite films could not be loaded right now.'),
       findsOneWidget,
     );
   });
@@ -837,7 +848,7 @@ void main() {
 
     expect(find.text('Favorites'), findsOneWidget);
     expect(
-      find.text('We could not load your favorite films right now.'),
+      find.text('Your favorite films could not be loaded right now.'),
       findsOneWidget,
     );
   });

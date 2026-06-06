@@ -144,6 +144,7 @@ class _DetailContent extends StatelessWidget {
                 film.title,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w700,
+                  height: 1.08,
                 ),
               ),
               const SizedBox(height: 8),
@@ -151,8 +152,18 @@ class _DetailContent extends StatelessWidget {
               _OptionalText(value: details.originalTitleRomanised),
               const SizedBox(height: 16),
               _FilmUserActions(filmId: film.id),
-              const SizedBox(height: 16),
-              Text(film.description),
+              const SizedBox(height: 24),
+              Text(
+                'Story',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                film.description,
+                style: theme.textTheme.bodyLarge?.copyWith(height: 1.35),
+              ),
               const SizedBox(height: 24),
               _DetailMetadata(
                 rows: [
@@ -456,7 +467,7 @@ class _DetailMetadata extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Details',
+          'Film details',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
           ),

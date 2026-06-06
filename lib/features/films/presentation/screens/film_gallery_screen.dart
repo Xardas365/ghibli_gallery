@@ -72,7 +72,7 @@ class _GalleryLoadingState extends StatelessWidget {
         children: [
           CircularProgressIndicator(),
           SizedBox(height: 16),
-          Text('Loading films...'),
+          Text('Loading the Ghibli collection...'),
         ],
       ),
     );
@@ -93,13 +93,13 @@ class _GalleryErrorState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'We could not load the film gallery.',
+              'The film gallery could not be loaded right now.',
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             FilledButton(
               onPressed: onRetry,
-              child: const Text('Retry'),
+              child: const Text('Try again'),
             ),
           ],
         ),
@@ -117,7 +117,7 @@ class _GalleryEmptyState extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(24),
         child: Text(
-          'No films are available right now.',
+          'No films are available right now. Please try again later.',
           textAlign: TextAlign.center,
         ),
       ),
@@ -142,10 +142,10 @@ class _GalleryFilmList extends StatelessWidget {
         };
 
         return GridView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 16,
+            mainAxisSpacing: 18,
             crossAxisSpacing: 16,
             childAspectRatio: 0.62,
           ),
