@@ -10,6 +10,7 @@ import 'package:ghibli_entry/features/films/domain/favorite_movie_storage.dart';
 import 'package:ghibli_entry/features/films/domain/film.dart';
 import 'package:ghibli_entry/features/films/domain/film_details.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_entry/features/films/presentation/screens/favorite_films_screen.dart';
 import 'package:ghibli_entry/features/films/presentation/screens/film_detail_screen.dart';
 
 void main() {
@@ -521,6 +522,301 @@ void main() {
 
     expect(find.text('Ghibli Gallery'), findsOneWidget);
   });
+
+  testWidgets('favorites screen shows empty state when no favorites exist', (
+    tester,
+  ) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Favorites'), findsOneWidget);
+    expect(find.text('No favorite films yet.'), findsOneWidget);
+  });
+
+  testWidgets('favorites screen shows favorited films', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.byIcon(Icons.favorite), findsOneWidget);
+  });
+
+  testWidgets('rating filter UI is visible', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Filter by rating'), findsOneWidget);
+    expect(find.widgetWithText(ChoiceChip, 'All'), findsOneWidget);
+    expect(find.widgetWithText(ChoiceChip, '5'), findsOneWidget);
+    expect(find.widgetWithText(ChoiceChip, '3'), findsOneWidget);
+  });
+
+  testWidgets('favorites screen does not show non-favorited films', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true),
+        FavoriteMovie(filmId: kiki.id, isFavorite: false, rating: 5),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.text("Kiki's Delivery Service"), findsNothing);
+  });
+
+  testWidgets('selecting rating 5 shows only 5-star favorites', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+        FavoriteMovie(filmId: kiki.id, isFavorite: true, rating: 3),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.text("Kiki's Delivery Service"), findsNothing);
+  });
+
+  testWidgets('selecting rating 3 shows only 3-star favorites', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+        FavoriteMovie(filmId: kiki.id, isFavorite: true, rating: 3),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, '3'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Kiki's Delivery Service"), findsOneWidget);
+    expect(find.text('My Neighbor Totoro'), findsNothing);
+  });
+
+  testWidgets('rating filter hides non-matching favorites', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+        FavoriteMovie(filmId: kiki.id, isFavorite: true, rating: 3),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Kiki's Delivery Service"), findsNothing);
+  });
+
+  testWidgets('clearing rating filter restores all favorites', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+        FavoriteMovie(filmId: kiki.id, isFavorite: true, rating: 3),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, 'All'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.text("Kiki's Delivery Service"), findsOneWidget);
+  });
+
+  testWidgets('empty filtered state is shown when no favorite matches', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+        FavoriteMovie(filmId: kiki.id, isFavorite: true, rating: 3),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, '1'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('No favorite films match this rating.'), findsOneWidget);
+    expect(find.text('My Neighbor Totoro'), findsNothing);
+    expect(find.text("Kiki's Delivery Service"), findsNothing);
+  });
+
+  testWidgets('favorite rating is visible on favorites screen', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.star), findsOneWidget);
+    expect(find.text('5'), findsOneWidget);
+  });
+
+  testWidgets('tapping a favorite film opens detail', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      details: (ref, filmId) async => totoroDetails,
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('My Neighbor Totoro'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Film detail'), findsOneWidget);
+    expect(find.text('となりのトトロ'), findsOneWidget);
+  });
+
+  testWidgets('tapping filtered favorite still opens detail', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      details: (ref, filmId) async => totoroDetails,
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+        FavoriteMovie(filmId: kiki.id, isFavorite: true, rating: 3),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('My Neighbor Totoro'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Film detail'), findsOneWidget);
+    expect(find.text('となりのトトロ'), findsOneWidget);
+  });
+
+  testWidgets('favorites screen loading state does not crash', (tester) async {
+    final filmsCompleter = Completer<List<Film>>();
+
+    await _pumpFavoritesScreen(
+      tester,
+      films: (ref) => filmsCompleter.future,
+    );
+
+    expect(find.text('Favorites'), findsOneWidget);
+    expect(find.text('Loading favorites...'), findsOneWidget);
+  });
+
+  testWidgets('favorites screen error state does not crash', (tester) async {
+    await _pumpFavoritesScreen(
+      tester,
+      films: (ref) async => throw Exception('films failed'),
+    );
+    await tester.pump();
+
+    expect(find.text('Favorites'), findsOneWidget);
+    expect(
+      find.text('We could not load your favorite films right now.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('favorites screen user data error state does not crash', (
+    tester,
+  ) async {
+    await _pumpFavoritesScreen(
+      tester,
+      films: (ref) async => [totoro],
+      storage: _FakeFavoriteMovieStorage(throwOnGetAll: true),
+    );
+    await tester.pump();
+
+    expect(find.text('Favorites'), findsOneWidget);
+    expect(
+      find.text('We could not load your favorite films right now.'),
+      findsOneWidget,
+    );
+  });
 }
 
 Future<void> _pumpApp(
@@ -563,6 +859,26 @@ Future<void> _pumpDetailScreen(
   );
 }
 
+Future<void> _pumpFavoritesScreen(
+  WidgetTester tester, {
+  required FutureOr<List<Film>> Function(dynamic ref) films,
+  _FakeFavoriteMovieStorage? storage,
+}) {
+  return tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        filmsProvider.overrideWith(films),
+        favoriteMovieStorageProvider.overrideWith((ref) async {
+          return storage ?? _FakeFavoriteMovieStorage();
+        }),
+      ],
+      child: const MaterialApp(
+        home: FavoriteFilmsScreen(),
+      ),
+    ),
+  );
+}
+
 const totoro = Film(
   id: 'totoro-id',
   title: 'My Neighbor Totoro',
@@ -587,6 +903,19 @@ const totoroWithoutImage = Film(
   rtScore: 93,
   image: '',
   movieBanner: '',
+);
+
+const kiki = Film(
+  id: 'kiki-id',
+  title: "Kiki's Delivery Service",
+  description: 'A young witch starts a delivery business.',
+  director: 'Hayao Miyazaki',
+  producer: 'Hayao Miyazaki',
+  releaseYear: 1989,
+  runningTimeMinutes: 103,
+  rtScore: 98,
+  image: 'https://example.com/kiki.jpg',
+  movieBanner: 'https://example.com/kiki-banner.jpg',
 );
 
 const totoroDetails = FilmDetails(
@@ -642,6 +971,7 @@ const totoroDetailsWithRawUrls = FilmDetails(
 class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
   _FakeFavoriteMovieStorage({
     List<FavoriteMovie> movies = const [],
+    this.throwOnGetAll = false,
     this.throwOnSetFavorite = false,
   }) {
     for (final movie in movies) {
@@ -650,10 +980,15 @@ class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
   }
 
   final _moviesByFilmId = <String, FavoriteMovie>{};
+  final bool throwOnGetAll;
   final bool throwOnSetFavorite;
 
   @override
   Future<List<FavoriteMovie>> getAll() async {
+    if (throwOnGetAll) {
+      throw StateError('favorites failed');
+    }
+
     return _moviesByFilmId.values.toList(growable: false);
   }
 
