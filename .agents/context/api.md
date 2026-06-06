@@ -4,7 +4,7 @@
 
 Use the assignment endpoint as the source of truth:
 
-- Base URL: `https://ghibliapi.vercel.app`
+- Base URL: `https://ghibli-api.vercel.app/api`
 - Films endpoint: `/films`
 
 Do not use an existing generated or third-party Dart Studio Ghibli API client. Create the app's own API layer.
@@ -22,9 +22,9 @@ Resolve those references in the app and show human-readable mapped data in film 
 
 Some API references may point to collection-like or empty URLs such as:
 
-- `https://ghibliapi.vercel.app/people/`
-- `https://ghibliapi.vercel.app/locations/`
-- `https://ghibliapi.vercel.app/vehicles/`
+- `https://ghibli-api.vercel.app/api/people/`
+- `https://ghibli-api.vercel.app/api/locations/`
+- `https://ghibli-api.vercel.app/api/vehicles/`
 
 Handle these gracefully:
 
