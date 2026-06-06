@@ -8,7 +8,9 @@ import 'package:ghibli_entry/features/films/data/film_infrastructure_providers.d
 import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_entry/features/films/domain/favorite_movie_storage.dart';
 import 'package:ghibli_entry/features/films/domain/film.dart';
+import 'package:ghibli_entry/features/films/domain/film_details.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_entry/features/films/presentation/screens/film_detail_screen.dart';
 
 void main() {
   testWidgets('gallery shows loading state', (tester) async {
@@ -89,14 +91,115 @@ void main() {
   });
 
   testWidgets('tapping a film opens detail route', (tester) async {
-    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      details: (ref, filmId) async => totoroDetails,
+    );
     await tester.pump();
 
     await tester.tap(find.text('My Neighbor Totoro'));
     await tester.pumpAndSettle();
 
     expect(find.text('Film detail'), findsOneWidget);
-    expect(find.text('Film ID: totoro-id'), findsOneWidget);
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.text('となりのトトロ'), findsOneWidget);
+  });
+
+  testWidgets('detail shows loading state', (tester) async {
+    final completer = Completer<FilmDetails>();
+
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) => completer.future,
+    );
+
+    expect(find.text('Film detail'), findsOneWidget);
+    expect(find.text('Loading film details...'), findsOneWidget);
+  });
+
+  testWidgets('detail shows error state with retry', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => throw Exception('details failed'),
+    );
+    await tester.pump();
+
+    expect(find.text('We could not load this film right now.'), findsOneWidget);
+    expect(find.text('Back'), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
+  });
+
+  testWidgets('detail shows base film fields', (tester) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.text('となりのトトロ'), findsOneWidget);
+    expect(find.text('Tonari no Totoro'), findsOneWidget);
+    expect(find.text('Two sisters move to the countryside.'), findsOneWidget);
+    expect(find.text('Director'), findsOneWidget);
+    expect(find.text('Hayao Miyazaki'), findsOneWidget);
+    expect(find.text('Producer'), findsOneWidget);
+    expect(find.text('Toru Hara'), findsOneWidget);
+    expect(find.text('Release date'), findsOneWidget);
+    expect(find.text('1988'), findsOneWidget);
+    expect(find.text('Running time'), findsOneWidget);
+    expect(find.text('86 minutes'), findsOneWidget);
+    expect(find.text('Rotten Tomatoes'), findsOneWidget);
+    expect(find.text('93%'), findsOneWidget);
+  });
+
+  testWidgets('retry refetches detail provider', (tester) async {
+    var calls = 0;
+
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async {
+        calls += 1;
+        throw Exception('details failed');
+      },
+    );
+    await tester.pump();
+
+    expect(calls, 1);
+
+    await tester.tap(find.text('Retry'));
+    await tester.pump();
+
+    expect(calls, 2);
+  });
+
+  testWidgets('detail missing image and banner URL does not crash', (
+    tester,
+  ) async {
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetailsWithoutImage,
+    );
+    await tester.pump();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.byIcon(Icons.movie_creation_outlined), findsOneWidget);
+  });
+
+  testWidgets('detail back action returns to gallery', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      details: (ref, filmId) async => throw Exception('details failed'),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('My Neighbor Totoro'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Back'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ghibli Gallery'), findsOneWidget);
   });
 
   testWidgets('missing image URL does not crash', (tester) async {
@@ -126,17 +229,35 @@ void main() {
 Future<void> _pumpApp(
   WidgetTester tester, {
   required FutureOr<List<Film>> Function(dynamic ref) films,
+  FutureOr<FilmDetails> Function(dynamic ref, String filmId)? details,
   List<FavoriteMovie> userData = const [],
 }) {
   return tester.pumpWidget(
     ProviderScope(
       overrides: [
         filmsProvider.overrideWith(films),
+        if (details != null) filmDetailsProvider.overrideWith(details),
         favoriteMovieStorageProvider.overrideWith((ref) async {
           return _FakeFavoriteMovieStorage(userData);
         }),
       ],
       child: const GhibliApp(),
+    ),
+  );
+}
+
+Future<void> _pumpDetailScreen(
+  WidgetTester tester, {
+  required FutureOr<FilmDetails> Function(dynamic ref, String filmId) details,
+}) {
+  return tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        filmDetailsProvider.overrideWith(details),
+      ],
+      child: const MaterialApp(
+        home: FilmDetailScreen(filmId: 'totoro-id'),
+      ),
     ),
   );
 }
@@ -165,6 +286,26 @@ const totoroWithoutImage = Film(
   rtScore: 93,
   image: '',
   movieBanner: '',
+);
+
+const totoroDetails = FilmDetails(
+  film: totoro,
+  originalTitle: 'となりのトトロ',
+  originalTitleRomanised: 'Tonari no Totoro',
+  people: ['Satsuki', 'Mei'],
+  species: ['Totoro'],
+  locations: ['Forest'],
+  vehicles: ['Catbus'],
+);
+
+const totoroDetailsWithoutImage = FilmDetails(
+  film: totoroWithoutImage,
+  originalTitle: 'となりのトトロ',
+  originalTitleRomanised: 'Tonari no Totoro',
+  people: ['Satsuki', 'Mei'],
+  species: ['Totoro'],
+  locations: ['Forest'],
+  vehicles: ['Catbus'],
 );
 
 class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
