@@ -1,25 +1,19 @@
-class Film {
-  const Film({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.director,
-    required this.producer,
-    required this.releaseYear,
-    required this.runningTimeMinutes,
-    required this.rtScore,
-    this.image,
-    this.movieBanner,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String title;
-  final String description;
-  final String director;
-  final String producer;
-  final int? releaseYear;
-  final int? runningTimeMinutes;
-  final int? rtScore;
-  final String? image;
-  final String? movieBanner;
+part 'film.freezed.dart';
+
+@freezed
+abstract class Film with _$Film {
+  const factory Film({
+    required String id,
+    required String title,
+    required String description,
+    required String director,
+    required String producer,
+    required int? releaseYear,
+    required int? runningTimeMinutes,
+    required int? rtScore,
+    required String image,
+    required String movieBanner,
+  }) = _Film;
 }

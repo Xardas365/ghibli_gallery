@@ -1,39 +1,31 @@
-class FilmDto {
-  const FilmDto({
-    required this.id,
-    required this.title,
-    required this.originalTitle,
-    required this.originalTitleRomanised,
-    required this.description,
-    required this.director,
-    required this.producer,
-    required this.releaseDate,
-    required this.runningTime,
-    required this.rtScore,
-    required this.people,
-    required this.species,
-    required this.locations,
-    required this.vehicles,
-    required this.url,
-    this.image,
-    this.movieBanner,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String title;
-  final String originalTitle;
-  final String originalTitleRomanised;
-  final String description;
-  final String director;
-  final String producer;
-  final String releaseDate;
-  final String runningTime;
-  final String rtScore;
-  final List<String> people;
-  final List<String> species;
-  final List<String> locations;
-  final List<String> vehicles;
-  final String url;
-  final String? image;
-  final String? movieBanner;
+part 'film_dto.freezed.dart';
+part 'film_dto.g.dart';
+
+@freezed
+abstract class FilmDto with _$FilmDto {
+  const factory FilmDto({
+    required String id,
+    required String title,
+    @JsonKey(name: 'original_title') required String originalTitle,
+    @JsonKey(name: 'original_title_romanised')
+    required String originalTitleRomanised,
+    required String image,
+    @JsonKey(name: 'movie_banner') required String movieBanner,
+    required String description,
+    required String director,
+    required String producer,
+    required String url,
+    @JsonKey(name: 'release_date') String? releaseDate,
+    @JsonKey(name: 'running_time') String? runningTime,
+    @JsonKey(name: 'rt_score') String? rtScore,
+    @Default(<String>[]) List<String> people,
+    @Default(<String>[]) List<String> species,
+    @Default(<String>[]) List<String> locations,
+    @Default(<String>[]) List<String> vehicles,
+  }) = _FilmDto;
+
+  factory FilmDto.fromJson(Map<String, dynamic> json) =>
+      _$FilmDtoFromJson(json);
 }
