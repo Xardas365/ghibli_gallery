@@ -87,8 +87,20 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(find.byIcon(Icons.star), findsOneWidget);
-    expect(find.text('5'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.star),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.text('5'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('tapping a film opens detail route', (tester) async {
@@ -726,8 +738,20 @@ void main() {
     await tester.tap(find.byTooltip('Favorites'));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.star), findsOneWidget);
-    expect(find.text('5'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.star),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.text('5'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('tapping a favorite film opens detail', (tester) async {
