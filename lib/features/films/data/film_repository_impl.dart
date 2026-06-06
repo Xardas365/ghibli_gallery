@@ -1,4 +1,4 @@
-import 'package:ghibli_entry/features/films/data/film_api.dart';
+import 'package:ghibli_entry/features/films/data/api/film_api.dart';
 import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_entry/features/films/domain/film.dart';
 import 'package:ghibli_entry/features/films/domain/film_details.dart';
