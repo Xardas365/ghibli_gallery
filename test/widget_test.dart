@@ -328,6 +328,36 @@ void main() {
     expect(find.text('Clear rating'), findsOneWidget);
   });
 
+  testWidgets('clearing detail rating preserves favorite state', (
+    tester,
+  ) async {
+    final storage = _FakeFavoriteMovieStorage(
+      movies: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+      ],
+    );
+
+    await _pumpDetailScreen(
+      tester,
+      details: (ref, filmId) async => totoroDetails,
+      storage: storage,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.ensureVisible(find.text('Clear rating'));
+    await tester.pump();
+    await tester.tap(find.text('Clear rating'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Clear rating'), findsNothing);
+    expect(
+      await storage.getByFilmId(totoro.id),
+      FavoriteMovie(filmId: totoro.id, isFavorite: true),
+    );
+  });
+
   testWidgets('invalid rating is not possible from detail UI', (tester) async {
     await _pumpDetailScreen(
       tester,

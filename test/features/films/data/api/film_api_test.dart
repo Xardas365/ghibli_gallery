@@ -37,6 +37,21 @@ void main() {
       expect(films.first.title, 'Castle in the Sky');
     });
 
+    test('fetchFilms parses a bare API list response', () async {
+      final api = FilmApi(
+        ApiClient(
+          dio: createTestDio(
+            adapter: JsonResponseAdapter([castleInTheSkyJson]),
+          ),
+        ),
+      );
+
+      final films = await api.fetchFilms();
+
+      expect(films, hasLength(1));
+      expect(films.single.id, '2baf70d1-42bb-4437-b551-e5fed5a87abe');
+    });
+
     test('fetchFilms parses snake_case fields correctly', () async {
       final api = FilmApi(
         ApiClient(
