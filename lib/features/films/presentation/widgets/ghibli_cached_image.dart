@@ -1,6 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+const _fallbackImageAsset = 'assets/images/fallback_confused_non.gif';
+const ValueKey<String> ghibliImageFallbackKey = ValueKey(
+  'ghibli-image-fallback',
+);
+
 class GhibliCachedImage extends StatelessWidget {
   const GhibliCachedImage({
     required this.imageUrl,
@@ -72,19 +77,43 @@ class GhibliImageFallback extends StatelessWidget {
         color: colorScheme.surfaceContainerHighest,
       ),
       child: Center(
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colorScheme.surface.withValues(alpha: 0.64),
-            shape: BoxShape.circle,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Image.asset(
+            _fallbackImageAsset,
+            key: ghibliImageFallbackKey,
+            fit: BoxFit.contain,
+            semanticLabel: 'Confused fallback image',
+            errorBuilder: (context, error, stackTrace) {
+              return _FallbackIcon(iconSize: iconSize);
+            },
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Icon(
-              Icons.movie_creation_outlined,
-              size: iconSize,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FallbackIcon extends StatelessWidget {
+  const _FallbackIcon({required this.iconSize});
+
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface.withValues(alpha: 0.64),
+        shape: BoxShape.circle,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Icon(
+          Icons.movie_creation_outlined,
+          size: iconSize,
+          color: colorScheme.onSurfaceVariant,
         ),
       ),
     );

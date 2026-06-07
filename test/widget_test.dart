@@ -12,6 +12,7 @@ import 'package:ghibli_gallery/features/films/domain/film_details.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/screens/favorite_films_screen.dart';
 import 'package:ghibli_gallery/features/films/presentation/screens/film_detail_screen.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
 void main() {
   testWidgets('gallery shows loading state', (tester) async {
@@ -633,7 +634,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
-    expect(find.byIcon(Icons.movie_creation_outlined), findsOneWidget);
+    expect(find.byKey(ghibliImageFallbackKey), findsOneWidget);
   });
 
   testWidgets('detail back action returns to gallery', (tester) async {
@@ -657,7 +658,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
-    expect(find.byIcon(Icons.movie_creation_outlined), findsOneWidget);
+    expect(find.byKey(ghibliImageFallbackKey), findsOneWidget);
   });
 
   testWidgets('bottom navigation opens favorites and returns to gallery', (
