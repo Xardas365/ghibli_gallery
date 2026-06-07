@@ -1,122 +1,81 @@
 # Ghibli Gallery
 
-A Flutter skeleton for the Seznam Flutter Developer Studio Ghibli entry assignment.
+A small Flutter interview assignment for Seznam. The app presents Studio Ghibli films as a movie-gallery experience with REST API loading, local favorite/rating persistence, Riverpod state management, and deterministic tests.
 
-The current state is intentionally a clean project foundation, not a finished implementation. It provides the app shell, feature-first folders, placeholder screens, Riverpod wiring, DTO/domain models, mapper extensions, generated model code, and basic tests.
+## Environment
 
-## Assignment Target
+Verified locally with:
 
-The finished app should implement:
-
-- Studio Ghibli movie gallery.
-- Film detail screen.
-- Favorite toggle.
-- 1-5 star rating.
-- Locally persisted favorites and ratings.
-- Favorites screen with rating filtering.
-- Detail screen with all film parameters.
-- Resolved people, species, locations, and vehicles.
-- Custom API layer without using an existing Dart Studio Ghibli client.
-
-## Current Skeleton
-
-Implemented now:
-
-- `ProviderScope` app entry.
-- `MaterialApp` shell with named routes.
-- App theme.
-- Gallery, detail, and favorites placeholder screens.
-- Shared UI widgets for film cards, favorite button, rating stars, and metadata sections.
-- Data/domain/repository contract files.
-- Freezed/json_serializable DTO and domain models.
-- Mapper extensions from DTOs to domain models.
-- Local storage and API client placeholders.
-- Riverpod rating filter provider.
-- DTO parsing and gallery shell tests.
-
-Not implemented yet:
-
-- Studio Ghibli API integration.
-- Repository logic.
-- Local persistence.
-- Real gallery/detail/favorites state.
-- CI workflow.
+- Flutter `3.41.0` stable
+- Dart `3.11.0`
+- Project SDK constraint: `^3.8.0`
 
 ## API
 
-The assignment API source of truth is:
+The app uses its own API layer with Dio. It does not use an existing Dart Studio Ghibli API client.
 
-```text
-https://ghibli-api.vercel.app/api/films
-```
+- Base URL: `https://ghibli-api.vercel.app/api`
+- Films endpoint: `/films`
 
-Film detail must later resolve referenced:
+Film detail resolves referenced people, species, locations, and vehicles into human-readable names where possible. Collection-like related URLs are skipped gracefully.
 
-- people,
-- species,
-- locations,
-- vehicles.
+## Implemented Features
 
-Empty, collection-like, unavailable, or inconsistent reference URLs should be handled gracefully.
-
-## Structure
-
-```text
-lib/
-  main.dart
-  app/
-    ghibli_app.dart
-    router.dart
-    theme.dart
-  core/
-    network/
-      api_client.dart
-      api_exception.dart
-    storage/
-      local_storage.dart
-  features/
-    films/
-      data/
-        film_api.dart
-        film_repository_impl.dart
-        models/
-      domain/
-      presentation/
-        providers/
-        screens/
-        widgets/
-test/
-  widget_test.dart
-```
+- Streaming-service-style film gallery with loading, error, empty, and data states.
+- Film detail screen with poster/banner, titles, description, director, producer, release date, running time, Rotten Tomatoes score, and related people/species/locations/vehicles sections.
+- Favorite toggle and 1-5 rating on detail.
+- Favorite and rating indicators on gallery and favorites cards.
+- Locally persisted favorites and ratings by film ID.
+- Favorites screen with rating filter and empty states.
+- Simple Navigator-based routes for gallery, detail, and favorites.
 
 ## Dependencies
 
-Current dependencies:
+Runtime dependencies used by the implementation:
 
-- Flutter
-- `cached_network_image`
-- `dio`
-- `flutter_animate`
-- `flutter_riverpod`
-- `freezed_annotation`
-- `go_router`
-- `json_annotation`
-- `shared_preferences`
-- `very_good_analysis`
-- Flutter test tooling
+- `flutter_riverpod`: state management and async provider state.
+- `dio`: HTTP client for the custom Studio Ghibli API layer.
+- `shared_preferences`: local persistence for favorites and ratings.
+- `freezed_annotation`: immutable DTO/domain models and generated value behavior where used.
+- `json_annotation`: JSON mapping for API DTOs.
 
-Planned dependencies should be added only when their implementation step needs them:
+Development dependencies:
 
-- `hive` if SharedPreferences becomes insufficient for persistence.
+- `build_runner`, `freezed`, `json_serializable`: code generation.
+- `mocktail`: deterministic repository/API tests.
+- `very_good_analysis`: lint rules.
+- Flutter test tooling.
 
-## Getting Started
+Some dependencies remain in `pubspec.yaml` from the starter/skeleton but are not used by the current implementation, including `go_router`, `cached_network_image`, `flutter_animate`, and `collection`. No animations are implemented.
+
+## Setup
+
+Install dependencies:
 
 ```bash
 flutter pub get
+```
+
+Run code generation when generated models or annotations change:
+
+```bash
+dart run build_runner build
+```
+
+Generated files are committed for easier review, but they should not be edited manually:
+
+- `*.freezed.dart`
+- `*.g.dart`
+
+Run the app:
+
+```bash
 flutter run
 ```
 
-## Quality Checks
+## Verification
+
+Use:
 
 ```bash
 dart format .
@@ -124,20 +83,31 @@ flutter analyze
 flutter test
 ```
 
-Run code generation only after generated models are introduced:
+Latest verified result:
 
-```bash
-dart run build_runner build
-```
+- `flutter test` passed with `125` tests.
 
-## Next Steps
+## Testing Coverage
 
-Suggested implementation order:
+The test suite covers:
 
-1. Add API DTO parsing and tests.
-2. Implement `ApiClient` and `FilmApi`.
-3. Implement repository mapping from DTOs to domain models.
-4. Add local persistence for favorites and ratings.
-5. Wire Riverpod providers to real data.
-6. Replace placeholder screens with real gallery, detail, and favorites UI.
-7. Add final README details and CI if useful.
+- DTO parsing and safe numeric parsing.
+- API response shape handling.
+- Repository mapping.
+- Collection-like URL skipping.
+- Partial related-resource failure handling.
+- Favorite/rating persistence and validation.
+- Rating filter logic.
+- Gallery, detail, and favorites loading/error/empty/data states.
+- Favorite/rating actions in the UI.
+
+Tests use fakes/mocks and do not call the real network.
+
+## Known Limitations And Trade-Offs
+
+- If one related resource in a group fails, the whole related group may be shown as empty.
+- Local storage write failures are handled safely, but they are not reported through a logging layer.
+- UX polish is intentionally modest and focused on readability over animation.
+- No CI/GitHub Actions are implemented.
+- No animations are implemented.
+- The app keeps a compact feature-first structure rather than a larger enterprise-style architecture.

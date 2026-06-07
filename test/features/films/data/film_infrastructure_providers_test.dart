@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/features/films/data/film_infrastructure_providers.dart';
-import 'package:ghibli_entry/features/films/data/film_repository_impl.dart';
-import 'package:ghibli_entry/features/films/data/shared_preferences_favorite_movie_storage.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie_storage.dart';
-import 'package:ghibli_entry/features/films/domain/film_repository.dart';
+import 'package:ghibli_gallery/features/films/data/film_infrastructure_providers.dart';
+import 'package:ghibli_gallery/features/films/data/film_repository_impl.dart';
+import 'package:ghibli_gallery/features/films/data/shared_preferences_favorite_movie_storage.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie_storage.dart';
+import 'package:ghibli_gallery/features/films/domain/film_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

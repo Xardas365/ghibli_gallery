@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ghibli_entry/features/films/data/film_infrastructure_providers.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/data/film_infrastructure_providers.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 
 final favoriteMovieControllerProvider =
     AsyncNotifierProvider<FavoriteMovieController, List<FavoriteMovie>>(

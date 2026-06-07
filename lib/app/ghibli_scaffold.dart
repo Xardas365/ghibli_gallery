@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:ghibli_entry/app/router.dart';
+import 'package:ghibli_gallery/app/router.dart';
 
 enum GhibliMainSection {
   gallery,

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/features/films/data/mappers/film_mappers.dart';
-import 'package:ghibli_entry/features/films/data/models/film_dto.dart';
+import 'package:ghibli_gallery/features/films/data/mappers/film_mappers.dart';
+import 'package:ghibli_gallery/features/films/data/models/film_dto.dart';
 
 void main() {
   late Map<String, Object?> castleInTheSkyJson;

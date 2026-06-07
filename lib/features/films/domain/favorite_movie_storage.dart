@@ -1,4 +1,4 @@
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 
 abstract interface class FavoriteMovieStorage {
   Future<List<FavoriteMovie>> getAll();

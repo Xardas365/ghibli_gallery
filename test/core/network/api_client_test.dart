@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/core/network/api_client.dart';
-import 'package:ghibli_entry/core/network/api_exception.dart';
-import 'package:ghibli_entry/core/network/dio_provider.dart';
+import 'package:ghibli_gallery/core/network/api_client.dart';
+import 'package:ghibli_gallery/core/network/api_exception.dart';
+import 'package:ghibli_gallery/core/network/dio_provider.dart';
 
 void main() {
   group('ApiException', () {

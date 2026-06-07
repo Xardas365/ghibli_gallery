@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ghibli_entry/core/network/api_client.dart';
-import 'package:ghibli_entry/core/network/dio_provider.dart';
+import 'package:ghibli_gallery/core/network/api_client.dart';
+import 'package:ghibli_gallery/core/network/dio_provider.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   return createDio();

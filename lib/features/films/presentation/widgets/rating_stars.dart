@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ghibli_entry/app/theme.dart';
+import 'package:ghibli_gallery/app/theme.dart';
 
 class RatingStars extends StatelessWidget {
   const RatingStars({required this.rating, required this.onChanged, super.key});

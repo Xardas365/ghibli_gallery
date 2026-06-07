@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ghibli_entry/app/router.dart';
-import 'package:ghibli_entry/app/theme.dart';
+import 'package:ghibli_gallery/app/router.dart';
+import 'package:ghibli_gallery/app/theme.dart';
 
 class GhibliApp extends StatelessWidget {
   const GhibliApp({super.key});

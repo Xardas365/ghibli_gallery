@@ -1,12 +1,12 @@
-import 'package:ghibli_entry/features/films/data/models/film_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/location_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/person_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/species_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/vehicle_dto.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
-import 'package:ghibli_entry/features/films/domain/film_details.dart';
-import 'package:ghibli_entry/features/films/domain/film_with_user_data.dart';
+import 'package:ghibli_gallery/features/films/data/models/film_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/location_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/person_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/species_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/vehicle_dto.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/domain/film_with_user_data.dart';
 
 extension FilmDtoMapper on FilmDto {
   Film toDomain() {

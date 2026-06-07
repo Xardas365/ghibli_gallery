@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/features/films/data/api/film_api.dart';
-import 'package:ghibli_entry/features/films/data/film_repository_impl.dart';
-import 'package:ghibli_entry/features/films/data/models/film_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/location_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/person_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/species_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/vehicle_dto.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
-import 'package:ghibli_entry/features/films/domain/film_details.dart';
-import 'package:ghibli_entry/features/films/domain/film_repository_exception.dart';
+import 'package:ghibli_gallery/features/films/data/api/film_api.dart';
+import 'package:ghibli_gallery/features/films/data/film_repository_impl.dart';
+import 'package:ghibli_gallery/features/films/data/models/film_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/location_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/person_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/species_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/vehicle_dto.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/domain/film_repository_exception.dart';
 import 'package:mocktail/mocktail.dart';
 
 void main() {

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
 
 part 'film_details.freezed.dart';
 

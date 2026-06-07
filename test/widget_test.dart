@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/app/ghibli_app.dart';
-import 'package:ghibli_entry/features/films/data/film_infrastructure_providers.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie_storage.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
-import 'package:ghibli_entry/features/films/domain/film_details.dart';
-import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
-import 'package:ghibli_entry/features/films/presentation/screens/favorite_films_screen.dart';
-import 'package:ghibli_entry/features/films/presentation/screens/film_detail_screen.dart';
+import 'package:ghibli_gallery/app/ghibli_app.dart';
+import 'package:ghibli_gallery/features/films/data/film_infrastructure_providers.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie_storage.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_gallery/features/films/presentation/screens/favorite_films_screen.dart';
+import 'package:ghibli_gallery/features/films/presentation/screens/film_detail_screen.dart';
 
 void main() {
   testWidgets('gallery shows loading state', (tester) async {

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/features/films/data/shared_preferences_favorite_movie_storage.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/data/shared_preferences_favorite_movie_storage.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

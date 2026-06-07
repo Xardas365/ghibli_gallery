@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ghibli_entry/core/network/logging_interceptor.dart';
+import 'package:ghibli_gallery/core/network/logging_interceptor.dart';
 
 const apiBaseUrl = 'https://ghibli-api.vercel.app/api';
 

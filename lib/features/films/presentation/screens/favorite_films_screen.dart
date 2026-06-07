@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ghibli_entry/app/ghibli_scaffold.dart';
-import 'package:ghibli_entry/app/router.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
-import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
-import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
-import 'package:ghibli_entry/features/films/presentation/widgets/film_card.dart';
-import 'package:ghibli_entry/features/films/presentation/widgets/film_card_entrance.dart';
+import 'package:ghibli_gallery/app/ghibli_scaffold.dart';
+import 'package:ghibli_gallery/app/router.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/presentation/providers/favorite_movie_providers.dart';
+import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_entrance.dart';
 
 class FavoriteFilmsScreen extends ConsumerWidget {
   const FavoriteFilmsScreen({super.key});

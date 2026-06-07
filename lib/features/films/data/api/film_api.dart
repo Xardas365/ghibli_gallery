@@ -1,9 +1,9 @@
-import 'package:ghibli_entry/core/network/api_client.dart';
-import 'package:ghibli_entry/features/films/data/models/film_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/location_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/person_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/species_dto.dart';
-import 'package:ghibli_entry/features/films/data/models/vehicle_dto.dart';
+import 'package:ghibli_gallery/core/network/api_client.dart';
+import 'package:ghibli_gallery/features/films/data/models/film_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/location_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/person_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/species_dto.dart';
+import 'package:ghibli_gallery/features/films/data/models/vehicle_dto.dart';
 
 class FilmApi {
   const FilmApi(this.client);

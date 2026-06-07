@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie_storage.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesFavoriteMovieStorage implements FavoriteMovieStorage {

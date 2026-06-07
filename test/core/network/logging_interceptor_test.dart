@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/core/network/dio_provider.dart';
-import 'package:ghibli_entry/core/network/logging_interceptor.dart';
+import 'package:ghibli_gallery/core/network/dio_provider.dart';
+import 'package:ghibli_gallery/core/network/logging_interceptor.dart';
 
 void main() {
   group('DebugLoggingInterceptor', () {

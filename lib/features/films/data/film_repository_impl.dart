@@ -1,9 +1,9 @@
-import 'package:ghibli_entry/features/films/data/api/film_api.dart';
-import 'package:ghibli_entry/features/films/data/mappers/film_mappers.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
-import 'package:ghibli_entry/features/films/domain/film_details.dart';
-import 'package:ghibli_entry/features/films/domain/film_repository.dart';
-import 'package:ghibli_entry/features/films/domain/film_repository_exception.dart';
+import 'package:ghibli_gallery/features/films/data/api/film_api.dart';
+import 'package:ghibli_gallery/features/films/data/mappers/film_mappers.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/domain/film_repository.dart';
+import 'package:ghibli_gallery/features/films/domain/film_repository_exception.dart';
 
 class FilmRepositoryImpl implements FilmRepository {
   const FilmRepositoryImpl({required this.api});

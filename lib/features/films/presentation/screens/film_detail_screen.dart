@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ghibli_entry/app/theme.dart';
-import 'package:ghibli_entry/features/films/domain/film_details.dart';
-import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
-import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
-import 'package:ghibli_entry/features/films/presentation/widgets/ghibli_cached_image.dart';
+import 'package:ghibli_gallery/app/theme.dart';
+import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/presentation/providers/favorite_movie_providers.dart';
+import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
 class FilmDetailScreen extends ConsumerWidget {
   const FilmDetailScreen({required this.filmId, super.key});

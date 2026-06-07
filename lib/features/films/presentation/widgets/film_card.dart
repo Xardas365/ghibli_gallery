@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ghibli_entry/app/theme.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
-import 'package:ghibli_entry/features/films/presentation/widgets/ghibli_cached_image.dart';
+import 'package:ghibli_gallery/app/theme.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
 class FilmCard extends StatelessWidget {
   const FilmCard({

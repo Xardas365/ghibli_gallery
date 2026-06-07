@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 
 void main() {
   group('FavoriteMovie', () {

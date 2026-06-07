@@ -1,4 +1,4 @@
-package com.example.ghibli_entry
+package com.example.ghibli_gallery
 
 import io.flutter.embedding.android.FlutterActivity
 

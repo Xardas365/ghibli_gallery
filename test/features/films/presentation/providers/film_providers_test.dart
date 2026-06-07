@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ghibli_entry/features/films/data/film_infrastructure_providers.dart';
-import 'package:ghibli_entry/features/films/domain/film.dart';
-import 'package:ghibli_entry/features/films/domain/film_details.dart';
-import 'package:ghibli_entry/features/films/domain/film_repository.dart';
-import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_gallery/features/films/data/film_infrastructure_providers.dart';
+import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/domain/film_repository.dart';
+import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 
 void main() {
   group('film providers', () {
