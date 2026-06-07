@@ -273,7 +273,7 @@ void main() {
     expect(find.text('1988'), findsOneWidget);
     expect(find.text('Running time'), findsOneWidget);
     expect(find.text('86 minutes'), findsOneWidget);
-    expect(find.text('Rotten Tomatoes'), findsOneWidget);
+    expect(find.text('Rotten Tomatoes score'), findsOneWidget);
     expect(find.text('93%'), findsOneWidget);
   });
 

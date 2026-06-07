@@ -130,7 +130,6 @@ class _DetailContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final film = details.film;
-    final theme = Theme.of(context);
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
@@ -145,19 +144,9 @@ class _DetailContent extends StatelessWidget {
               _OptionalText(value: details.originalTitleRomanised),
               const SizedBox(height: 16),
               _FilmUserRating(filmId: film.id),
-              const SizedBox(height: 24),
-              Text(
-                'Story',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                film.description,
-                style: theme.textTheme.bodyLarge?.copyWith(height: 1.35),
-              ),
-              const SizedBox(height: 24),
+              const _DetailSectionDivider(),
+              _DescriptionSection(description: film.description),
+              const _DetailSectionDivider(),
               _DetailMetadata(
                 rows: [
                   _MetadataRow(label: 'Director', value: film.director),
@@ -171,12 +160,12 @@ class _DetailContent extends StatelessWidget {
                     value: _formatRunningTime(film.runningTimeMinutes),
                   ),
                   _MetadataRow(
-                    label: 'Rotten Tomatoes',
+                    label: 'Rotten Tomatoes score',
                     value: _formatScore(film.rtScore),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const _DetailSectionDivider(),
               _RelatedSection(
                 title: 'People',
                 values: details.people,
@@ -197,6 +186,54 @@ class _DetailContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DescriptionSection extends StatelessWidget {
+  const _DescriptionSection({required this.description});
+
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Story',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          description,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            height: 1.52,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.86),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DetailSectionDivider extends StatelessWidget {
+  const _DetailSectionDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: Divider(
+        height: 1,
+        color: Theme.of(context).colorScheme.outlineVariant.withValues(
+          alpha: 0.72,
+        ),
+      ),
     );
   }
 }
@@ -572,6 +609,8 @@ class _DetailMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -582,33 +621,84 @@ class _DetailMetadata extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        for (final row in rows) _MetadataTile(row: row),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerLow,
+            border: Border.all(
+              color: colorScheme.outlineVariant.withValues(alpha: 0.72),
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            children: [
+              for (var index = 0; index < rows.length; index += 1)
+                _MetadataTile(
+                  row: rows[index],
+                  showDivider: index < rows.length - 1,
+                ),
+            ],
+          ),
+        ),
       ],
     );
   }
 }
 
 class _MetadataTile extends StatelessWidget {
-  const _MetadataTile({required this.row});
+  const _MetadataTile({
+    required this.row,
+    required this.showDivider,
+  });
 
   final _MetadataRow row;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 132,
-            child: Text(
-              row.label,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: showDivider
+            ? Border(
+                bottom: BorderSide(
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.64),
+                ),
+              )
+            : null,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 5,
+              child: Text(
+                row.label,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                  height: 1.25,
+                ),
+              ),
             ),
-          ),
-          Expanded(child: Text(row.value)),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              flex: 4,
+              child: Text(
+                row.value,
+                textAlign: TextAlign.right,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                  height: 1.25,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
