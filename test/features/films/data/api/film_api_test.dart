@@ -159,7 +159,7 @@ void main() {
 }
 
 Dio createTestDio({required HttpClientAdapter adapter}) {
-  final dio = createDio()..httpClientAdapter = adapter;
+  final dio = createDio(enableLogging: false)..httpClientAdapter = adapter;
   return dio;
 }
 

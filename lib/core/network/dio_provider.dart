@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:ghibli_entry/core/network/logging_interceptor.dart';
 
 const apiBaseUrl = 'https://ghibli-api.vercel.app/api';
 
-Dio createDio() {
-  return Dio(
+Dio createDio({bool enableLogging = kDebugMode}) {
+  final dio = Dio(
     BaseOptions(
       baseUrl: apiBaseUrl,
       connectTimeout: const Duration(seconds: 10),
@@ -14,4 +16,10 @@ Dio createDio() {
       responseType: ResponseType.json,
     ),
   );
+
+  if (enableLogging) {
+    dio.interceptors.add(DebugLoggingInterceptor());
+  }
+
+  return dio;
 }
