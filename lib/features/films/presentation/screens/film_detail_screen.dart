@@ -22,7 +22,9 @@ class FilmDetailScreen extends ConsumerWidget {
     final detailState = ref.watch(filmDetailsProvider(filmId));
 
     return Scaffold(
-      appBar: detailState.hasValue ? null : AppBar(title: const Text('Film detail')),
+      appBar: detailState.hasValue
+          ? null
+          : AppBar(title: const Text('Film detail')),
       body: _FilmDetailBody(
         filmId: filmId,
         detailState: detailState,
@@ -169,22 +171,7 @@ class _DetailContent extends StatelessWidget {
                 ],
               ),
               const _DetailSectionDivider(),
-              _RelatedSection(
-                title: 'People',
-                values: details.people,
-              ),
-              _RelatedSection(
-                title: 'Species',
-                values: details.species,
-              ),
-              _RelatedSection(
-                title: 'Locations',
-                values: details.locations,
-              ),
-              _RelatedSection(
-                title: 'Vehicles',
-                values: details.vehicles,
-              ),
+              _RelatedResources(details: details),
             ],
           ),
         ),
@@ -255,7 +242,9 @@ class _DetailHeroHeader extends StatelessWidget {
       360.0,
       520.0,
     );
-    final heroImageUrl = film.movieBanner.trim().isNotEmpty ? film.movieBanner : film.image;
+    final heroImageUrl = film.movieBanner.trim().isNotEmpty
+        ? film.movieBanner
+        : film.image;
 
     return SizedBox(
       height: heroHeight,
@@ -375,7 +364,8 @@ class _HeroMetadata extends StatelessWidget {
     );
     final items = <Widget>[
       if (releaseYear != null) Text(releaseYear.toString(), style: style),
-      if (runningTimeMinutes != null) Text('$runningTimeMinutes min', style: style),
+      if (runningTimeMinutes != null)
+        Text('$runningTimeMinutes min', style: style),
       if (rtScore != null)
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -441,7 +431,9 @@ class _HeroFavoriteButton extends ConsumerWidget {
           : () async {
               await _runUserDataAction(
                 context,
-                () => ref.read(favoriteMovieControllerProvider.notifier).toggleFavorite(filmId),
+                () => ref
+                    .read(favoriteMovieControllerProvider.notifier)
+                    .toggleFavorite(filmId),
               );
             },
     );
@@ -485,35 +477,74 @@ class _FilmUserRating extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userDataState = ref.watch(favoriteMovieByFilmIdProvider(filmId));
     final userData = userDataState.value;
+    final rating = userData?.rating;
     final isBusy = userDataState.isLoading;
     final hasError = userDataState.hasError;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.72),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.star_rounded,
+                  color: ghibliStarGold,
+                  size: 22,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Your rating',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              rating == null
+                  ? 'Tap a star to rate this film.'
+                  : 'You rated this film $rating out of 5.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                height: 1.3,
+              ),
+            ),
+            const SizedBox(height: 10),
             _RatingStars(
-              rating: userData?.rating,
+              rating: rating,
               isEnabled: !isBusy,
               onChanged: (rating) async {
                 await _runUserDataAction(
                   context,
-                  () => ref.read(favoriteMovieControllerProvider.notifier).setRating(filmId, rating),
+                  () => ref
+                      .read(favoriteMovieControllerProvider.notifier)
+                      .setRating(filmId, rating),
                 );
               },
             ),
+            if (hasError) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Could not save your favorite or rating.',
+                style: TextStyle(color: colorScheme.error),
+              ),
+            ],
           ],
         ),
-        if (hasError) ...[
-          const SizedBox(height: 8),
-          Text(
-            'Could not save your favorite or rating.',
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
-        ],
-      ],
+      ),
     );
   }
 }
@@ -531,14 +562,30 @@ class _RatingStars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Wrap(
-      spacing: 2,
+      spacing: 4,
+      runSpacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         for (var value = 1; value <= 5; value += 1)
           IconButton(
             tooltip: 'Rate $value star${value == 1 ? '' : 's'}',
             onPressed: isEnabled ? () => onChanged(value) : null,
+            constraints: const BoxConstraints.tightFor(
+              width: 48,
+              height: 48,
+            ),
+            style: IconButton.styleFrom(
+              backgroundColor: colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.7,
+              ),
+              foregroundColor: colorScheme.onSurfaceVariant,
+              disabledForegroundColor: colorScheme.onSurfaceVariant.withValues(
+                alpha: 0.48,
+              ),
+            ),
             icon: AnimatedSwitcher(
               duration: _detailActionAnimationDuration,
               switchInCurve: Curves.easeOutCubic,
@@ -546,7 +593,10 @@ class _RatingStars extends StatelessWidget {
               child: Icon(
                 value <= (rating ?? 0) ? Icons.star : Icons.star_border,
                 key: ValueKey('rating-$value-${value <= (rating ?? 0)}'),
-                color: value <= (rating ?? 0) ? ghibliStarGold : Theme.of(context).colorScheme.onSurfaceVariant,
+                size: 31,
+                color: value <= (rating ?? 0)
+                    ? ghibliStarGold
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -581,6 +631,49 @@ Future<void> _runUserDataAction(
   }
 }
 
+class _RelatedResources extends StatelessWidget {
+  const _RelatedResources({required this.details});
+
+  final FilmDetails details;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Related',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _RelatedSection(
+          title: 'People',
+          values: details.people,
+        ),
+        const SizedBox(height: 12),
+        _RelatedSection(
+          title: 'Species',
+          values: details.species,
+        ),
+        const SizedBox(height: 12),
+        _RelatedSection(
+          title: 'Locations',
+          values: details.locations,
+        ),
+        const SizedBox(height: 12),
+        _RelatedSection(
+          title: 'Vehicles',
+          values: details.vehicles,
+        ),
+      ],
+    );
+  }
+}
+
 class _RelatedSection extends StatelessWidget {
   const _RelatedSection({
     required this.title,
@@ -592,41 +685,97 @@ class _RelatedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final displayValues = values
         .map((value) => value.trim())
         .where((value) => value.isNotEmpty && !_looksLikeUrl(value))
         .toList(growable: false);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.72),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 8),
-          if (displayValues.isEmpty)
-            Text(
-              'No data available',
-              style: Theme.of(context).textTheme.bodyMedium,
-            )
-          else
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+            child: Row(
               children: [
-                for (final value in displayValues)
-                  Chip(
-                    label: Text(value),
-                    visualDensity: VisualDensity.compact,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
+                ),
+                Text(
+                  displayValues.length.toString(),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ],
             ),
+          ),
+          Divider(
+            height: 1,
+            color: colorScheme.outlineVariant.withValues(alpha: 0.64),
+          ),
+          if (displayValues.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Text(
+                'No data available',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final value in displayValues) _RelatedChip(label: value),
+                ],
+              ),
+            ),
         ],
+      ),
+    );
+  }
+}
+
+class _RelatedChip extends StatelessWidget {
+  const _RelatedChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.72),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.7),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        child: Text(label),
       ),
     );
   }
