@@ -270,11 +270,11 @@ void main() {
     expect(find.text('Producer'), findsOneWidget);
     expect(find.text('Toru Hara'), findsOneWidget);
     expect(find.text('Release date'), findsOneWidget);
-    expect(find.text('1988'), findsOneWidget);
+    expect(find.text('1988'), findsWidgets);
     expect(find.text('Running time'), findsOneWidget);
     expect(find.text('86 minutes'), findsOneWidget);
-    expect(find.text('Rotten Tomatoes score'), findsOneWidget);
-    expect(find.text('93%'), findsOneWidget);
+    expect(find.text('Rotten Tomatoes'), findsOneWidget);
+    expect(find.text('93%'), findsWidgets);
   });
 
   testWidgets('detail shows favorite button', (tester) async {

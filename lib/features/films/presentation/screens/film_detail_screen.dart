@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ghibli_gallery/app/theme.dart';
 import 'package:ghibli_gallery/features/films/domain/film_details.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
+
+const _rottenTomatoesAsset = 'assets/images/Rotten_Tomatoes.svg';
+const _metadataRowMinHeight = 52.0;
 
 class FilmDetailScreen extends ConsumerWidget {
   const FilmDetailScreen({required this.filmId, super.key});
@@ -18,9 +22,7 @@ class FilmDetailScreen extends ConsumerWidget {
     final detailState = ref.watch(filmDetailsProvider(filmId));
 
     return Scaffold(
-      appBar: detailState.hasValue
-          ? null
-          : AppBar(title: const Text('Film detail')),
+      appBar: detailState.hasValue ? null : AppBar(title: const Text('Film detail')),
       body: _FilmDetailBody(
         filmId: filmId,
         detailState: detailState,
@@ -160,7 +162,8 @@ class _DetailContent extends StatelessWidget {
                     value: _formatRunningTime(film.runningTimeMinutes),
                   ),
                   _MetadataRow(
-                    label: 'Rotten Tomatoes score',
+                    label: 'Rotten Tomatoes',
+                    iconAsset: _rottenTomatoesAsset,
                     value: _formatScore(film.rtScore),
                   ),
                 ],
@@ -252,15 +255,7 @@ class _DetailHeroHeader extends StatelessWidget {
       360.0,
       520.0,
     );
-    final heroImageUrl = film.movieBanner.trim().isNotEmpty
-        ? film.movieBanner
-        : film.image;
-    final metadata = _buildHeroMetadataItems(
-      releaseYear: film.releaseYear,
-      runningTimeMinutes: film.runningTimeMinutes,
-      rtScore: film.rtScore,
-      director: film.director,
-    ).join(' • ');
+    final heroImageUrl = film.movieBanner.trim().isNotEmpty ? film.movieBanner : film.image;
 
     return SizedBox(
       height: heroHeight,
@@ -335,31 +330,93 @@ class _DetailHeroHeader extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (metadata.isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Text(
-                    metadata,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.88),
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
-                      shadows: const [
-                        Shadow(
-                          blurRadius: 12,
-                          color: Colors.black87,
-                          offset: Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                const SizedBox(height: 10),
+                _HeroMetadata(
+                  releaseYear: film.releaseYear,
+                  runningTimeMinutes: film.runningTimeMinutes,
+                  rtScore: film.rtScore,
+                  director: film.director,
+                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _HeroMetadata extends StatelessWidget {
+  const _HeroMetadata({
+    required this.releaseYear,
+    required this.runningTimeMinutes,
+    required this.rtScore,
+    required this.director,
+  });
+
+  final int? releaseYear;
+  final int? runningTimeMinutes;
+  final int? rtScore;
+  final String director;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.titleMedium?.copyWith(
+      color: Colors.white.withValues(alpha: 0.88),
+      fontWeight: FontWeight.w600,
+      height: 1.2,
+      shadows: const [
+        Shadow(
+          blurRadius: 12,
+          color: Colors.black87,
+          offset: Offset(0, 1),
+        ),
+      ],
+    );
+    final items = <Widget>[
+      if (releaseYear != null) Text(releaseYear.toString(), style: style),
+      if (runningTimeMinutes != null) Text('$runningTimeMinutes min', style: style),
+      if (rtScore != null)
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              _rottenTomatoesAsset,
+              height: 18,
+              width: 18,
+              semanticsLabel: 'Rotten Tomatoes score',
+            ),
+            const SizedBox(width: 5),
+            Text('$rtScore%', style: style),
+          ],
+        )
+      else if (director.trim().isNotEmpty)
+        Text(
+          director,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: style,
+        ),
+    ];
+
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        for (var index = 0; index < items.length; index += 1) ...[
+          if (index > 0)
+            Text(
+              '•',
+              style: style,
+            ),
+          items[index],
+        ],
+      ],
     );
   }
 }
@@ -384,9 +441,7 @@ class _HeroFavoriteButton extends ConsumerWidget {
           : () async {
               await _runUserDataAction(
                 context,
-                () => ref
-                    .read(favoriteMovieControllerProvider.notifier)
-                    .toggleFavorite(filmId),
+                () => ref.read(favoriteMovieControllerProvider.notifier).toggleFavorite(filmId),
               );
             },
     );
@@ -445,9 +500,7 @@ class _FilmUserRating extends ConsumerWidget {
               onChanged: (rating) async {
                 await _runUserDataAction(
                   context,
-                  () => ref
-                      .read(favoriteMovieControllerProvider.notifier)
-                      .setRating(filmId, rating),
+                  () => ref.read(favoriteMovieControllerProvider.notifier).setRating(filmId, rating),
                 );
               },
             ),
@@ -493,9 +546,7 @@ class _RatingStars extends StatelessWidget {
               child: Icon(
                 value <= (rating ?? 0) ? Icons.star : Icons.star_border,
                 key: ValueKey('rating-$value-${value <= (rating ?? 0)}'),
-                color: value <= (rating ?? 0)
-                    ? ghibliStarGold
-                    : Theme.of(context).colorScheme.onSurfaceVariant,
+                color: value <= (rating ?? 0) ? ghibliStarGold : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -668,36 +719,34 @@ class _MetadataTile extends StatelessWidget {
               )
             : null,
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 5,
-              child: Text(
-                row.label,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                  height: 1.25,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: _metadataRowMinHeight),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 5,
+                child: _MetadataLabel(row: row),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 4,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    row.value,
+                    textAlign: TextAlign.right,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                      height: 1.25,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              flex: 4,
-              child: Text(
-                row.value,
-                textAlign: TextAlign.right,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                  height: 1.25,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -708,10 +757,56 @@ class _MetadataRow {
   const _MetadataRow({
     required this.label,
     required this.value,
+    this.iconAsset,
   });
 
   final String label;
   final String value;
+  final String? iconAsset;
+}
+
+class _MetadataLabel extends StatelessWidget {
+  const _MetadataLabel({required this.row});
+
+  final _MetadataRow row;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textStyle = theme.textTheme.bodyMedium?.copyWith(
+      color: colorScheme.onSurfaceVariant,
+      fontWeight: FontWeight.w600,
+      height: 1.25,
+    );
+
+    final iconAsset = row.iconAsset;
+    if (iconAsset == null) {
+      return Text(
+        row.label,
+        style: textStyle,
+      );
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: Text(
+            row.label,
+            style: textStyle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        SvgPicture.asset(
+          iconAsset,
+          height: 18,
+          width: 18,
+          semanticsLabel: row.label,
+        ),
+      ],
+    );
+  }
 }
 
 String _formatNullableInt(int? value) {
@@ -732,22 +827,6 @@ String _formatScore(int? score) {
   }
 
   return '$score%';
-}
-
-List<String> _buildHeroMetadataItems({
-  required int? releaseYear,
-  required int? runningTimeMinutes,
-  required int? rtScore,
-  required String director,
-}) {
-  return [
-    if (releaseYear != null) releaseYear.toString(),
-    if (runningTimeMinutes != null) '$runningTimeMinutes min',
-    if (rtScore != null)
-      '$rtScore% RT'
-    else if (director.trim().isNotEmpty)
-      director,
-  ];
 }
 
 bool _looksLikeUrl(String value) {
