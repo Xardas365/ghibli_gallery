@@ -22,7 +22,7 @@ void main() {
       films: (ref) => completer.future,
     );
 
-    expect(find.text('Ghibli Gallery'), findsOneWidget);
+    expect(find.byTooltip('Search films'), findsOneWidget);
     expect(find.text('Loading the Ghibli collection...'), findsOneWidget);
   });
 
@@ -33,6 +33,13 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(find.text('Gallery'), findsOneWidget);
     expect(find.text('Favorites'), findsOneWidget);
+  });
+
+  testWidgets('gallery shows title image in app bar', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    expect(find.bySemanticsLabel('Ghibli Gallery'), findsOneWidget);
   });
 
   testWidgets('selected Gallery tab is indicated on gallery', (tester) async {
@@ -73,18 +80,96 @@ void main() {
     await _pumpApp(tester, films: (ref) async => [totoro]);
     await tester.pump();
 
-    expect(find.text('Ghibli Gallery'), findsOneWidget);
+    expect(find.byTooltip('Search films'), findsOneWidget);
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
     expect(find.text('1988 • Hayao Miyazaki'), findsOneWidget);
     expect(find.byType(Card), findsOneWidget);
   });
 
-  testWidgets('FilmCard shows title director and year', (tester) async {
+  testWidgets('gallery opens search field from app bar icon', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    expect(find.byType(TextField), findsNothing);
+
+    await tester.tap(find.byTooltip('Search films'));
+    await tester.pump();
+
+    expect(find.byType(TextField), findsOneWidget);
+    expect(find.text('Search by film title'), findsOneWidget);
+  });
+
+  testWidgets('gallery filters films by title search', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro, kiki]);
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Search films'));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'Kiki');
+    await tester.pump();
+
+    expect(find.text("Kiki's Delivery Service"), findsOneWidget);
+    expect(find.text('My Neighbor Totoro'), findsNothing);
+  });
+
+  testWidgets('gallery shows empty search result state', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Search films'));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'Ponyo');
+    await tester.pump();
+
+    expect(find.text('No films match "Ponyo".'), findsOneWidget);
+    expect(find.text('My Neighbor Totoro'), findsNothing);
+  });
+
+  testWidgets('gallery search clear and close interactions work', (
+    tester,
+  ) async {
+    await _pumpApp(tester, films: (ref) async => [totoro, kiki]);
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Search films'));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'Kiki');
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Clear search'));
+    await tester.pump();
+
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
+    expect(find.text("Kiki's Delivery Service"), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Close search'));
+    await tester.pump();
+
+    expect(find.byType(TextField), findsNothing);
+  });
+
+  testWidgets('FilmCard shows title release year and director', (
+    tester,
+  ) async {
     await _pumpApp(tester, films: (ref) async => [totoro]);
     await tester.pump();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
-    expect(find.text('1988 • Hayao Miyazaki'), findsOneWidget);
+    expect(find.textContaining('1988'), findsOneWidget);
+    expect(find.textContaining('Hayao Miyazaki'), findsOneWidget);
+  });
+
+  testWidgets('FilmCard long title does not overflow', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [longTitleFilm]);
+    await tester.pump();
+
+    expect(find.text(longTitleFilm.title), findsOneWidget);
+    expect(
+      find.text('1995 • Hayao Miyazaki and Studio collaborators'),
+      findsOneWidget,
+    );
+    expect(find.byType(Card), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('FilmCard shows favorite indicator', (tester) async {
@@ -564,7 +649,7 @@ void main() {
     await tester.tap(find.text('Back'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Ghibli Gallery'), findsOneWidget);
+    expect(find.byTooltip('Search films'), findsOneWidget);
   });
 
   testWidgets('missing image URL does not crash', (tester) async {
@@ -594,7 +679,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('main-nav-gallery')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Ghibli Gallery'), findsOneWidget);
+    expect(find.byTooltip('Search films'), findsOneWidget);
     navigationBar = tester.widget<NavigationBar>(
       find.byType(NavigationBar),
     );
@@ -1031,6 +1116,19 @@ const kiki = Film(
   rtScore: 98,
   image: 'https://example.com/kiki.jpg',
   movieBanner: 'https://example.com/kiki-banner.jpg',
+);
+
+const longTitleFilm = Film(
+  id: 'long-title-id',
+  title: 'Whispering Memories Above the Valley of the Wind and Moonlight',
+  description: 'A long-title fixture for card layout tests.',
+  director: 'Hayao Miyazaki and Studio collaborators',
+  producer: 'Studio Ghibli',
+  releaseYear: 1995,
+  runningTimeMinutes: 111,
+  rtScore: 94,
+  image: '',
+  movieBanner: '',
 );
 
 const totoroDetails = FilmDetails(
