@@ -750,9 +750,24 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Rating filter'), findsOneWidget);
-    expect(find.widgetWithText(ChoiceChip, 'All'), findsOneWidget);
-    expect(find.widgetWithText(ChoiceChip, '5'), findsOneWidget);
-    expect(find.widgetWithText(ChoiceChip, '3'), findsOneWidget);
+    expect(find.widgetWithText(Chip, 'All'), findsNothing);
+    expect(find.text('Showing all 1 favorite.'), findsOneWidget);
+    expect(find.byKey(const ValueKey('rating-filter-5')), findsOneWidget);
+    expect(find.byKey(const ValueKey('rating-filter-3')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('rating-filter-5')),
+        matching: find.text('1'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('rating-filter-3')),
+        matching: find.text('0'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('favorites screen does not show non-favorited films', (
@@ -792,11 +807,15 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.tap(find.byKey(const ValueKey('rating-filter-5')));
     await tester.pumpAndSettle();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
     expect(find.text("Kiki's Delivery Service"), findsNothing);
+    expect(
+      find.text('Showing 1 of 2 favorites rated 5 stars.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('selecting rating 3 shows only 3-star favorites', (
@@ -815,7 +834,7 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, '3'));
+    await tester.tap(find.byKey(const ValueKey('rating-filter-3')));
     await tester.pumpAndSettle();
 
     expect(find.text("Kiki's Delivery Service"), findsOneWidget);
@@ -836,7 +855,7 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.tap(find.byKey(const ValueKey('rating-filter-5')));
     await tester.pumpAndSettle();
 
     expect(find.text("Kiki's Delivery Service"), findsNothing);
@@ -858,13 +877,14 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.tap(find.byKey(const ValueKey('rating-filter-5')));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, 'All'));
+    await tester.tap(find.byKey(const ValueKey('rating-filter-5')));
     await tester.pumpAndSettle();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
     expect(find.text("Kiki's Delivery Service"), findsOneWidget);
+    expect(find.text('Showing all 2 favorites.'), findsOneWidget);
   });
 
   testWidgets('empty filtered state is shown when no favorite matches', (
@@ -883,10 +903,16 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, '1'));
+    await tester.tap(find.byKey(const ValueKey('rating-filter-1')));
     await tester.pumpAndSettle();
 
-    expect(find.text('No favorites match this rating yet.'), findsOneWidget);
+    expect(
+      find.text(
+        'The forest spirits checked every path, but no favorite lives in '
+        'your 1-star grove yet.',
+      ),
+      findsOneWidget,
+    );
     expect(find.text('My Neighbor Totoro'), findsNothing);
     expect(find.text("Kiki's Delivery Service"), findsNothing);
   });
@@ -959,7 +985,7 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, '5'));
+    await tester.tap(find.byKey(const ValueKey('rating-filter-5')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('My Neighbor Totoro'));
     await tester.pumpAndSettle();

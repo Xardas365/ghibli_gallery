@@ -11,6 +11,8 @@ import 'package:ghibli_gallery/features/films/presentation/providers/film_provid
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_entrance.dart';
 
+const _fallbackConfusedNonAsset = 'assets/images/fallback_confused_non.gif';
+
 class FavoriteFilmsScreen extends ConsumerWidget {
   const FavoriteFilmsScreen({super.key});
 
@@ -20,6 +22,18 @@ class FavoriteFilmsScreen extends ConsumerWidget {
     final favoritesState = ref.watch(filteredFavoriteMoviesProvider);
     final allFavoritesState = ref.watch(favoriteMoviesProvider);
     final selectedRating = ref.watch(ratingFilterProvider);
+    final films = filmsState.value;
+    final favorites = favoritesState.value;
+    final allFavorites = allFavoritesState.value;
+    final shownFavoritesCount = films != null && favorites != null
+        ? _favoriteFilms(films, favorites).length
+        : null;
+    final totalFavoritesCount = films != null && allFavorites != null
+        ? _favoriteFilms(films, allFavorites).length
+        : null;
+    final ratingCounts = films != null && allFavorites != null
+        ? _ratingCounts(films, allFavorites)
+        : null;
 
     return GhibliScaffold(
       selectedSection: GhibliMainSection.favorites,
@@ -27,7 +41,12 @@ class FavoriteFilmsScreen extends ConsumerWidget {
       body: _FavoritesBackground(
         child: Column(
           children: [
-            _RatingFilterBar(selectedRating: selectedRating),
+            _RatingFilterBar(
+              selectedRating: selectedRating,
+              shownFavoritesCount: shownFavoritesCount,
+              totalFavoritesCount: totalFavoritesCount,
+              ratingCounts: ratingCounts,
+            ),
             Expanded(
               child: _FavoriteFilmsBody(
                 filmsState: filmsState,
@@ -69,14 +88,23 @@ class _FavoritesBackground extends StatelessWidget {
 }
 
 class _RatingFilterBar extends ConsumerWidget {
-  const _RatingFilterBar({required this.selectedRating});
+  const _RatingFilterBar({
+    required this.selectedRating,
+    required this.shownFavoritesCount,
+    required this.totalFavoritesCount,
+    required this.ratingCounts,
+  });
 
   final int? selectedRating;
+  final int? shownFavoritesCount;
+  final int? totalFavoritesCount;
+  final Map<int, int>? ratingCounts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final countLabel = _countLabel();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -90,50 +118,166 @@ class _RatingFilterBar extends ConsumerWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.tune,
-                      size: 18,
-                      color: colorScheme.primary,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.tune,
+                    size: 18,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Rating filter',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w700,
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Rating filter',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.w700,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  for (var rating = 5; rating >= 1; rating -= 1) ...[
+                    Expanded(
+                      child: _RatingFilterChip(
+                        rating: rating,
+                        count: ratingCounts?[rating],
+                        selected: selectedRating == rating,
+                        onSelected: (isSelected) {
+                          final notifier = ref.read(
+                            ratingFilterProvider.notifier,
+                          );
+                          if (isSelected) {
+                            notifier.setRating(rating);
+                          } else {
+                            notifier.clear();
+                          }
+                        },
                       ),
                     ),
+                    if (rating > 1) const SizedBox(width: 6),
                   ],
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                countLabel,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  height: 1.3,
                 ),
-                ChoiceChip(
-                  label: const Text('All'),
-                  selected: selectedRating == null,
-                  showCheckmark: false,
-                  onSelected: (_) {
-                    ref.read(ratingFilterProvider.notifier).clear();
-                  },
-                ),
-                for (var rating = 5; rating >= 1; rating -= 1)
-                  ChoiceChip(
-                    label: Text('$rating'),
-                    selected: selectedRating == rating,
-                    showCheckmark: false,
-                    avatar: const Icon(Icons.star, size: 16),
-                    onSelected: (_) {
-                      ref.read(ratingFilterProvider.notifier).setRating(rating);
-                    },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _countLabel() {
+    final shown = shownFavoritesCount;
+    final total = totalFavoritesCount;
+    if (shown == null || total == null) {
+      return 'Loading favorite count...';
+    }
+
+    if (selectedRating == null) {
+      return 'Showing all ${_favoriteCountLabel(total)}.';
+    }
+
+    final starLabel = selectedRating == 1 ? 'star' : 'stars';
+    return 'Showing $shown of ${_favoriteCountLabel(total)} rated '
+        '$selectedRating $starLabel.';
+  }
+}
+
+class _RatingFilterChip extends StatelessWidget {
+  const _RatingFilterChip({
+    required this.rating,
+    required this.count,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final int rating;
+  final int? count;
+  final bool selected;
+  final ValueChanged<bool> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final isEmpty = count == 0;
+    final foregroundColor = selected
+        ? colorScheme.onPrimaryContainer
+        : isEmpty
+        ? colorScheme.onSurfaceVariant.withValues(alpha: 0.62)
+        : colorScheme.onSurface;
+    final backgroundColor = selected
+        ? colorScheme.primaryContainer
+        : colorScheme.surfaceContainerLow;
+    final borderColor = selected
+        ? colorScheme.primary.withValues(alpha: 0.7)
+        : colorScheme.outlineVariant.withValues(alpha: 0.72);
+
+    return Opacity(
+      opacity: isEmpty && !selected ? 0.72 : 1,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: ValueKey('rating-filter-$rating'),
+          onTap: () => onSelected(!selected),
+          borderRadius: BorderRadius.circular(8),
+          child: Ink(
+            height: 52,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              border: Border.all(color: borderColor),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '$rating',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: foregroundColor,
+                          fontWeight: FontWeight.w800,
+                          height: 1,
+                        ),
+                      ),
+                      const SizedBox(width: 3),
+                      Icon(
+                        Icons.star,
+                        size: 14,
+                        color: foregroundColor,
+                      ),
+                    ],
                   ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    '${count ?? '-'}',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: foregroundColor,
+                      fontWeight: FontWeight.w700,
+                      height: 1,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -142,13 +286,18 @@ class _RatingFilterBar extends ConsumerWidget {
   }
 }
 
+String _favoriteCountLabel(int count) {
+  final noun = count == 1 ? 'favorite' : 'favorites';
+  return '$count $noun';
+}
+
 class _FavoritesStatePanel extends StatelessWidget {
   const _FavoritesStatePanel({
-    required this.icon,
     required this.child,
+    this.icon,
   });
 
-  final IconData icon;
+  final IconData? icon;
   final Widget child;
 
   @override
@@ -173,12 +322,14 @@ class _FavoritesStatePanel extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    icon,
-                    color: colorScheme.primary,
-                    size: 30,
-                  ),
-                  const SizedBox(height: 14),
+                  if (icon != null) ...[
+                    Icon(
+                      icon,
+                      color: colorScheme.primary,
+                      size: 30,
+                    ),
+                    const SizedBox(height: 14),
+                  ],
                   child,
                 ],
               ),
@@ -272,13 +423,33 @@ class _FavoritesEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final message = selectedRating == null
+    final rating = selectedRating;
+    final message = rating == null
         ? 'No favorite films yet. Mark films as favorites from their detail pages.'
-        : 'No favorites match this rating yet.';
+        : 'The forest spirits checked every path, but no favorite lives in '
+              'your $rating-star grove yet.';
+    final isFilteredEmpty = selectedRating != null;
 
     return _FavoritesStatePanel(
-      icon: selectedRating == null ? Icons.favorite_border : Icons.star_border,
-      child: Text(message, textAlign: TextAlign.center),
+      icon: selectedRating == null ? Icons.favorite_border : null,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isFilteredEmpty) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                _fallbackConfusedNonAsset,
+                height: 112,
+                fit: BoxFit.contain,
+                semanticLabel: 'No favorites match this rating',
+              ),
+            ),
+            const SizedBox(height: 14),
+          ],
+          Text(message, textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 }
@@ -354,4 +525,22 @@ List<_FavoriteFilm> _favoriteFilms(
       if (filmsById[favorite.filmId] case final Film film)
         _FavoriteFilm(film: film, userData: favorite),
   ];
+}
+
+Map<int, int> _ratingCounts(
+  List<Film> films,
+  List<FavoriteMovie> favorites,
+) {
+  final counts = {
+    for (var rating = 1; rating <= 5; rating += 1) rating: 0,
+  };
+
+  for (final favoriteFilm in _favoriteFilms(films, favorites)) {
+    final rating = favoriteFilm.userData.rating;
+    if (rating != null && counts.containsKey(rating)) {
+      counts[rating] = counts[rating]! + 1;
+    }
+  }
+
+  return counts;
 }
