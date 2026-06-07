@@ -62,13 +62,15 @@ class _FilmGalleryScreenState extends ConsumerState<FilmGalleryScreen> {
           icon: const Icon(Icons.search),
         ),
       ],
-      body: _GalleryBody(
-        filmsState: filmsState,
-        isSearchVisible: _isSearchVisible,
-        searchQuery: _searchQuery,
-        searchController: _searchController,
-        searchFocusNode: _searchFocusNode,
-        onCloseSearch: _hideSearch,
+      body: _GalleryBackground(
+        child: _GalleryBody(
+          filmsState: filmsState,
+          isSearchVisible: _isSearchVisible,
+          searchQuery: _searchQuery,
+          searchController: _searchController,
+          searchFocusNode: _searchFocusNode,
+          onCloseSearch: _hideSearch,
+        ),
       ),
     );
   }
@@ -91,6 +93,31 @@ class _FilmGalleryScreenState extends ConsumerState<FilmGalleryScreen> {
     setState(() {
       _isSearchVisible = false;
     });
+  }
+}
+
+class _GalleryBackground extends StatelessWidget {
+  const _GalleryBackground({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colorScheme.surfaceContainerLow,
+            colorScheme.surfaceContainerLowest,
+          ],
+        ),
+      ),
+      child: child,
+    );
   }
 }
 
@@ -163,21 +190,43 @@ class _GallerySearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          hintText: 'Search by film title',
-          prefixIcon: const Icon(Icons.search),
-          suffixIcon: IconButton(
-            tooltip: controller.text.isEmpty ? 'Close search' : 'Clear search',
-            onPressed: controller.text.isEmpty ? onClose : controller.clear,
-            icon: const Icon(Icons.close),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainer,
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.72),
           ),
-          border: const OutlineInputBorder(),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.24),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: controller,
+          focusNode: focusNode,
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            hintText: 'Search by film title',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: IconButton(
+              tooltip: controller.text.isEmpty
+                  ? 'Close search'
+                  : 'Clear search',
+              onPressed: controller.text.isEmpty ? onClose : controller.clear,
+              icon: const Icon(Icons.close),
+            ),
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+          ),
         ),
       ),
     );
@@ -189,7 +238,8 @@ class _GalleryLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return const _GalleryStatePanel(
+      icon: Icons.movie_creation_outlined,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -209,23 +259,21 @@ class _GalleryErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'The film gallery could not be loaded right now.',
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: onRetry,
-              child: const Text('Try again'),
-            ),
-          ],
-        ),
+    return _GalleryStatePanel(
+      icon: Icons.error_outline,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'The film gallery could not be loaded right now.',
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: onRetry,
+            child: const Text('Try again'),
+          ),
+        ],
       ),
     );
   }
@@ -236,13 +284,11 @@ class _GalleryEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(24),
-        child: Text(
-          'No films are available right now. Please try again later.',
-          textAlign: TextAlign.center,
-        ),
+    return const _GalleryStatePanel(
+      icon: Icons.movie_filter_outlined,
+      child: Text(
+        'No films are available right now. Please try again later.',
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -255,12 +301,58 @@ class _GalleryNoSearchResultsState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _GalleryStatePanel(
+      icon: Icons.search_off,
+      child: Text(
+        'No films match "$searchQuery".',
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+class _GalleryStatePanel extends StatelessWidget {
+  const _GalleryStatePanel({
+    required this.icon,
+    required this.child,
+  });
+
+  final IconData icon;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
-        child: Text(
-          'No films match "$searchQuery".',
-          textAlign: TextAlign.center,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerLow,
+              border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.72),
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(22),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    icon,
+                    color: colorScheme.primary,
+                    size: 30,
+                  ),
+                  const SizedBox(height: 14),
+                  child,
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -19,9 +19,13 @@ class FilmCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Card(
+      elevation: 5,
+      shadowColor: Colors.black.withValues(alpha: 0.5),
       clipBehavior: Clip.antiAlias,
+      surfaceTintColor: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         child: Column(
@@ -33,6 +37,20 @@ class FilmCard extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   GhibliCachedImage(imageUrl: film.image),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.16),
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.34),
+                        ],
+                        stops: const [0, 0.48, 1],
+                      ),
+                    ),
+                  ),
                   if (userData?.isFavorite ?? false)
                     const Positioned(
                       top: 8,
@@ -50,31 +68,43 @@ class FilmCard extends StatelessWidget {
             ),
             SizedBox(
               height: 86,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      film.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        height: 1.12,
-                      ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainer,
+                  border: Border(
+                    top: BorderSide(
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.7),
                     ),
-                    const Spacer(),
-                    Text(
-                      _metadataLabel(film),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        film.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          height: 1.12,
+                          color: colorScheme.onSurface,
+                        ),
                       ),
-                    ),
-                  ],
+                      const Spacer(),
+                      Text(
+                        _metadataLabel(film),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -103,14 +133,17 @@ class _FavoriteIndicator extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colorScheme.primaryContainer,
+        color: Colors.black.withValues(alpha: 0.62),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.7),
+        ),
         shape: BoxShape.circle,
       ),
       child: Padding(
         padding: const EdgeInsets.all(6),
         child: Icon(
           Icons.favorite,
-          color: colorScheme.onPrimaryContainer,
+          color: colorScheme.primary,
           size: 16,
         ),
       ),
@@ -128,6 +161,9 @@ class _RatingIndicator extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.72),
+        border: Border.all(
+          color: ghibliStarGold.withValues(alpha: 0.42),
+        ),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(

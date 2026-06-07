@@ -24,19 +24,46 @@ class FavoriteFilmsScreen extends ConsumerWidget {
     return GhibliScaffold(
       selectedSection: GhibliMainSection.favorites,
       title: 'Favorites',
-      body: Column(
-        children: [
-          _RatingFilterBar(selectedRating: selectedRating),
-          Expanded(
-            child: _FavoriteFilmsBody(
-              filmsState: filmsState,
-              favoritesState: favoritesState,
-              allFavoritesState: allFavoritesState,
-              selectedRating: selectedRating,
+      body: _FavoritesBackground(
+        child: Column(
+          children: [
+            _RatingFilterBar(selectedRating: selectedRating),
+            Expanded(
+              child: _FavoriteFilmsBody(
+                filmsState: filmsState,
+                favoritesState: favoritesState,
+                allFavoritesState: allFavoritesState,
+                selectedRating: selectedRating,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _FavoritesBackground extends StatelessWidget {
+  const _FavoritesBackground({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colorScheme.surfaceContainerLow,
+            colorScheme.surfaceContainerLowest,
+          ],
+        ),
+      ),
+      child: child,
     );
   }
 }
@@ -48,36 +75,115 @@ class _RatingFilterBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(
-              'Rating filter',
-              style: Theme.of(context).textTheme.labelLarge,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainer,
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.72),
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.tune,
+                      size: 18,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Rating filter',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                ChoiceChip(
+                  label: const Text('All'),
+                  selected: selectedRating == null,
+                  showCheckmark: false,
+                  onSelected: (_) {
+                    ref.read(ratingFilterProvider.notifier).clear();
+                  },
+                ),
+                for (var rating = 5; rating >= 1; rating -= 1)
+                  ChoiceChip(
+                    label: Text('$rating'),
+                    selected: selectedRating == rating,
+                    showCheckmark: false,
+                    avatar: const Icon(Icons.star, size: 16),
+                    onSelected: (_) {
+                      ref.read(ratingFilterProvider.notifier).setRating(rating);
+                    },
+                  ),
+              ],
             ),
-            ChoiceChip(
-              label: const Text('All'),
-              selected: selectedRating == null,
-              onSelected: (_) {
-                ref.read(ratingFilterProvider.notifier).clear();
-              },
-            ),
-            for (var rating = 5; rating >= 1; rating -= 1)
-              ChoiceChip(
-                label: Text('$rating'),
-                selected: selectedRating == rating,
-                avatar: const Icon(Icons.star, size: 16),
-                onSelected: (_) {
-                  ref.read(ratingFilterProvider.notifier).setRating(rating);
-                },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FavoritesStatePanel extends StatelessWidget {
+  const _FavoritesStatePanel({
+    required this.icon,
+    required this.child,
+  });
+
+  final IconData icon;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerLow,
+              border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.72),
               ),
-          ],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(22),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    icon,
+                    color: colorScheme.primary,
+                    size: 30,
+                  ),
+                  const SizedBox(height: 14),
+                  child,
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -130,7 +236,8 @@ class _FavoritesLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return const _FavoritesStatePanel(
+      icon: Icons.favorite_outline,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -148,13 +255,11 @@ class _FavoritesErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(24),
-        child: Text(
-          'Your favorite films could not be loaded right now.',
-          textAlign: TextAlign.center,
-        ),
+    return const _FavoritesStatePanel(
+      icon: Icons.error_outline,
+      child: Text(
+        'Your favorite films could not be loaded right now.',
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -171,11 +276,9 @@ class _FavoritesEmptyState extends StatelessWidget {
         ? 'No favorite films yet. Mark films as favorites from their detail pages.'
         : 'No favorites match this rating yet.';
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text(message, textAlign: TextAlign.center),
-      ),
+    return _FavoritesStatePanel(
+      icon: selectedRating == null ? Icons.favorite_border : Icons.star_border,
+      child: Text(message, textAlign: TextAlign.center),
     );
   }
 }
