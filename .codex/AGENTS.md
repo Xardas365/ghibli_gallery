@@ -30,6 +30,26 @@ Then read only the context files relevant to the request:
 
 ## Workflow
 
+## Command Execution
+
+For Flutter/Dart verification commands in this project, do not run them in the
+sandbox. Use escalated execution automatically because sandboxed runs may hang
+or be unreliable on Windows.
+
+Run these commands with `sandbox_permissions: "require_escalated"`:
+
+- `dart format .`
+- `flutter analyze`
+- `flutter test`
+- `dart run build_runner build` when code generation is required
+
+Use narrow approval prefixes such as:
+
+- `["dart", "format"]`
+- `["flutter", "analyze"]`
+- `["flutter", "test"]`
+- `["dart", "run", "build_runner"]`
+
 For non-trivial changes:
 
 1. Inspect relevant files.
@@ -39,4 +59,3 @@ For non-trivial changes:
 5. Summarize changed files and checks.
 
 For documentation-only or agent-instruction-only changes, Flutter checks are usually unnecessary. Explain any skipped checks in the final response.
-

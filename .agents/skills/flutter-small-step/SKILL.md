@@ -25,16 +25,22 @@ Rules:
 - keep Riverpod state focused,
 - keep DTO/domain/UI models separated.
 
-After implementation, run the relevant checks for the kind of change. If model files, generated annotations, or JSON mapping changed, run code generation first:
+After implementation, run the relevant checks for the kind of change.
 
-```bash
-dart run build_runner build
-```
+Run Flutter/Dart verification commands outside the sandbox with
+`sandbox_permissions: "require_escalated"`:
 
 ```bash
 dart format .
 flutter analyze
 flutter test
+```
+
+If model files, generated annotations, or JSON mapping changed, run code
+generation first, also outside the sandbox:
+
+```bash
+dart run build_runner build
 ```
 
 For documentation-only or agent-instruction-only changes, full Flutter checks are usually not required. Explain skipped checks.
