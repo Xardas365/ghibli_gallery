@@ -283,8 +283,24 @@ class _FavoriteToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton.icon(
       onPressed: isEnabled ? onPressed : null,
-      icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline),
-      label: Text(isFavorite ? 'Favorited' : 'Favorite'),
+      icon: AnimatedSwitcher(
+        duration: _detailActionAnimationDuration,
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        child: Icon(
+          isFavorite ? Icons.favorite : Icons.favorite_outline,
+          key: ValueKey(isFavorite),
+        ),
+      ),
+      label: AnimatedSwitcher(
+        duration: _detailActionAnimationDuration,
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        child: Text(
+          isFavorite ? 'Favorited' : 'Favorite',
+          key: ValueKey('favorite-label-$isFavorite'),
+        ),
+      ),
     );
   }
 }
@@ -310,11 +326,17 @@ class _RatingStars extends StatelessWidget {
           IconButton(
             tooltip: 'Rate $value star${value == 1 ? '' : 's'}',
             onPressed: isEnabled ? () => onChanged(value) : null,
-            icon: Icon(
-              value <= (rating ?? 0) ? Icons.star : Icons.star_border,
-              color: value <= (rating ?? 0)
-                  ? ghibliStarGold
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
+            icon: AnimatedSwitcher(
+              duration: _detailActionAnimationDuration,
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              child: Icon(
+                value <= (rating ?? 0) ? Icons.star : Icons.star_border,
+                key: ValueKey('rating-$value-${value <= (rating ?? 0)}'),
+                color: value <= (rating ?? 0)
+                    ? ghibliStarGold
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         if (rating != null)
@@ -326,6 +348,8 @@ class _RatingStars extends StatelessWidget {
     );
   }
 }
+
+const _detailActionAnimationDuration = Duration(milliseconds: 140);
 
 Future<void> _runUserDataAction(
   BuildContext context,

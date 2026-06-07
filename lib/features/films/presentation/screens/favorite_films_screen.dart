@@ -9,6 +9,7 @@ import 'package:ghibli_entry/features/films/domain/film.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_entry/features/films/presentation/widgets/film_card.dart';
+import 'package:ghibli_entry/features/films/presentation/widgets/film_card_entrance.dart';
 
 class FavoriteFilmsScreen extends ConsumerWidget {
   const FavoriteFilmsScreen({super.key});
@@ -205,16 +206,19 @@ class _FavoriteFilmGrid extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final favoriteFilm = favoriteFilms[index];
-            return FilmCard(
-              film: favoriteFilm.film,
-              userData: favoriteFilm.userData,
-              onTap: () {
-                unawaited(
-                  Navigator.of(context).pushNamed(
-                    AppRoutes.filmDetailPath(favoriteFilm.film.id),
-                  ),
-                );
-              },
+            return FilmCardEntrance(
+              index: index,
+              child: FilmCard(
+                film: favoriteFilm.film,
+                userData: favoriteFilm.userData,
+                onTap: () {
+                  unawaited(
+                    Navigator.of(context).pushNamed(
+                      AppRoutes.filmDetailPath(favoriteFilm.film.id),
+                    ),
+                  );
+                },
+              ),
             );
           },
           itemCount: favoriteFilms.length,
