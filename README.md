@@ -2,6 +2,8 @@
 
 A small Flutter interview assignment for Seznam. The app presents Studio Ghibli films as a movie-gallery experience with REST API loading, local favorite/rating persistence, Riverpod state management, and deterministic tests.
 
+Package name: `ghibli_gallery`.
+
 ## Environment
 
 Verified locally with:
@@ -12,32 +14,43 @@ Verified locally with:
 
 ## API
 
-The app uses its own API layer with Dio. It does not use an existing Dart Studio Ghibli API client.
+The app uses its own Dio-based API layer. It does not use an existing Dart Studio Ghibli API client.
 
 - Base URL: `https://ghibli-api.vercel.app/api`
 - Films endpoint: `/films`
 
 Film detail resolves referenced people, species, locations, and vehicles into human-readable names where possible. Collection-like related URLs are skipped gracefully.
 
-## Implemented Features
+## Implemented Mandatory Requirements
 
 - Streaming-service-style film gallery with loading, error, empty, and data states.
 - Film detail screen with poster/banner, titles, description, director, producer, release date, running time, Rotten Tomatoes score, and related people/species/locations/vehicles sections.
-- Favorite toggle and 1-5 rating on detail.
+- Favorite toggle and 1-5 rating on film detail.
 - Favorite and rating indicators on gallery and favorites cards.
 - Locally persisted favorites and ratings by film ID.
 - Favorites screen with rating filter and empty states.
 - Simple Navigator-based routes for gallery, detail, and favorites.
+- DTO parsing, safe numeric parsing, repository mapping, partial related-resource failure handling, persistence, provider, and widget tests.
+
+## Implemented Bonus Features
+
+- `cached_network_image` image loading/cache polish with loading and fallback UI.
+- Subtle UI animations using `flutter_animate` and built-in Flutter animations.
+- Debug-only Dio logging interceptor that logs method, sanitized URL, status, duration, and error type/status without bodies or headers.
+- GitHub Actions CI for `flutter pub get`, formatting, analysis, and tests.
 
 ## Dependencies
 
-Runtime dependencies used by the implementation:
+Runtime dependencies:
 
 - `flutter_riverpod`: state management and async provider state.
-- `dio`: HTTP client for the custom Studio Ghibli API layer.
+- `dio`: HTTP client for the custom Studio Ghibli API layer and debug logging interceptor.
 - `shared_preferences`: local persistence for favorites and ratings.
+- `cached_network_image`: cached poster/banner loading with polished loading/fallback states.
+- `flutter_animate`: concise timing helpers for subtle UI animations.
+- `collection`: small collection helpers where they keep UI/navigation code readable.
 - `freezed_annotation`: immutable DTO/domain models and generated value behavior where used.
-- `json_annotation`: JSON mapping for API DTOs.
+- `json_annotation`: explicit JSON mapping for API DTOs and local persistence mapping where used.
 
 Development dependencies:
 
@@ -45,8 +58,6 @@ Development dependencies:
 - `mocktail`: deterministic repository/API tests.
 - `very_good_analysis`: lint rules.
 - Flutter test tooling.
-
-Some dependencies remain in `pubspec.yaml` from the starter/skeleton but are not used by the current implementation, including `go_router`, `cached_network_image`, `flutter_animate`, and `collection`. No animations are implemented.
 
 ## Setup
 
@@ -62,18 +73,20 @@ Run code generation when generated models or annotations change:
 dart run build_runner build
 ```
 
-Generated files are committed for easier review, but they should not be edited manually:
+Generated files are committed for easier review, but they must not be edited manually:
 
 - `*.freezed.dart`
 - `*.g.dart`
 
-Run the app:
+## Run
+
+Start the app:
 
 ```bash
 flutter run
 ```
 
-## Verification
+## Test And Verification
 
 Use:
 
@@ -85,29 +98,23 @@ flutter test
 
 Latest verified result:
 
-- `flutter test` passed with `125` tests.
-
-## Testing Coverage
-
-The test suite covers:
-
-- DTO parsing and safe numeric parsing.
-- API response shape handling.
-- Repository mapping.
-- Collection-like URL skipping.
-- Partial related-resource failure handling.
-- Favorite/rating persistence and validation.
-- Rating filter logic.
-- Gallery, detail, and favorites loading/error/empty/data states.
-- Favorite/rating actions in the UI.
+- `flutter test` passed with `140` tests.
 
 Tests use fakes/mocks and do not call the real network.
 
+## CI
+
+GitHub Actions workflow:
+
+- `.github/workflows/flutter.yml`
+- runs on `push` and `pull_request`
+- executes `flutter pub get`, `dart format --set-exit-if-changed .`, `flutter analyze`, and `flutter test`
+
 ## Known Limitations And Trade-Offs
 
-- If one related resource in a group fails, the whole related group may be shown as empty.
-- Local storage write failures are handled safely, but they are not reported through a logging layer.
-- UX polish is intentionally modest and focused on readability over animation.
-- No CI/GitHub Actions are implemented.
-- No animations are implemented.
+- If one related resource in a group fails, that related group may be shown as empty.
+- Local storage write failures are handled safely in the UI flow, but they are not reported through a dedicated logging/analytics layer.
+- Debug HTTP logging is intentionally minimal and avoids bodies, headers, query parameters, and secrets.
+- UX polish and animations are intentionally modest for a small interview assignment.
+- Navigation uses built-in Navigator routes instead of a routing package to keep the app simple.
 - The app keeps a compact feature-first structure rather than a larger enterprise-style architecture.
