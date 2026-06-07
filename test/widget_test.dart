@@ -225,7 +225,7 @@ void main() {
     await tester.tap(find.text('My Neighbor Totoro'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Film detail'), findsOneWidget);
+    expect(find.byTooltip('Back'), findsOneWidget);
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
     expect(find.text('となりのトトロ'), findsOneWidget);
   });
@@ -285,7 +285,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(find.text('Favorite'), findsOneWidget);
+    expect(find.byTooltip('Add to favorites'), findsOneWidget);
     expect(find.byIcon(Icons.favorite_outline), findsOneWidget);
   });
 
@@ -302,13 +302,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.ensureVisible(find.text('Favorite'));
-    await tester.pump();
-    await tester.tap(find.text('Favorite'));
+    await tester.tap(find.byTooltip('Add to favorites'));
     await tester.pump();
     await tester.pump();
 
-    expect(find.text('Favorited'), findsOneWidget);
+    expect(find.byTooltip('Remove from favorites'), findsOneWidget);
     expect(find.byIcon(Icons.favorite), findsOneWidget);
     expect(
       await storage.getByFilmId(totoro.id),
@@ -333,13 +331,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.ensureVisible(find.text('Favorited'));
-    await tester.pump();
-    await tester.tap(find.text('Favorited'));
+    await tester.tap(find.byTooltip('Remove from favorites'));
     await tester.pump();
     await tester.pump();
 
-    expect(find.text('Favorite'), findsOneWidget);
+    expect(find.byTooltip('Add to favorites'), findsOneWidget);
     expect(find.byIcon(Icons.favorite_outline), findsOneWidget);
     expect(
       await storage.getByFilmId(totoro.id),
@@ -362,13 +358,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.ensureVisible(find.text('Favorited'));
-    await tester.pump();
-    await tester.tap(find.text('Favorited'));
+    await tester.tap(find.byTooltip('Remove from favorites'));
     await tester.pump();
     await tester.pump();
 
-    expect(find.text('Favorite'), findsOneWidget);
+    expect(find.byTooltip('Add to favorites'), findsOneWidget);
     expect(find.byIcon(Icons.star), findsNWidgets(4));
     expect(
       await storage.getByFilmId(totoro.id),
@@ -486,9 +480,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.ensureVisible(find.text('Favorite'));
-    await tester.pump();
-    await tester.tap(find.text('Favorite'));
+    await tester.tap(find.byTooltip('Add to favorites'));
     await tester.pump();
     await tester.pump();
 
@@ -948,7 +940,7 @@ void main() {
     await tester.tap(find.text('My Neighbor Totoro'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Film detail'), findsOneWidget);
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
     expect(find.text('となりのトトロ'), findsOneWidget);
   });
 
@@ -972,7 +964,7 @@ void main() {
     await tester.tap(find.text('My Neighbor Totoro'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Film detail'), findsOneWidget);
+    expect(find.text('My Neighbor Totoro'), findsOneWidget);
     expect(find.text('となりのトトロ'), findsOneWidget);
   });
 

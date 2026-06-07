@@ -18,7 +18,9 @@ class FilmDetailScreen extends ConsumerWidget {
     final detailState = ref.watch(filmDetailsProvider(filmId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Film detail')),
+      appBar: detailState.hasValue
+          ? null
+          : AppBar(title: const Text('Film detail')),
       body: _FilmDetailBody(
         filmId: filmId,
         detailState: detailState,
@@ -133,27 +135,16 @@ class _DetailContent extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
       children: [
-        _DetailHeroImage(
-          bannerUrl: film.movieBanner,
-          imageUrl: film.image,
-        ),
+        _DetailHeroHeader(details: details),
         Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                film.title,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  height: 1.08,
-                ),
-              ),
-              const SizedBox(height: 8),
               _OptionalText(value: details.originalTitle),
               _OptionalText(value: details.originalTitleRomanised),
               const SizedBox(height: 16),
-              _FilmUserActions(filmId: film.id),
+              _FilmUserRating(filmId: film.id),
               const SizedBox(height: 24),
               Text(
                 'Story',
@@ -210,8 +201,191 @@ class _DetailContent extends StatelessWidget {
   }
 }
 
-class _FilmUserActions extends ConsumerWidget {
-  const _FilmUserActions({required this.filmId});
+class _DetailHeroHeader extends StatelessWidget {
+  const _DetailHeroHeader({required this.details});
+
+  final FilmDetails details;
+
+  @override
+  Widget build(BuildContext context) {
+    final film = details.film;
+    final theme = Theme.of(context);
+    final background = theme.scaffoldBackgroundColor;
+    final heroHeight = (MediaQuery.sizeOf(context).height * 0.56).clamp(
+      360.0,
+      520.0,
+    );
+    final heroImageUrl = film.movieBanner.trim().isNotEmpty
+        ? film.movieBanner
+        : film.image;
+    final metadata = _buildHeroMetadataItems(
+      releaseYear: film.releaseYear,
+      runningTimeMinutes: film.runningTimeMinutes,
+      rtScore: film.rtScore,
+      director: film.director,
+    ).join(' • ');
+
+    return SizedBox(
+      height: heroHeight,
+      width: double.infinity,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          GhibliCachedImage(
+            imageUrl: heroImageUrl,
+            iconSize: 52,
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withValues(alpha: 0.56),
+                  Colors.black.withValues(alpha: 0.08),
+                  Colors.black.withValues(alpha: 0.52),
+                  background,
+                ],
+                stops: const [0, 0.42, 0.72, 1],
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _HeroCircleButton(
+                      tooltip: 'Back',
+                      icon: Icons.arrow_back,
+                      onPressed: () {
+                        unawaited(Navigator.of(context).maybePop());
+                      },
+                    ),
+                    _HeroFavoriteButton(filmId: film.id),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 28,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  film.title,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.displaySmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    height: 1.04,
+                    shadows: const [
+                      Shadow(
+                        blurRadius: 16,
+                        color: Colors.black87,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                ),
+                if (metadata.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    metadata,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.88),
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
+                      shadows: const [
+                        Shadow(
+                          blurRadius: 12,
+                          color: Colors.black87,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroFavoriteButton extends ConsumerWidget {
+  const _HeroFavoriteButton({required this.filmId});
+
+  final String filmId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userDataState = ref.watch(favoriteMovieByFilmIdProvider(filmId));
+    final userData = userDataState.value;
+    final isFavorite = userData?.isFavorite ?? false;
+    final isBusy = userDataState.isLoading;
+
+    return _HeroCircleButton(
+      tooltip: isFavorite ? 'Remove from favorites' : 'Add to favorites',
+      icon: isFavorite ? Icons.favorite : Icons.favorite_outline,
+      onPressed: isBusy
+          ? null
+          : () async {
+              await _runUserDataAction(
+                context,
+                () => ref
+                    .read(favoriteMovieControllerProvider.notifier)
+                    .toggleFavorite(filmId),
+              );
+            },
+    );
+  }
+}
+
+class _HeroCircleButton extends StatelessWidget {
+  const _HeroCircleButton({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black.withValues(alpha: 0.46),
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: IconButton(
+        tooltip: tooltip,
+        onPressed: onPressed,
+        color: Colors.white,
+        disabledColor: Colors.white.withValues(alpha: 0.48),
+        icon: Icon(icon),
+      ),
+    );
+  }
+}
+
+class _FilmUserRating extends ConsumerWidget {
+  const _FilmUserRating({required this.filmId});
 
   final String filmId;
 
@@ -226,22 +400,8 @@ class _FilmUserActions extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
-          spacing: 16,
-          runSpacing: 12,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            _FavoriteToggleButton(
-              isFavorite: userData?.isFavorite ?? false,
-              isEnabled: !isBusy,
-              onPressed: () async {
-                await _runUserDataAction(
-                  context,
-                  () => ref
-                      .read(favoriteMovieControllerProvider.notifier)
-                      .toggleFavorite(filmId),
-                );
-              },
-            ),
             _RatingStars(
               rating: userData?.rating,
               isEnabled: !isBusy,
@@ -264,43 +424,6 @@ class _FilmUserActions extends ConsumerWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-class _FavoriteToggleButton extends StatelessWidget {
-  const _FavoriteToggleButton({
-    required this.isFavorite,
-    required this.isEnabled,
-    required this.onPressed,
-  });
-
-  final bool isFavorite;
-  final bool isEnabled;
-  final Future<void> Function() onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton.icon(
-      onPressed: isEnabled ? onPressed : null,
-      icon: AnimatedSwitcher(
-        duration: _detailActionAnimationDuration,
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        child: Icon(
-          isFavorite ? Icons.favorite : Icons.favorite_outline,
-          key: ValueKey(isFavorite),
-        ),
-      ),
-      label: AnimatedSwitcher(
-        duration: _detailActionAnimationDuration,
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        child: Text(
-          isFavorite ? 'Favorited' : 'Favorite',
-          key: ValueKey('favorite-label-$isFavorite'),
-        ),
-      ),
     );
   }
 }
@@ -421,29 +544,6 @@ class _RelatedSection extends StatelessWidget {
   }
 }
 
-class _DetailHeroImage extends StatelessWidget {
-  const _DetailHeroImage({
-    required this.bannerUrl,
-    required this.imageUrl,
-  });
-
-  final String bannerUrl;
-  final String imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    final url = bannerUrl.isNotEmpty ? bannerUrl : imageUrl;
-
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: GhibliCachedImage(
-        imageUrl: url,
-        iconSize: 48,
-      ),
-    );
-  }
-}
-
 class _OptionalText extends StatelessWidget {
   const _OptionalText({required this.value});
 
@@ -542,6 +642,22 @@ String _formatScore(int? score) {
   }
 
   return '$score%';
+}
+
+List<String> _buildHeroMetadataItems({
+  required int? releaseYear,
+  required int? runningTimeMinutes,
+  required int? rtScore,
+  required String director,
+}) {
+  return [
+    if (releaseYear != null) releaseYear.toString(),
+    if (runningTimeMinutes != null) '$runningTimeMinutes min',
+    if (rtScore != null)
+      '$rtScore% RT'
+    else if (director.trim().isNotEmpty)
+      director,
+  ];
 }
 
 bool _looksLikeUrl(String value) {
