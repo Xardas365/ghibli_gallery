@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghibli_entry/app/theme.dart';
 
 class RatingStars extends StatelessWidget {
   const RatingStars({required this.rating, required this.onChanged, super.key});
@@ -15,7 +16,12 @@ class RatingStars extends StatelessWidget {
           IconButton(
             tooltip: '$value star rating',
             onPressed: () => onChanged(value),
-            icon: Icon(value <= (rating ?? 0) ? Icons.star : Icons.star_border),
+            icon: Icon(
+              value <= (rating ?? 0) ? Icons.star : Icons.star_border,
+              color: value <= (rating ?? 0)
+                  ? ghibliStarGold
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
       ],
     );

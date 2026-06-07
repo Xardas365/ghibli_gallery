@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ghibli_entry/app/theme.dart';
 import 'package:ghibli_entry/features/films/domain/film_details.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
@@ -310,7 +311,9 @@ class _RatingStars extends StatelessWidget {
             onPressed: isEnabled ? () => onChanged(value) : null,
             icon: Icon(
               value <= (rating ?? 0) ? Icons.star : Icons.star_border,
-              color: Theme.of(context).colorScheme.primary,
+              color: value <= (rating ?? 0)
+                  ? ghibliStarGold
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         if (rating != null)

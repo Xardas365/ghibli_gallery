@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghibli_entry/app/theme.dart';
 import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_entry/features/films/domain/film.dart';
 
@@ -19,9 +20,7 @@ class FilmCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-      elevation: 2,
       clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: InkWell(
         onTap: onTap,
         child: Column(
@@ -162,7 +161,7 @@ class _RatingIndicator extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.star, color: Color(0xFFFFC857), size: 14),
+            const Icon(Icons.star, color: ghibliStarGold, size: 14),
             const SizedBox(width: 4),
             Text(
               '$rating',

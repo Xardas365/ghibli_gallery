@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ghibli_entry/app/ghibli_scaffold.dart';
 import 'package:ghibli_entry/app/router.dart';
 import 'package:ghibli_entry/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_entry/features/films/domain/film.dart';
@@ -19,8 +20,9 @@ class FavoriteFilmsScreen extends ConsumerWidget {
     final allFavoritesState = ref.watch(favoriteMoviesProvider);
     final selectedRating = ref.watch(ratingFilterProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Favorites')),
+    return GhibliScaffold(
+      selectedSection: GhibliMainSection.favorites,
+      title: 'Favorites',
       body: Column(
         children: [
           _RatingFilterBar(selectedRating: selectedRating),

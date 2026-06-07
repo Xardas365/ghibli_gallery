@@ -26,6 +26,25 @@ void main() {
     expect(find.text('Loading the Ghibli collection...'), findsOneWidget);
   });
 
+  testWidgets('bottom navigation is visible on gallery', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.text('Gallery'), findsOneWidget);
+    expect(find.text('Favorites'), findsOneWidget);
+  });
+
+  testWidgets('selected Gallery tab is indicated on gallery', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    final navigationBar = tester.widget<NavigationBar>(
+      find.byType(NavigationBar),
+    );
+    expect(navigationBar.selectedIndex, 0);
+  });
+
   testWidgets('gallery shows empty state', (tester) async {
     await _pumpApp(tester, films: (ref) async => const []);
     await tester.pump();
@@ -556,19 +575,30 @@ void main() {
     expect(find.byIcon(Icons.movie_creation_outlined), findsOneWidget);
   });
 
-  testWidgets('opens favorites and returns to gallery', (tester) async {
+  testWidgets('bottom navigation opens favorites and returns to gallery', (
+    tester,
+  ) async {
     await _pumpApp(tester, films: (ref) async => [totoro]);
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Favorites'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
 
-    await tester.pageBack();
+    var navigationBar = tester.widget<NavigationBar>(
+      find.byType(NavigationBar),
+    );
+    expect(navigationBar.selectedIndex, 1);
+
+    await tester.tap(find.byKey(const ValueKey('main-nav-gallery')));
     await tester.pumpAndSettle();
 
     expect(find.text('Ghibli Gallery'), findsOneWidget);
+    navigationBar = tester.widget<NavigationBar>(
+      find.byType(NavigationBar),
+    );
+    expect(navigationBar.selectedIndex, 0);
   });
 
   testWidgets('favorites screen shows empty state when no favorites exist', (
@@ -577,10 +607,10 @@ void main() {
     await _pumpApp(tester, films: (ref) async => [totoro]);
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Favorites'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
     expect(
       find.text(
         'No favorite films yet. Mark films as favorites from their detail pages.',
@@ -600,11 +630,31 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
-    expect(find.byIcon(Icons.favorite), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.favorite),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('bottom navigation is visible on favorites', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(NavigationBar), findsOneWidget);
+    final navigationBar = tester.widget<NavigationBar>(
+      find.byType(NavigationBar),
+    );
+    expect(navigationBar.selectedIndex, 1);
   });
 
   testWidgets('rating filter UI is visible', (tester) async {
@@ -618,7 +668,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
 
     expect(find.text('Rating filter'), findsOneWidget);
@@ -641,7 +691,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
@@ -662,7 +712,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, '5'));
     await tester.pumpAndSettle();
@@ -685,7 +735,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, '3'));
     await tester.pumpAndSettle();
@@ -706,7 +756,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, '5'));
     await tester.pumpAndSettle();
@@ -728,7 +778,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, '5'));
     await tester.pumpAndSettle();
@@ -753,7 +803,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, '1'));
     await tester.pumpAndSettle();
@@ -776,7 +826,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
 
     expect(
@@ -807,7 +857,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('My Neighbor Totoro'));
     await tester.pumpAndSettle();
@@ -829,7 +879,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.tap(find.byTooltip('Favorites'));
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, '5'));
     await tester.pumpAndSettle();
@@ -848,7 +898,7 @@ void main() {
       films: (ref) => filmsCompleter.future,
     );
 
-    expect(find.text('Favorites'), findsOneWidget);
+    expect(find.text('Favorites'), findsWidgets);
     expect(find.text('Loading favorite films...'), findsOneWidget);
   });
 
@@ -859,7 +909,7 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Favorites'), findsOneWidget);
+    expect(find.text('Favorites'), findsWidgets);
     expect(
       find.text('Your favorite films could not be loaded right now.'),
       findsOneWidget,
@@ -876,7 +926,7 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Favorites'), findsOneWidget);
+    expect(find.text('Favorites'), findsWidgets);
     expect(
       find.text('Your favorite films could not be loaded right now.'),
       findsOneWidget,

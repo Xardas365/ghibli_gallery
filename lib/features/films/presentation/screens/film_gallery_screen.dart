@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ghibli_entry/app/ghibli_scaffold.dart';
 import 'package:ghibli_entry/app/router.dart';
 import 'package:ghibli_entry/features/films/domain/film.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
@@ -15,19 +16,9 @@ class FilmGalleryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final filmsState = ref.watch(filmsProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ghibli Gallery'),
-        actions: [
-          IconButton(
-            tooltip: 'Favorites',
-            onPressed: () {
-              unawaited(Navigator.of(context).pushNamed(AppRoutes.favorites));
-            },
-            icon: const Icon(Icons.favorite_outline),
-          ),
-        ],
-      ),
+    return GhibliScaffold(
+      selectedSection: GhibliMainSection.gallery,
+      title: 'Ghibli Gallery',
       body: _GalleryBody(filmsState: filmsState),
     );
   }
