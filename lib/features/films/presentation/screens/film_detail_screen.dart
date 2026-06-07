@@ -6,6 +6,7 @@ import 'package:ghibli_entry/app/theme.dart';
 import 'package:ghibli_entry/features/films/domain/film_details.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_entry/features/films/presentation/providers/film_providers.dart';
+import 'package:ghibli_entry/features/films/presentation/widgets/ghibli_cached_image.dart';
 
 class FilmDetailScreen extends ConsumerWidget {
   const FilmDetailScreen({required this.filmId, super.key});
@@ -411,28 +412,9 @@ class _DetailHeroImage extends StatelessWidget {
 
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: url.isEmpty
-          ? const _MissingImage()
-          : Image.network(
-              url,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const _MissingImage();
-              },
-            ),
-    );
-  }
-}
-
-class _MissingImage extends StatelessWidget {
-  const _MissingImage();
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: const Center(
-        child: Icon(Icons.movie_creation_outlined, size: 48),
+      child: GhibliCachedImage(
+        imageUrl: url,
+        iconSize: 48,
       ),
     );
   }
