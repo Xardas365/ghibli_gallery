@@ -241,7 +241,7 @@ class _RatingFilterChip extends StatelessWidget {
         ? colorScheme.primary.withValues(alpha: 0.7)
         : colorScheme.outlineVariant.withValues(alpha: 0.72);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final chipHeight = 52 + ((textScale - 1) * 28).clamp(0, 28).toDouble();
+    final chipHeight = 52.0 + ((textScale - 1) * 28).clamp(0, 28).toDouble();
 
     return Opacity(
       opacity: isEmpty && !selected ? 0.72 : 1,

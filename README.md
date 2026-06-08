@@ -138,6 +138,6 @@ GitHub Actions workflow:
 
 Thank you for taking the time to review this project.
 
-<p align="center">
-  <img src="./assets/images/thx.png" alt="Thank you" width="520">
-</p>
+|  |
+| :---: |
+| ![Thank you](./assets/images/thx.png) |
