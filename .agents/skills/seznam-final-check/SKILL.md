@@ -1,8 +1,7 @@
 ---
-
 name: seznam-final-check
 description: Use this skill before submitting the Seznam Flutter Developer Studio Ghibli assignment. Performs strict final readiness review without editing files.
-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 # Seznam Final Check Skill
 

@@ -1,8 +1,7 @@
 ---
-
 name: flutter-small-step
 description: Use this skill when implementing one small approved step in the Seznam Flutter project. Keeps changes focused and runs relevant code generation, formatting, analysis, and tests when applicable.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 # Flutter Small Step Skill
 
