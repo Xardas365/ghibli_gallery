@@ -28,7 +28,7 @@ class FilmCard extends StatelessWidget {
   final Film film;
   final FavoriteMovie? userData;
   final VoidCallback onTap;
-  final VoidCallback? onFavoriteToggle;
+  final Future<void> Function()? onFavoriteToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +38,10 @@ class FilmCard extends StatelessWidget {
     final posterAlignment = _posterAlignmentForFilm(film);
     const blurSigma = 10.0;
     const blurredPosterOpacity = 0.7;
+    const textPanelBaseHeight = 104.0;
+    final textPanelHeight =
+        textPanelBaseHeight +
+        ((MediaQuery.textScalerOf(context).scale(1) - 1) * 72).clamp(0, 72);
 
     return Card(
       elevation: 12,
@@ -145,7 +149,7 @@ class FilmCard extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 104,
+              height: textPanelHeight,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainer,
@@ -206,28 +210,36 @@ class _RottenTomatoesRatingRow extends StatelessWidget {
 
     return Semantics(
       label: 'Rotten Tomatoes $rtScore%, $starRating out of 5 stars',
-      child: Row(
-        key: const ValueKey('film-card-rt-row'),
-        children: [
-          SvgPicture.asset(
-            FilmAssets.tomatoScore,
-            key: const ValueKey('film-card-rt-icon'),
-            height: 14,
-            width: 14,
-            semanticsLabel: 'Rotten Tomatoes score',
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Row(
+            key: const ValueKey('film-card-rt-row'),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                FilmAssets.tomatoScore,
+                key: const ValueKey('film-card-rt-icon'),
+                height: 14,
+                width: 14,
+                semanticsLabel: 'Rotten Tomatoes score',
+              ),
+              const SizedBox(width: 5),
+              _RottenTomatoesStars(rating: starRating),
+              const SizedBox(width: 5),
+              Text(
+                '$rtScore%',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 5),
-          _RottenTomatoesStars(rating: starRating),
-          const SizedBox(width: 5),
-          Text(
-            '$rtScore%',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w800,
-              height: 1,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -286,28 +298,62 @@ String _metadataLabel(Film film) {
   return '$year • ${film.director}';
 }
 
-class _FavoriteButton extends StatelessWidget {
+class _FavoriteButton extends StatefulWidget {
   const _FavoriteButton({
     required this.isFavorite,
     required this.onPressed,
   });
 
   final bool isFavorite;
-  final VoidCallback? onPressed;
+  final Future<void> Function()? onPressed;
+
+  @override
+  State<_FavoriteButton> createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends State<_FavoriteButton> {
+  bool _isPending = false;
+
+  Future<void> _handlePressed() async {
+    if (_isPending) {
+      return;
+    }
+
+    final onPressed = widget.onPressed;
+    if (onPressed == null) {
+      return;
+    }
+
+    setState(() {
+      _isPending = true;
+    });
+    try {
+      await onPressed();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPending = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final tooltip = isFavorite ? 'Remove from favorites' : 'Add to favorites';
+    final tooltip = widget.isFavorite
+        ? 'Remove from favorites'
+        : 'Add to favorites';
     const hitTargetSize = 48.0;
     const visualSize = 32.0;
     const blurSigma = 8.0;
     const unselectedFillOpacity = 0.22;
     const selectedFillOpacity = 0.34;
-    final iconColor = isFavorite
+    final isEnabled = widget.onPressed != null && !_isPending;
+    final iconColor = widget.isFavorite
         ? colorScheme.primary
         : colorScheme.onSurface.withValues(alpha: 0.86);
-    final backgroundColor = isFavorite
+    final backgroundColor = widget.isFavorite
         ? Colors.black.withValues(alpha: selectedFillOpacity)
         : Colors.black.withValues(alpha: unselectedFillOpacity);
 
@@ -315,11 +361,11 @@ class _FavoriteButton extends StatelessWidget {
       message: tooltip,
       child: Semantics(
         button: true,
-        enabled: onPressed != null,
+        enabled: isEnabled,
         label: tooltip,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: onPressed,
+          onTap: widget.onPressed == null ? null : _handlePressed,
           child: SizedBox.square(
             dimension: hitTargetSize,
             child: Center(
@@ -335,7 +381,9 @@ class _FavoriteButton extends StatelessWidget {
                     child: SizedBox.square(
                       dimension: visualSize,
                       child: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_outline,
+                        widget.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_outline,
                         color: iconColor,
                         size: 18,
                       ),

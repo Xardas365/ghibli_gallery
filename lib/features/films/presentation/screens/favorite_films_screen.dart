@@ -108,6 +108,7 @@ class _RatingFilterBar extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final countLabel = _countLabel();
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -125,7 +126,6 @@ class _RatingFilterBar extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.tune,
@@ -133,43 +133,51 @@ class _RatingFilterBar extends ConsumerWidget {
                     color: colorScheme.primary,
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    'Rating filter',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: colorScheme.onSurface,
-                      fontWeight: FontWeight.w700,
+                  Expanded(
+                    child: Text(
+                      'Rating filter',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  for (
-                    var rating = FilmRatingBounds.max;
-                    rating >= FilmRatingBounds.min;
-                    rating -= 1
-                  ) ...[
-                    Expanded(
-                      child: _RatingFilterChip(
-                        rating: rating,
-                        count: ratingCounts?[rating],
-                        selected: selectedRating == rating,
-                        onSelected: (isSelected) {
-                          final notifier = ref.read(
-                            ratingFilterProvider.notifier,
-                          );
-                          if (isSelected) {
-                            notifier.setRating(rating);
-                          } else {
-                            notifier.clear();
-                          }
-                        },
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (
+                      var rating = FilmRatingBounds.max;
+                      rating >= FilmRatingBounds.min;
+                      rating -= 1
+                    ) ...[
+                      SizedBox(
+                        width: textScale > 1 ? 64 : 56,
+                        child: _RatingFilterChip(
+                          rating: rating,
+                          count: ratingCounts?[rating],
+                          selected: selectedRating == rating,
+                          onSelected: (isSelected) {
+                            final notifier = ref.read(
+                              ratingFilterProvider.notifier,
+                            );
+                            if (isSelected) {
+                              notifier.setRating(rating);
+                            } else {
+                              notifier.clear();
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                    if (rating > 1) const SizedBox(width: 6),
+                      if (rating > 1) const SizedBox(width: 6),
+                    ],
                   ],
-                ],
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -232,6 +240,8 @@ class _RatingFilterChip extends StatelessWidget {
     final borderColor = selected
         ? colorScheme.primary.withValues(alpha: 0.7)
         : colorScheme.outlineVariant.withValues(alpha: 0.72);
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final chipHeight = 52 + ((textScale - 1) * 28).clamp(0, 28).toDouble();
 
     return Opacity(
       opacity: isEmpty && !selected ? 0.72 : 1,
@@ -242,7 +252,7 @@ class _RatingFilterChip extends StatelessWidget {
           onTap: () => onSelected(!selected),
           borderRadius: BorderRadius.circular(8),
           child: Ink(
-            height: 52,
+            height: chipHeight,
             decoration: BoxDecoration(
               color: backgroundColor,
               border: Border.all(color: borderColor),

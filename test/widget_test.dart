@@ -13,6 +13,7 @@ import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dar
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/screens/favorite_films_screen.dart';
 import 'package:ghibli_gallery/features/films/presentation/screens/film_detail_screen.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
 void main() {
@@ -244,6 +245,44 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('FilmCard handles high text scale in constrained width', (
+    tester,
+  ) async {
+    _configureTestSurface(
+      tester,
+      size: const Size(220, 340),
+      textScaleFactor: 2,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 180,
+              height: 282,
+              child: FilmCard(
+                film: longTitleFilm,
+                userData: FavoriteMovie(
+                  filmId: longTitleFilm.id,
+                  isFavorite: false,
+                  rating: 5,
+                ),
+                onTap: () {},
+                onFavoriteToggle: () async {},
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(Card), findsOneWidget);
+    expect(find.text(longTitleFilm.title), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('gallery card shows filled heart for favorite', (tester) async {
     await _pumpApp(
       tester,
@@ -319,6 +358,43 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('rapid gallery card heart taps only enqueue one write', (
+    tester,
+  ) async {
+    final favoriteWriteCompleter = Completer<void>();
+    final storage = _FakeFavoriteMovieStorage(
+      setFavoriteCompleter: favoriteWriteCompleter,
+    );
+
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      storage: storage,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    final favoriteButtonCenter = tester.getCenter(
+      find.byTooltip('Add to favorites'),
+    );
+
+    await tester.tapAt(favoriteButtonCenter);
+    await tester.pump();
+    await tester.tapAt(favoriteButtonCenter);
+    await tester.pump();
+
+    expect(storage.setFavoriteCallCount, 1);
+
+    favoriteWriteCompleter.complete();
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tapAt(favoriteButtonCenter);
+    await tester.pumpAndSettle();
+
+    expect(storage.setFavoriteCallCount, 2);
   });
 
   testWidgets('gallery card favorite failure shows feedback', (tester) async {
@@ -1031,6 +1107,40 @@ void main() {
     );
   });
 
+  testWidgets('favorites rating filter handles narrow high text scale layout', (
+    tester,
+  ) async {
+    _configureTestSurface(
+      tester,
+      size: const Size(320, 640),
+      textScaleFactor: 2,
+    );
+
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro, kiki],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 5),
+        FavoriteMovie(filmId: kiki.id, isFavorite: true, rating: 3),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Rating filter'), findsOneWidget);
+    expect(find.byKey(const ValueKey('rating-filter-5')), findsOneWidget);
+    expect(find.byKey(const ValueKey('rating-filter-3')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('rating-filter-3')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Kiki's Delivery Service"), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('favorites screen does not show non-favorited films', (
     tester,
   ) async {
@@ -1311,6 +1421,22 @@ void main() {
   });
 }
 
+void _configureTestSurface(
+  WidgetTester tester, {
+  required Size size,
+  required double textScaleFactor,
+}) {
+  tester.view.physicalSize = size;
+  tester.view.devicePixelRatio = 1;
+  tester.platformDispatcher.textScaleFactorTestValue = textScaleFactor;
+
+  addTearDown(() {
+    tester.view.resetPhysicalSize();
+    tester.view.resetDevicePixelRatio();
+    tester.platformDispatcher.clearTextScaleFactorTestValue();
+  });
+}
+
 Future<void> _pumpApp(
   WidgetTester tester, {
   required FutureOr<List<Film>> Function(dynamic ref) films,
@@ -1479,6 +1605,7 @@ class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
     List<FavoriteMovie> movies = const [],
     this.throwOnGetAll = false,
     this.throwOnSetFavorite = false,
+    this.setFavoriteCompleter,
   }) {
     for (final movie in movies) {
       _moviesByFilmId[movie.filmId] = movie;
@@ -1488,6 +1615,8 @@ class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
   final _moviesByFilmId = <String, FavoriteMovie>{};
   final bool throwOnGetAll;
   final bool throwOnSetFavorite;
+  final Completer<void>? setFavoriteCompleter;
+  int setFavoriteCallCount = 0;
 
   @override
   Future<List<FavoriteMovie>> getAll() async {
@@ -1513,6 +1642,9 @@ class _FakeFavoriteMovieStorage implements FavoriteMovieStorage {
     String filmId, {
     required bool isFavorite,
   }) async {
+    setFavoriteCallCount += 1;
+    await setFavoriteCompleter?.future;
+
     if (throwOnSetFavorite) {
       throw StateError('favorite failed');
     }

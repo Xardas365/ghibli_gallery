@@ -112,7 +112,7 @@ flutter test
 
 Latest verified result:
 
-- `flutter test` passed with `157` tests.
+- `flutter test` passed with `160` tests.
 
 Tests use fakes/mocks and do not call the real network.
 
