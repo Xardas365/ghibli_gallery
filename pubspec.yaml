@@ -35,6 +35,7 @@ flutter:
   assets:
     - assets/images/gallery_title.png
     - assets/images/fallback.gif
+    - assets/images/loading.gif
     - assets/images/tomato_score.svg
     - assets/images/splash/splash_logo.png
     - assets/images/splash/splash_logo_android12.png

@@ -9,6 +9,7 @@ import 'package:ghibli_gallery/features/films/presentation/providers/favorite_mo
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_entrance.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loading_state.dart';
 
 class FilmGalleryScreen extends ConsumerStatefulWidget {
   const FilmGalleryScreen({super.key});
@@ -243,16 +244,9 @@ class _GalleryLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _GalleryStatePanel(
-      icon: Icons.movie_creation_outlined,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Loading the Ghibli collection...'),
-        ],
-      ),
+    return const GhibliLoadingState(
+      primaryText: 'Catbus is on the way...',
+      secondaryText: 'Loading the Ghibli collection...',
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:ghibli_gallery/features/films/domain/film_details.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loading_state.dart';
 
 const _tomatoScoreAsset = 'assets/images/tomato_score.svg';
 const _metadataRowMinHeight = 52.0;
@@ -69,15 +70,8 @@ class _DetailLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Loading film details...'),
-        ],
-      ),
+    return const GhibliLoadingState(
+      primaryText: 'Loading film details...',
     );
   }
 }

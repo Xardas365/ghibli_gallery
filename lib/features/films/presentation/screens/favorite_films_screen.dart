@@ -10,6 +10,7 @@ import 'package:ghibli_gallery/features/films/presentation/providers/favorite_mo
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_entrance.dart';
+import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loading_state.dart';
 
 const _fallbackConfusedNonAsset = 'assets/images/fallback.gif';
 const _gridPadding = EdgeInsets.fromLTRB(16, 12, 16, 28);
@@ -391,16 +392,8 @@ class _FavoritesLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _FavoritesStatePanel(
-      icon: Icons.favorite_outline,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Loading favorite films...'),
-        ],
-      ),
+    return const GhibliLoadingState(
+      primaryText: 'Loading favorite films...',
     );
   }
 }
