@@ -454,13 +454,13 @@ class _FavoritesEmptyState extends StatelessWidget {
   }
 }
 
-class _FavoriteFilmGrid extends StatelessWidget {
+class _FavoriteFilmGrid extends ConsumerWidget {
   const _FavoriteFilmGrid({required this.favoriteFilms});
 
   final List<_FavoriteFilm> favoriteFilms;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final crossAxisCount = switch (constraints.maxWidth) {
@@ -485,6 +485,13 @@ class _FavoriteFilmGrid extends StatelessWidget {
               child: FilmCard(
                 film: favoriteFilm.film,
                 userData: favoriteFilm.userData,
+                onFavoriteToggle: () {
+                  unawaited(
+                    ref
+                        .read(favoriteMovieControllerProvider.notifier)
+                        .toggleFavorite(favoriteFilm.film.id),
+                  );
+                },
                 onTap: () {
                   unawaited(
                     Navigator.of(context).pushNamed(

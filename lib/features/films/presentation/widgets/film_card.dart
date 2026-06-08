@@ -9,12 +9,14 @@ class FilmCard extends StatelessWidget {
     required this.film,
     required this.onTap,
     this.userData,
+    this.onFavoriteToggle,
     super.key,
   });
 
   final Film film;
   final FavoriteMovie? userData;
   final VoidCallback onTap;
+  final VoidCallback? onFavoriteToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +53,14 @@ class FilmCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (userData?.isFavorite ?? false)
-                    const Positioned(
-                      top: 8,
-                      right: 8,
-                      child: _FavoriteIndicator(),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: _FavoriteButton(
+                      isFavorite: userData?.isFavorite ?? false,
+                      onPressed: onFavoriteToggle,
                     ),
+                  ),
                   if (userData?.rating case final int rating)
                     Positioned(
                       left: 8,
@@ -124,12 +128,19 @@ String _metadataLabel(Film film) {
   return '$year • ${film.director}';
 }
 
-class _FavoriteIndicator extends StatelessWidget {
-  const _FavoriteIndicator();
+class _FavoriteButton extends StatelessWidget {
+  const _FavoriteButton({
+    required this.isFavorite,
+    required this.onPressed,
+  });
+
+  final bool isFavorite;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final tooltip = isFavorite ? 'Remove from favorites' : 'Add to favorites';
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -139,12 +150,23 @@ class _FavoriteIndicator extends StatelessWidget {
         ),
         shape: BoxShape.circle,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(6),
-        child: Icon(
-          Icons.favorite,
-          color: colorScheme.primary,
-          size: 16,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: IconButton(
+          visualDensity: VisualDensity.compact,
+          padding: const EdgeInsets.all(6),
+          constraints: const BoxConstraints.tightFor(
+            width: 32,
+            height: 32,
+          ),
+          tooltip: tooltip,
+          icon: Icon(
+            isFavorite ? Icons.favorite : Icons.favorite_outline,
+            color: colorScheme.primary,
+            size: 18,
+          ),
+          onPressed: onPressed,
         ),
       ),
     );

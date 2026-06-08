@@ -160,6 +160,30 @@ void main() {
     expect(find.textContaining('Hayao Miyazaki'), findsOneWidget);
   });
 
+  testWidgets('gallery card shows outline heart for non-favorite', (
+    tester,
+  ) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byTooltip('Add to favorites'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.favorite_outline),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.favorite),
+      ),
+      findsNothing,
+    );
+  });
+
   testWidgets('FilmCard long title does not overflow', (tester) async {
     await _pumpApp(tester, films: (ref) async => [longTitleFilm]);
     await tester.pump();
@@ -173,7 +197,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('FilmCard shows favorite indicator', (tester) async {
+  testWidgets('gallery card shows filled heart for favorite', (tester) async {
     await _pumpApp(
       tester,
       films: (ref) async => [totoro],
@@ -184,7 +208,21 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(find.byIcon(Icons.favorite), findsOneWidget);
+    expect(find.byTooltip('Remove from favorites'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.favorite),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.favorite_outline),
+      ),
+      findsNothing,
+    );
   });
 
   testWidgets('FilmCard shows rating indicator', (tester) async {
@@ -212,6 +250,88 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('tapping gallery card heart adds favorite', (tester) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Add to favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Remove from favorites'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Card),
+        matching: find.byIcon(Icons.favorite),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    'tapping gallery card heart removes favorite and preserves rating',
+    (
+      tester,
+    ) async {
+      await _pumpApp(
+        tester,
+        films: (ref) async => [totoro],
+        userData: [
+          FavoriteMovie(filmId: totoro.id, isFavorite: true, rating: 4),
+        ],
+      );
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byTooltip('Remove from favorites'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(Card),
+          matching: find.text('4'),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byTooltip('Remove from favorites'));
+      await tester.pumpAndSettle();
+
+      expect(find.byTooltip('Add to favorites'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(Card),
+          matching: find.byIcon(Icons.favorite_outline),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(Card),
+          matching: find.text('4'),
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('tapping gallery card heart does not open detail', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      details: (ref, filmId) async => totoroDetails,
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Add to favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Back'), findsNothing);
+    expect(find.text('となりのトトロ'), findsNothing);
+    expect(find.byTooltip('Remove from favorites'), findsOneWidget);
   });
 
   testWidgets('tapping a film opens detail route', (tester) async {
@@ -716,6 +836,33 @@ void main() {
       find.descendant(
         of: find.byType(Card),
         matching: find.byIcon(Icons.favorite),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('tapping favorites card heart removes it from favorites', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      userData: [
+        FavoriteMovie(filmId: totoro.id, isFavorite: true),
+      ],
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Remove from favorites'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Neighbor Totoro'), findsNothing);
+    expect(
+      find.text(
+        'No favorite films yet. Mark films as favorites from their detail pages.',
       ),
       findsOneWidget,
     );

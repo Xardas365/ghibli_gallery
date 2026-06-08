@@ -419,6 +419,15 @@ class _GalleryFilmCard extends ConsumerWidget {
     return FilmCard(
       film: film,
       userData: userDataState.value,
+      onFavoriteToggle: () {
+        unawaited(
+          ref
+              .read(favoriteMovieControllerProvider.notifier)
+              .toggleFavorite(
+                film.id,
+              ),
+        );
+      },
       onTap: () {
         unawaited(
           Navigator.of(context).pushNamed(
