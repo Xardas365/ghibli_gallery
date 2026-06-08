@@ -1,0 +1,51 @@
+{
+  "capturedAtUtc": "2026-06-08T14:07:53.8001422Z",
+  "sourceBaseUrl": "https://ghibli-api.vercel.app/api",
+  "purpose": "Offline project-owned snapshot of Studio Ghibli API data. The app does not load these files at runtime.",
+  "endpoints": [
+    {
+      "name": "films",
+      "url": "https://ghibli-api.vercel.app/api/films",
+      "file": "films.json",
+      "count": 22,
+      "sha256": "10c5d7bcc7ba188cbbbf551b5db99c3a869d55cb16aec8051f3c6beb8dbf7b6c"
+    },
+    {
+      "name": "people",
+      "url": "https://ghibli-api.vercel.app/api/people",
+      "file": "people.json",
+      "count": 57,
+      "sha256": "0c25a47715439b2f98cc8dcbc63c0a46fb21627400ae6712970a4418560598fe"
+    },
+    {
+      "name": "species",
+      "url": "https://ghibli-api.vercel.app/api/species",
+      "file": "species.json",
+      "count": 7,
+      "sha256": "5635b07de7e1204967af91599d8cb6f723f862269149b4d150dced29aad0193f"
+    },
+    {
+      "name": "locations",
+      "url": "https://ghibli-api.vercel.app/api/locations",
+      "file": "locations.json",
+      "count": 25,
+      "sha256": "c8750c023a0f59480e933ccba66798c97663c6742d6eb2e34fa444ce493660d5"
+    },
+    {
+      "name": "vehicles",
+      "url": "https://ghibli-api.vercel.app/api/vehicles",
+      "file": "vehicles.json",
+      "count": 3,
+      "sha256": "6f225e0458e94a889a67cc07b5c184717201e31e7a25adbfbb32ab55399e1b4d"
+    }
+  ],
+  "imageSnapshot": {
+    "file": "images/films/manifest.json",
+    "count": 44,
+    "directories": [
+      "images/films/posters",
+      "images/films/banners"
+    ],
+    "purpose": "Offline backup of poster and banner image files referenced by films.json. The app does not load these files at runtime."
+  }
+}

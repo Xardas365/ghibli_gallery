@@ -1,0 +1,403 @@
+{
+  "capturedAtUtc": "2026-06-08T14:37:19.6835707Z",
+  "purpose": "Offline backup of film poster and banner images referenced by films.json. The app does not load these files at runtime.",
+  "count": 44,
+  "images": [
+    {
+      "filmId": "2baf70d1-42bb-4437-b551-e5fed5a87abe",
+      "title": "Castle in the Sky",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/npOnzAbLh6VOIu3naU5QaEcTepo.jpg",
+      "file": "images/films/posters/2baf70d1-42bb-4437-b551-e5fed5a87abe-poster.jpg",
+      "bytes": 59218,
+      "sha256": "150c686f394b57452737fae4fd547b4d5ca44149c9e3ca6decc9b185f06e0ef2"
+    },
+    {
+      "filmId": "2baf70d1-42bb-4437-b551-e5fed5a87abe",
+      "title": "Castle in the Sky",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/w533_and_h300_bestv2/3cyjYtLWCBE1uvWINHFsFnE8LUK.jpg",
+      "file": "images/films/banners/2baf70d1-42bb-4437-b551-e5fed5a87abe-banner.jpg",
+      "bytes": 28902,
+      "sha256": "8159948cb25a363f7801a5b1e69e5378796d11b5809a36db526dafcc21d965c0"
+    },
+    {
+      "filmId": "12cfb892-aac0-4c5b-94af-521852e46d6a",
+      "title": "Grave of the Fireflies",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/qG3RYlIVpTYclR9TYIsy8p7m7AT.jpg",
+      "file": "images/films/posters/12cfb892-aac0-4c5b-94af-521852e46d6a-poster.jpg",
+      "bytes": 59862,
+      "sha256": "7031c3386f18ab931f7c69e2bf4149cc63798c25ac5e594e56506e0398b272cd"
+    },
+    {
+      "filmId": "12cfb892-aac0-4c5b-94af-521852e46d6a",
+      "title": "Grave of the Fireflies",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/vkZSd0Lp8iCVBGpFH9L7LzLusjS.jpg",
+      "file": "images/films/banners/12cfb892-aac0-4c5b-94af-521852e46d6a-banner.jpg",
+      "bytes": 138976,
+      "sha256": "6c2a326a2b223ecd00f80cb2f32f7021d9f46392973049e41e05afe6fc9cf3f5"
+    },
+    {
+      "filmId": "58611129-2dbc-4a81-a72f-77ddfc1b1b49",
+      "title": "My Neighbor Totoro",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/rtGDOeG9LzoerkDGZF9dnVeLppL.jpg",
+      "file": "images/films/posters/58611129-2dbc-4a81-a72f-77ddfc1b1b49-poster.jpg",
+      "bytes": 97776,
+      "sha256": "d78149db61a3e5df7f04c5536bb670142110c734763a5f4dda31843601f9ea96"
+    },
+    {
+      "filmId": "58611129-2dbc-4a81-a72f-77ddfc1b1b49",
+      "title": "My Neighbor Totoro",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/etqr6fOOCXQOgwrQXaKwenTSuzx.jpg",
+      "file": "images/films/banners/58611129-2dbc-4a81-a72f-77ddfc1b1b49-banner.jpg",
+      "bytes": 212500,
+      "sha256": "282f53e1a1aec75ccf99f1c5b62ac32df3cf5b233599d30c9e655bb3e76cdcf2"
+    },
+    {
+      "filmId": "ea660b10-85c4-4ae3-8a5f-41cea3648e3e",
+      "title": "Kiki's Delivery Service",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/7nO5DUMnGUuXrA4r2h6ESOKQRrx.jpg",
+      "file": "images/films/posters/ea660b10-85c4-4ae3-8a5f-41cea3648e3e-poster.jpg",
+      "bytes": 52614,
+      "sha256": "17b29011fc8be96fc6db99d49870b7b749e4831e8877bd45689a490d2a2a4868"
+    },
+    {
+      "filmId": "ea660b10-85c4-4ae3-8a5f-41cea3648e3e",
+      "title": "Kiki's Delivery Service",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/h5pAEVma835u8xoE60kmLVopLct.jpg",
+      "file": "images/films/banners/ea660b10-85c4-4ae3-8a5f-41cea3648e3e-banner.jpg",
+      "bytes": 393806,
+      "sha256": "38ded252661246ccb9e8fa2de966abce04aac77b636fdfc5d17ebf46f07fb4e8"
+    },
+    {
+      "filmId": "4e236f34-b981-41c3-8c65-f8c9000b94e7",
+      "title": "Only Yesterday",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/xjJU6rwzLX7Jk8HFQfVW6H5guMC.jpg",
+      "file": "images/films/posters/4e236f34-b981-41c3-8c65-f8c9000b94e7-poster.jpg",
+      "bytes": 31836,
+      "sha256": "f2e5119e07c74880e6f366f2266f430e2e963300080e66a4715bc28dc85608a8"
+    },
+    {
+      "filmId": "4e236f34-b981-41c3-8c65-f8c9000b94e7",
+      "title": "Only Yesterday",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/w533_and_h300_bestv2/isCrlWWI4JrdLKAUAwFb5cjAsH4.jpg",
+      "file": "images/films/banners/4e236f34-b981-41c3-8c65-f8c9000b94e7-banner.jpg",
+      "bytes": 40502,
+      "sha256": "d04dd4858adff8fde7c1d6bd60dbb1f33ed611f4a2c0bd57acb918aa1f5b78f7"
+    },
+    {
+      "filmId": "ebbb6b7c-945c-41ee-a792-de0e43191bd8",
+      "title": "Porco Rosso",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/byKAndF6KQSDpGxp1mTr23jPbYp.jpg",
+      "file": "images/films/posters/ebbb6b7c-945c-41ee-a792-de0e43191bd8-poster.jpg",
+      "bytes": 62772,
+      "sha256": "82b92264047a2d7bb6a0053b366bc484638da55232437f684762c625f31efd1c"
+    },
+    {
+      "filmId": "ebbb6b7c-945c-41ee-a792-de0e43191bd8",
+      "title": "Porco Rosso",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/nAeCzilMRXvGaxiCpv63ZRVRVgh.jpg",
+      "file": "images/films/banners/ebbb6b7c-945c-41ee-a792-de0e43191bd8-banner.jpg",
+      "bytes": 503384,
+      "sha256": "71b6c23e8bb566017704bb5b9c6e877ab8fda9eabdb66ca0251b1da9903b6a5c"
+    },
+    {
+      "filmId": "1b67aa9a-2e4a-45af-ac98-64d6ad15b16c",
+      "title": "Pom Poko",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/kowo9E1e1JcWLXj9cCvAOFZcy5n.jpg",
+      "file": "images/films/posters/1b67aa9a-2e4a-45af-ac98-64d6ad15b16c-poster.jpg",
+      "bytes": 70152,
+      "sha256": "3f040363745b36dc84bc70f68b514727abe961a82ba123b74d92aa2cc3eb7f6c"
+    },
+    {
+      "filmId": "1b67aa9a-2e4a-45af-ac98-64d6ad15b16c",
+      "title": "Pom Poko",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/jScPd0u0jeo66l8gwDl7W9hDUnM.jpg",
+      "file": "images/films/banners/1b67aa9a-2e4a-45af-ac98-64d6ad15b16c-banner.jpg",
+      "bytes": 427134,
+      "sha256": "683f5f08e7a3f4f18eb0ae365a3214491f7a6cbd7efe1f634ffdd271e0481e22"
+    },
+    {
+      "filmId": "ff24da26-a969-4f0e-ba1e-a122ead6c6e3",
+      "title": "Whisper of the Heart",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/5E3Hvbu0bg38ouYf6chGftVGqZ7.jpg",
+      "file": "images/films/posters/ff24da26-a969-4f0e-ba1e-a122ead6c6e3-poster.jpg",
+      "bytes": 130478,
+      "sha256": "43936f1be127c37498e9b8fff8e753dc83f406ddf7e1e854aa1796c8b8a4789e"
+    },
+    {
+      "filmId": "ff24da26-a969-4f0e-ba1e-a122ead6c6e3",
+      "title": "Whisper of the Heart",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/fRtaDgmj0CirvqFUG1XN48BDY1l.jpg",
+      "file": "images/films/banners/ff24da26-a969-4f0e-ba1e-a122ead6c6e3-banner.jpg",
+      "bytes": 131272,
+      "sha256": "0b9fd3e12640dca1aedf2710e3b56231657c6f80e1d4309ebec71e0d15870593"
+    },
+    {
+      "filmId": "0440483e-ca0e-4120-8c50-4c8cd9b965d6",
+      "title": "Princess Mononoke",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/jHWmNr7m544fJ8eItsfNk8fs2Ed.jpg",
+      "file": "images/films/posters/0440483e-ca0e-4120-8c50-4c8cd9b965d6-poster.jpg",
+      "bytes": 84130,
+      "sha256": "91384ea35cd6e4cf7f547f30d184806af1944e92795f01e90ecfc7c1d5d7235b"
+    },
+    {
+      "filmId": "0440483e-ca0e-4120-8c50-4c8cd9b965d6",
+      "title": "Princess Mononoke",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/6pTqSq0zYIWCsucJys8q5L92kUY.jpg",
+      "file": "images/films/banners/0440483e-ca0e-4120-8c50-4c8cd9b965d6-banner.jpg",
+      "bytes": 268996,
+      "sha256": "45c439d20f1e19fc76e50ee35010ce1055edc05768c3024b949e37f9071cb395"
+    },
+    {
+      "filmId": "45204234-adfd-45cb-a505-a8e7a676b114",
+      "title": "My Neighbors the Yamadas",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/wTGuHmMIBBgKakY80J1D52VvQKI.jpg",
+      "file": "images/films/posters/45204234-adfd-45cb-a505-a8e7a676b114-poster.jpg",
+      "bytes": 48168,
+      "sha256": "d28c2a870b90d4de28c07a3fae949ce9cf2c24429b6347dfc0f746427196bf0e"
+    },
+    {
+      "filmId": "45204234-adfd-45cb-a505-a8e7a676b114",
+      "title": "My Neighbors the Yamadas",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/nDOsicEg4RHDq0t23JKGSb58z6u.jpg",
+      "file": "images/films/banners/45204234-adfd-45cb-a505-a8e7a676b114-banner.jpg",
+      "bytes": 131084,
+      "sha256": "2c1050f4f68a0cfc31a71be1a354001ca916a73a806b7ab145291537c8a51f95"
+    },
+    {
+      "filmId": "dc2e6bd1-8156-4886-adff-b39e6043af0c",
+      "title": "Spirited Away",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
+      "file": "images/films/posters/dc2e6bd1-8156-4886-adff-b39e6043af0c-poster.jpg",
+      "bytes": 41668,
+      "sha256": "1b04a11d30bfcf078452ef9cd45b14b769ca413603c48f806015ed40233bb2e9"
+    },
+    {
+      "filmId": "dc2e6bd1-8156-4886-adff-b39e6043af0c",
+      "title": "Spirited Away",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/bSXfU4dwZyBA1vMmXvejdRXBvuF.jpg",
+      "file": "images/films/banners/dc2e6bd1-8156-4886-adff-b39e6043af0c-banner.jpg",
+      "bytes": 349708,
+      "sha256": "b7e66ac57f72b1d9090d80e7c66176ed6cd9df02089660d69bef9b630286b9a3"
+    },
+    {
+      "filmId": "90b72513-afd4-4570-84de-a56c312fdf81",
+      "title": "The Cat Returns",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/avPMO5cnaGHgLaNiAIhy33WoQLm.jpg",
+      "file": "images/films/posters/90b72513-afd4-4570-84de-a56c312fdf81-poster.jpg",
+      "bytes": 56802,
+      "sha256": "66ac87dec60f07846ff3aaacb6d02a1544ca48dba22927df1d85ad27eee04ebd"
+    },
+    {
+      "filmId": "90b72513-afd4-4570-84de-a56c312fdf81",
+      "title": "The Cat Returns",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/d4BTZvckFTthyhGX27LZnWxl0tl.jpg",
+      "file": "images/films/banners/90b72513-afd4-4570-84de-a56c312fdf81-banner.jpg",
+      "bytes": 68530,
+      "sha256": "0df415ba45d90807d48ac24d0ea81a44f40b521fbdcb525c17b2d8482268cbf3"
+    },
+    {
+      "filmId": "cd3d059c-09f4-4ff3-8d63-bc765a5184fa",
+      "title": "Howl's Moving Castle",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/TkTPELv4kC3u1lkloush8skOjE.jpg",
+      "file": "images/films/posters/cd3d059c-09f4-4ff3-8d63-bc765a5184fa-poster.jpg",
+      "bytes": 67598,
+      "sha256": "9fc8c17c36b8c9d770e6df851dad9314b2fbfa8cb5ce920c31960476a0696535"
+    },
+    {
+      "filmId": "cd3d059c-09f4-4ff3-8d63-bc765a5184fa",
+      "title": "Howl's Moving Castle",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/hjlvbMKhQm7N8tYynr8yQ8GBmqe.jpg",
+      "file": "images/films/banners/cd3d059c-09f4-4ff3-8d63-bc765a5184fa-banner.jpg",
+      "bytes": 391038,
+      "sha256": "ffadb04e35bd8b1092f33106778fe51c441f7e61b99ab73301a6e988f5310440"
+    },
+    {
+      "filmId": "112c1e67-726f-40b1-ac17-6974127bb9b9",
+      "title": "Tales from Earthsea",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/67yYwCPq7NbxSF6BIIXCMD34sY0.jpg",
+      "file": "images/films/posters/112c1e67-726f-40b1-ac17-6974127bb9b9-poster.jpg",
+      "bytes": 67960,
+      "sha256": "364b698a1a7299b5ec287d1b4f082b8c725618d70abfd960ce3c2646b13915a5"
+    },
+    {
+      "filmId": "112c1e67-726f-40b1-ac17-6974127bb9b9",
+      "title": "Tales from Earthsea",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/j276noIGGmfi66EnCfewsL2OVTX.jpg",
+      "file": "images/films/banners/112c1e67-726f-40b1-ac17-6974127bb9b9-banner.jpg",
+      "bytes": 270614,
+      "sha256": "7e8e9471d72fb3ccef1f04a18c9ba2ee9c3f51581a9e43a82036e17ba603eb59"
+    },
+    {
+      "filmId": "758bf02e-3122-46e0-884e-67cf83df1786",
+      "title": "Ponyo",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/mikKSEdk5kLhflWXbp4S5mmHsDo.jpg",
+      "file": "images/films/posters/758bf02e-3122-46e0-884e-67cf83df1786-poster.jpg",
+      "bytes": 43184,
+      "sha256": "532f6326da7efbc803c2094edb7c970781b6ac03f6913b14c579f5299a52b2e5"
+    },
+    {
+      "filmId": "758bf02e-3122-46e0-884e-67cf83df1786",
+      "title": "Ponyo",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/6a1qZ1qat26mAIK3Lq8iYdGpyHm.jpg",
+      "file": "images/films/banners/758bf02e-3122-46e0-884e-67cf83df1786-banner.jpg",
+      "bytes": 184562,
+      "sha256": "2d2d4f5df65d4c70eb4dddbe2c84f9b707c56a9065d4e77655ea85f040418f9f"
+    },
+    {
+      "filmId": "2de9426b-914a-4a06-a3a0-5e6d9d3886f6",
+      "title": "Arrietty",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/oc2OB2KDmSRDMelKEAA1n4YRQL0.jpg",
+      "file": "images/films/posters/2de9426b-914a-4a06-a3a0-5e6d9d3886f6-poster.jpg",
+      "bytes": 61702,
+      "sha256": "989aca13f108b16cf83525d89b381c9357c185b830a3f1190defbdbb872d2004"
+    },
+    {
+      "filmId": "2de9426b-914a-4a06-a3a0-5e6d9d3886f6",
+      "title": "Arrietty",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/7Z7WVzJsSReG8B0CaPk0bvWD7tK.jpg",
+      "file": "images/films/banners/2de9426b-914a-4a06-a3a0-5e6d9d3886f6-banner.jpg",
+      "bytes": 130868,
+      "sha256": "c58424f14c6ec3072c81167b625f1188c8e70b110a01bc69a93ce5b417b38d8a"
+    },
+    {
+      "filmId": "45db04e4-304a-4933-9823-33f389e8d74d",
+      "title": "From Up on Poppy Hill",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/rRLYX4RZIyloHSJwvZKAhphAjiB.jpg",
+      "file": "images/films/posters/45db04e4-304a-4933-9823-33f389e8d74d-poster.jpg",
+      "bytes": 60644,
+      "sha256": "a90b8a806901313d264f7a2a39645d8e1c36a989b52ffa5e059f535c1730882a"
+    },
+    {
+      "filmId": "45db04e4-304a-4933-9823-33f389e8d74d",
+      "title": "From Up on Poppy Hill",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/xtPBZYaWQMQxRpy7mkdk5n1bTxs.jpg",
+      "file": "images/films/banners/45db04e4-304a-4933-9823-33f389e8d74d-banner.jpg",
+      "bytes": 229430,
+      "sha256": "40c09aab68ff6e4b8cb48e6b3ee2011965664a88a20addd8d67dd5f0b62863f8"
+    },
+    {
+      "filmId": "67405111-37a5-438f-81cc-4666af60c800",
+      "title": "The Wind Rises",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/jfwSexzlIzaOgxP9A8bTA6t8YYb.jpg",
+      "file": "images/films/posters/67405111-37a5-438f-81cc-4666af60c800-poster.jpg",
+      "bytes": 53504,
+      "sha256": "becab4054e2b596e0e311be7443fd63a8fc7580c7844e065faaadf632f174502"
+    },
+    {
+      "filmId": "67405111-37a5-438f-81cc-4666af60c800",
+      "title": "The Wind Rises",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/stM3jlD4nSJhlvR2DE7XnB0eN25.jpg",
+      "file": "images/films/banners/67405111-37a5-438f-81cc-4666af60c800-banner.jpg",
+      "bytes": 52604,
+      "sha256": "9ea1e15915f9a69eb35985d38eb7405ac5b807da3b2cf6de2cf3aaa1fe887506"
+    },
+    {
+      "filmId": "578ae244-7750-4d9f-867b-f3cd3d6fecf4",
+      "title": "The Tale of the Princess Kaguya",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/mWRQNlWXYYfd2z4FRm99MsgHgiA.jpg",
+      "file": "images/films/posters/578ae244-7750-4d9f-867b-f3cd3d6fecf4-poster.jpg",
+      "bytes": 26616,
+      "sha256": "02b598c98dbab923bc57926c02a106fcd50667d06f4639fc01148a7eed06f701"
+    },
+    {
+      "filmId": "578ae244-7750-4d9f-867b-f3cd3d6fecf4",
+      "title": "The Tale of the Princess Kaguya",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/lMaWlYThCSnsmW3usxWTpSuyZp1.jpg",
+      "file": "images/films/banners/578ae244-7750-4d9f-867b-f3cd3d6fecf4-banner.jpg",
+      "bytes": 183146,
+      "sha256": "9ccd34bf0a42038bb18fda317083804ee4b32add8441150f2a33fecd9c200e0d"
+    },
+    {
+      "filmId": "5fdfb320-2a02-49a7-94ff-5ca418cae602",
+      "title": "When Marnie Was There",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/vug1dvDI1tSa60Z8qjCuUE7ntkO.jpg",
+      "file": "images/films/posters/5fdfb320-2a02-49a7-94ff-5ca418cae602-poster.jpg",
+      "bytes": 54756,
+      "sha256": "dd428ab2a57760cd8ce4f2ce6924ce6c2fe019ae9bfca855970f8189e1876587"
+    },
+    {
+      "filmId": "5fdfb320-2a02-49a7-94ff-5ca418cae602",
+      "title": "When Marnie Was There",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/axUX7urQDwCGQ9qbgh2Yys7qY9J.jpg",
+      "file": "images/films/banners/5fdfb320-2a02-49a7-94ff-5ca418cae602-banner.jpg",
+      "bytes": 132674,
+      "sha256": "b91c02c66782221434c500bee37c5b6e9e39249f10491c06c9a77379c5fc364d"
+    },
+    {
+      "filmId": "d868e6ec-c44a-405b-8fa6-f7f0f8cfb500",
+      "title": "The Red Turtle",
+      "kind": "poster",
+      "sourceUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/wOBU3SLjQ9358Km9YWYasPZyebp.jpg",
+      "file": "images/films/posters/d868e6ec-c44a-405b-8fa6-f7f0f8cfb500-poster.jpg",
+      "bytes": 46798,
+      "sha256": "481f740369cc73c4f8a340c7cc0762d8d31b3714509b13b92f868ff7228fb696"
+    },
+    {
+      "filmId": "d868e6ec-c44a-405b-8fa6-f7f0f8cfb500",
+      "title": "The Red Turtle",
+      "kind": "banner",
+      "sourceUrl": "https://image.tmdb.org/t/p/original/kjXdW5H3myRBmTMYgKayjphr2FA.jpg",
+      "file": "images/films/banners/d868e6ec-c44a-405b-8fa6-f7f0f8cfb500-banner.jpg",
+      "bytes": 123922,
+      "sha256": "79985ed8f93d5eede9f2943b0f272c8bcfe7c9b4257b207f802d5bd680604581"
+    },
+    {
+      "filmId": "790e0028-a31c-4626-a694-86b7a8cada40",
+      "title": "Earwig and the Witch",
+      "kind": "poster",
+      "sourceUrl": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/sJhFtY3eHuvvACaPpxpzdCLQqpQ.jpg",
+      "file": "images/films/posters/790e0028-a31c-4626-a694-86b7a8cada40-poster.jpg",
+      "bytes": 115488,
+      "sha256": "d22882f597c03f6f6c3d20fbcc50b4c388d2bff74636aefbd8b1edc8ff979083"
+    },
+    {
+      "filmId": "790e0028-a31c-4626-a694-86b7a8cada40",
+      "title": "Earwig and the Witch",
+      "kind": "banner",
+      "sourceUrl": "https://www.themoviedb.org/t/p/original/qMxpGzmmnY1jLd4p7EhhoW43wWF.jpg",
+      "file": "images/films/banners/790e0028-a31c-4626-a694-86b7a8cada40-banner.jpg",
+      "bytes": 362080,
+      "sha256": "7acaf0743858065b8de36dc5657eb759e0c1659367f829b7df72e42c67444994"
+    }
+  ]
+}

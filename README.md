@@ -21,6 +21,11 @@ The app uses its own Dio-based API layer. It does not use an existing Dart Studi
 
 Film detail resolves referenced people, species, locations, and vehicles into human-readable names where possible. Collection-like related URLs are skipped gracefully.
 
+An offline backup of the API collection responses and referenced film images is
+stored in `data/studio_ghibli_api_snapshot/`. The app does not load this snapshot
+at runtime; it is kept in the repository only as a future fallback source if the
+public API becomes unavailable.
+
 ## Implemented Mandatory Requirements
 
 - Streaming-service-style film gallery with loading, error, empty, and data states.
