@@ -59,6 +59,8 @@ Runtime dependencies:
 Development dependencies:
 
 - `build_runner`, `freezed`, `json_serializable`: code generation.
+- `flutter_launcher_icons`: generates Android and iOS launcher icons from
+  the app icon assets.
 - `flutter_native_splash`: generates a consistent native launch screen before
   Flutter renders the first frame.
 - `mocktail`: deterministic repository/API tests.
@@ -77,6 +79,12 @@ Run code generation when generated models or annotations change:
 
 ```bash
 dart run build_runner build
+```
+
+Regenerate launcher icons when app icon assets or launcher icon config change:
+
+```bash
+dart run flutter_launcher_icons
 ```
 
 Generated files are committed for easier review, but they must not be edited manually:

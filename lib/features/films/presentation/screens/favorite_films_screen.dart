@@ -426,60 +426,104 @@ class _FavoritesEmptyState extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final isFilteredEmpty = selectedRating != null;
     final messageTitle = isFilteredEmpty
-        ? 'No movies match this rating'
-        : 'No favorite films yet';
+        ? 'The forest spirits found no films here'
+        : 'Totoro is saving your seat';
     final messageSubtitle = isFilteredEmpty
-        ? 'Try another rating filter or clear the filter.'
-        : 'Tap the heart on any film to save it here.';
+        ? 'Try another star rating before they wander off.'
+        : 'Tap a heart and the Catbus will bring your favorite films here.';
     final emptyImage = isFilteredEmpty
         ? FilmAssets.fallback
         : FilmAssets.noMovies;
-    final imageWidth = (MediaQuery.sizeOf(context).width - 64).clamp(
-      260.0,
-      320.0,
-    );
-    const imageHeight = 150.0;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = MediaQuery.sizeOf(context).width;
+        final availableWidth = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : screenWidth;
+        final imageWidth = isFilteredEmpty
+            ? (availableWidth - 64).clamp(260.0, 320.0)
+            : (availableWidth * 0.75).clamp(220.0, 560.0);
+        final imageMaxHeight = _favoriteEmptyImageMaxHeight(
+          constraints,
+          isFilteredEmpty: isFilteredEmpty,
+          imageWidth: imageWidth,
+        );
+        final minContentHeight =
+            constraints.hasBoundedHeight && constraints.maxHeight > 48
+            ? constraints.maxHeight - 48
+            : 0.0;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 360),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                emptyImage,
-                width: imageWidth,
-                height: imageHeight,
-                fit: BoxFit.contain,
-                semanticLabel: isFilteredEmpty
-                    ? 'No movies match this rating'
-                    : 'No favorite movies',
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: minContentHeight),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: imageWidth,
+                      maxHeight: imageMaxHeight,
+                    ),
+                    child: Image.asset(
+                      emptyImage,
+                      width: imageWidth,
+                      fit: BoxFit.contain,
+                      semanticLabel: isFilteredEmpty
+                          ? 'No movies match this rating'
+                          : 'No favorite movies',
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 360),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          messageTitle,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: colorScheme.onSurface,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          messageSubtitle,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                messageTitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                messageSubtitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
+}
+
+double _favoriteEmptyImageMaxHeight(
+  BoxConstraints constraints, {
+  required bool isFilteredEmpty,
+  required double imageWidth,
+}) {
+  if (isFilteredEmpty) {
+    return 150;
+  }
+
+  if (!constraints.hasBoundedHeight || constraints.maxHeight >= 620) {
+    return imageWidth;
+  }
+
+  return (constraints.maxHeight * 0.45).clamp(160.0, imageWidth);
 }
 
 class _FavoriteFilmGrid extends ConsumerWidget {
