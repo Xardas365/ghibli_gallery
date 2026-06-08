@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+const Duration _placeholderFadeDuration = Duration(milliseconds: 260);
+const Curve _placeholderFadeCurve = Curves.easeOut;
 const _fallbackImageAsset = 'assets/images/fallback.gif';
 const List<String> _galleryPlaceholderAssets = [
   'assets/images/placeholder/1.png',
@@ -54,34 +56,49 @@ class GhibliCachedImage extends StatelessWidget {
         showKey: showFallbackKey,
       );
     }
+    final placeholderAssetPath = _placeholderAssetPath();
 
-    return CachedNetworkImage(
-      imageUrl: url,
-      fit: fit,
-      alignment: alignment,
-      fadeInDuration: Duration.zero,
-      fadeOutDuration: Duration.zero,
-      placeholder: (context, url) {
-        final placeholderAssetPath = _placeholderAssetPath();
-        if (placeholderAssetPath == null) {
-          return const GhibliImageLoadingPlaceholder();
-        }
-
-        return Image.asset(
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        _buildLoadingPlaceholder(
           placeholderAssetPath,
           fit: fit,
           alignment: alignment,
-          errorBuilder: (context, error, stackTrace) {
-            return const GhibliImageLoadingPlaceholder();
+        ),
+        CachedNetworkImage(
+          imageUrl: url,
+          fit: fit,
+          alignment: alignment,
+          fadeInDuration: Duration.zero,
+          fadeOutDuration: Duration.zero,
+          placeholder: (context, url) {
+            return const SizedBox.shrink();
           },
-        );
-      },
-      errorWidget: (context, url, error) {
-        return GhibliImageFallback(
-          iconSize: iconSize,
-          showKey: showFallbackKey,
-        );
-      },
+          imageBuilder: (context, imageProvider) {
+            return Image(
+              image: imageProvider,
+              fit: fit,
+              alignment: alignment,
+              gaplessPlayback: true,
+              frameBuilder: (context, child, frame, _) {
+                return AnimatedOpacity(
+                  opacity: frame == null ? 0 : 1,
+                  duration: _placeholderFadeDuration,
+                  curve: _placeholderFadeCurve,
+                  child: child,
+                );
+              },
+            );
+          },
+          errorWidget: (context, url, error) {
+            return GhibliImageFallback(
+              iconSize: iconSize,
+              showKey: showFallbackKey,
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -106,6 +123,25 @@ class GhibliCachedImage extends StatelessWidget {
 
     return placeholders[_stableStringHash(key) % placeholders.length];
   }
+}
+
+Widget _buildLoadingPlaceholder(
+  String? placeholderAssetPath, {
+  required BoxFit fit,
+  required Alignment alignment,
+}) {
+  if (placeholderAssetPath == null) {
+    return const GhibliImageLoadingPlaceholder();
+  }
+
+  return Image.asset(
+    placeholderAssetPath,
+    fit: fit,
+    alignment: alignment,
+    errorBuilder: (context, error, stackTrace) {
+      return const GhibliImageLoadingPlaceholder();
+    },
+  );
 }
 
 int _stableStringHash(String value) {
