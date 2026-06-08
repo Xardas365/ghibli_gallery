@@ -160,6 +160,51 @@ void main() {
     expect(find.textContaining('Hayao Miyazaki'), findsOneWidget);
   });
 
+  testWidgets('FilmCard shows RT percentage when rtScore exists', (
+    tester,
+  ) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('film-card-rt-row')), findsOneWidget);
+    expect(find.text('93%'), findsOneWidget);
+    expect(find.byKey(const ValueKey('film-card-rt-icon')), findsOneWidget);
+  });
+
+  testWidgets('FilmCard gracefully hides RT row when rtScore is missing', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro.copyWith(rtScore: null)],
+    );
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('film-card-rt-row')), findsNothing);
+    expect(find.text('93%'), findsNothing);
+    expect(find.text('1988 • Hayao Miyazaki'), findsOneWidget);
+  });
+
+  testWidgets('FilmCard shows RT row between title and metadata', (
+    tester,
+  ) async {
+    await _pumpApp(tester, films: (ref) async => [totoro]);
+    await tester.pump();
+
+    final titleTop = tester.getTopLeft(find.text('My Neighbor Totoro')).dy;
+    final rtTop = tester
+        .getTopLeft(find.byKey(const ValueKey('film-card-rt-row')))
+        .dy;
+    final metadataTop = tester
+        .getTopLeft(
+          find.text('1988 • Hayao Miyazaki'),
+        )
+        .dy;
+
+    expect(titleTop, lessThan(rtTop));
+    expect(rtTop, lessThan(metadataTop));
+  });
+
   testWidgets('gallery card shows outline heart for non-favorite', (
     tester,
   ) async {
@@ -237,15 +282,19 @@ void main() {
     await tester.pump();
 
     expect(
+      find.byKey(const ValueKey('film-card-user-rating')),
+      findsOneWidget,
+    );
+    expect(
       find.descendant(
-        of: find.byType(Card),
+        of: find.byKey(const ValueKey('film-card-user-rating')),
         matching: find.byIcon(Icons.star),
       ),
       findsOneWidget,
     );
     expect(
       find.descendant(
-        of: find.byType(Card),
+        of: find.byKey(const ValueKey('film-card-user-rating')),
         matching: find.text('5'),
       ),
       findsOneWidget,
@@ -1082,14 +1131,14 @@ void main() {
 
     expect(
       find.descendant(
-        of: find.byType(Card),
+        of: find.byKey(const ValueKey('film-card-user-rating')),
         matching: find.byIcon(Icons.star),
       ),
       findsOneWidget,
     );
     expect(
       find.descendant(
-        of: find.byType(Card),
+        of: find.byKey(const ValueKey('film-card-user-rating')),
         matching: find.text('5'),
       ),
       findsOneWidget,

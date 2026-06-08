@@ -34,4 +34,4 @@ flutter:
   assets:
     - assets/images/ghibli_gallery_title.png
     - assets/images/fallback_confused_non.gif
-    - assets/images/Rotten_Tomatoes.svg
+    - assets/images/tomato_score.svg

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ghibli_gallery/app/theme.dart';
 import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_gallery/features/films/domain/film.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
+
+const _tomatoScoreAsset = 'assets/images/tomato_score.svg';
 
 class FilmCard extends StatelessWidget {
   const FilmCard({
@@ -65,13 +68,16 @@ class FilmCard extends StatelessWidget {
                     Positioned(
                       left: 8,
                       top: 8,
-                      child: _RatingIndicator(rating: rating),
+                      child: _RatingIndicator(
+                        key: const ValueKey('film-card-user-rating'),
+                        rating: rating,
+                      ),
                     ),
                 ],
               ),
             ),
             SizedBox(
-              height: 86,
+              height: 104,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainer,
@@ -96,7 +102,12 @@ class FilmCard extends StatelessWidget {
                           color: colorScheme.onSurface,
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(height: 6),
+                      if (film.rtScore case final int rtScore) ...[
+                        _RottenTomatoesRatingRow(rtScore: rtScore),
+                        const SizedBox(height: 6),
+                      ] else
+                        const Spacer(),
                       Text(
                         _metadataLabel(film),
                         maxLines: 1,
@@ -117,6 +128,86 @@ class FilmCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _RottenTomatoesRatingRow extends StatelessWidget {
+  const _RottenTomatoesRatingRow({required this.rtScore});
+
+  final int rtScore;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final starRating = _rtScoreToStarRating(rtScore);
+
+    return Semantics(
+      label: 'Rotten Tomatoes $rtScore%, $starRating out of 5 stars',
+      child: Row(
+        key: const ValueKey('film-card-rt-row'),
+        children: [
+          SvgPicture.asset(
+            _tomatoScoreAsset,
+            key: const ValueKey('film-card-rt-icon'),
+            height: 14,
+            width: 14,
+            semanticsLabel: 'Rotten Tomatoes score',
+          ),
+          const SizedBox(width: 5),
+          _RottenTomatoesStars(rating: starRating),
+          const SizedBox(width: 5),
+          Text(
+            '$rtScore%',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w800,
+              height: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RottenTomatoesStars extends StatelessWidget {
+  const _RottenTomatoesStars({required this.rating});
+
+  final double rating;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var index = 1; index <= 5; index += 1)
+            Icon(
+              _starIcon(index, rating),
+              size: 11,
+              color: ghibliStarGold,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+IconData _starIcon(int position, double rating) {
+  if (rating >= position) {
+    return Icons.star;
+  }
+
+  if (rating >= position - 0.5) {
+    return Icons.star_half;
+  }
+
+  return Icons.star_border;
+}
+
+double _rtScoreToStarRating(int rtScore) {
+  final normalizedScore = rtScore.clamp(0, 100);
+  return (normalizedScore / 10).round() / 2;
 }
 
 String _metadataLabel(Film film) {
@@ -174,7 +265,7 @@ class _FavoriteButton extends StatelessWidget {
 }
 
 class _RatingIndicator extends StatelessWidget {
-  const _RatingIndicator({required this.rating});
+  const _RatingIndicator({required this.rating, super.key});
 
   final int rating;
 

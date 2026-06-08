@@ -9,7 +9,7 @@ import 'package:ghibli_gallery/features/films/presentation/providers/favorite_mo
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
-const _rottenTomatoesAsset = 'assets/images/Rotten_Tomatoes.svg';
+const _tomatoScoreAsset = 'assets/images/tomato_score.svg';
 const _metadataRowMinHeight = 52.0;
 
 class FilmDetailScreen extends ConsumerWidget {
@@ -165,7 +165,7 @@ class _DetailContent extends StatelessWidget {
                   ),
                   _MetadataRow(
                     label: 'Rotten Tomatoes',
-                    iconAsset: _rottenTomatoesAsset,
+                    iconAsset: _tomatoScoreAsset,
                     value: _formatScore(film.rtScore),
                   ),
                 ],
@@ -371,7 +371,7 @@ class _HeroMetadata extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
-              _rottenTomatoesAsset,
+              _tomatoScoreAsset,
               height: 18,
               width: 18,
               semanticsLabel: 'Rotten Tomatoes score',
