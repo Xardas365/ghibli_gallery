@@ -174,7 +174,9 @@ class _GalleryBody extends ConsumerWidget {
           onClose: onCloseSearch,
         ),
         Expanded(
-          child: filteredFilms.isEmpty ? _GalleryNoSearchResultsState(searchQuery: searchQuery) : _GalleryFilmList(films: filteredFilms),
+          child: filteredFilms.isEmpty
+              ? _GalleryNoSearchResultsState(searchQuery: searchQuery)
+              : _GalleryFilmList(films: filteredFilms),
         ),
       ],
     );
@@ -276,7 +278,9 @@ class _GallerySearchField extends StatelessWidget {
             hintText: 'Search by film title',
             prefixIcon: const Icon(Icons.search),
             suffixIcon: IconButton(
-              tooltip: controller.text.isEmpty ? 'Close search' : 'Clear search',
+              tooltip: controller.text.isEmpty
+                  ? 'Close search'
+                  : 'Clear search',
               onPressed: controller.text.isEmpty ? onClose : controller.clear,
               icon: const Icon(Icons.close),
             ),
@@ -452,7 +456,9 @@ List<Film> _filterFilms(List<Film> films, String searchQuery) {
     return films;
   }
 
-  return films.where((film) => film.title.toLowerCase().contains(normalizedQuery)).toList(growable: false);
+  return films
+      .where((film) => film.title.toLowerCase().contains(normalizedQuery))
+      .toList(growable: false);
 }
 
 class _GalleryFilmCard extends ConsumerWidget {
@@ -487,7 +493,9 @@ Future<void> _toggleFavoriteFromCard(
   String filmId,
 ) async {
   try {
-    await ref.read(favoriteMovieControllerProvider.notifier).toggleFavorite(filmId);
+    await ref
+        .read(favoriteMovieControllerProvider.notifier)
+        .toggleFavorite(filmId);
   } on Object {
     if (!context.mounted) {
       return;
