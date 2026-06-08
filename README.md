@@ -133,3 +133,11 @@ GitHub Actions workflow:
 - Navigation uses built-in Navigator routes instead of a routing package to keep the app simple.
 - Android package identifier is `cz.krsak.ghibligallery` and application label is `Ghibli Gallery`.
 - The app keeps a compact feature-first structure rather than a larger enterprise-style architecture.
+
+## Thank You
+
+Thank you for taking the time to review this project.
+
+<p align="center">
+  <img src="./assets/images/thx.png" alt="Thank you" width="520">
+</p>
