@@ -8,8 +8,8 @@ Package name: `ghibli_gallery`.
 
 Verified locally with:
 
-- Flutter `3.41.0` stable
-- Dart `3.11.0`
+- Flutter `3.44.1` stable
+- Dart `3.12.1`
 - Project SDK constraint: `^3.8.0`
 
 ## API
