@@ -26,7 +26,8 @@ Film detail resolves referenced people, species, locations, and vehicles into hu
 - Streaming-service-style film gallery with loading, error, empty, and data states.
 - Film detail screen with poster/banner, titles, description, director, producer, release date, running time, Rotten Tomatoes score, and related people/species/locations/vehicles sections.
 - Favorite toggle and 1-5 rating on film detail.
-- Favorite and rating indicators on gallery and favorites cards.
+- Interactive favorite toggle on gallery and favorites cards; user rating is also shown there.
+- Compact Rotten Tomatoes card rating row with score percentage and stars.
 - Locally persisted favorites and ratings by film ID.
 - Favorites screen with rating filter and empty states.
 - Simple Navigator-based routes for gallery, detail, and favorites.
@@ -34,10 +35,11 @@ Film detail resolves referenced people, species, locations, and vehicles into hu
 
 ## Implemented Bonus Features
 
-- `cached_network_image` image loading/cache polish with loading and fallback UI.
-- Subtle UI animations using `flutter_animate` and built-in Flutter animations.
+- `cached_network_image` image loading and fallback states for poster/banner requests.
+- Subtle card and screen-level UI animations via `flutter_animate` and built-in Flutter animations.
 - Debug-only Dio logging interceptor that logs method, sanitized URL, status, duration, and error type/status without bodies or headers.
 - GitHub Actions CI for `flutter pub get`, formatting, analysis, and tests.
+- RT scores render from a generic tomato SVG icon (not the official Rotten Tomatoes logo).
 
 ## Dependencies
 
@@ -48,6 +50,7 @@ Runtime dependencies:
 - `shared_preferences`: local persistence for favorites and ratings.
 - `cached_network_image`: cached poster/banner loading with polished loading/fallback states.
 - `flutter_animate`: concise timing helpers for subtle UI animations.
+- `flutter_svg`: icon rendering for the compact Tomato score asset.
 - `collection`: small collection helpers where they keep UI/navigation code readable.
 - `freezed_annotation`: immutable DTO/domain models and generated value behavior where used.
 - `json_annotation`: explicit JSON mapping for API DTOs and local persistence mapping where used.
@@ -98,7 +101,7 @@ flutter test
 
 Latest verified result:
 
-- `flutter test` passed with `140` tests.
+- `flutter test` passed with `148` tests.
 
 Tests use fakes/mocks and do not call the real network.
 
@@ -117,4 +120,5 @@ GitHub Actions workflow:
 - Debug HTTP logging is intentionally minimal and avoids bodies, headers, query parameters, and secrets.
 - UX polish and animations are intentionally modest for a small interview assignment.
 - Navigation uses built-in Navigator routes instead of a routing package to keep the app simple.
+- Android package identifier is `cz.krsak.ghibligallery` and application label is `Ghibli Gallery`.
 - The app keeps a compact feature-first structure rather than a larger enterprise-style architecture.
