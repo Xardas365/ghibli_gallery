@@ -10,15 +10,15 @@ Keep the project small and reviewable. Prefer a well-finished assignment over an
 
 Implement mandatory requirements before bonus features:
 
-- streaming-service-like film gallery,
-- film detail screen,
-- favorite toggle,
-- 1-5 star rating,
-- locally persisted favorites and ratings,
-- favorites screen with rating filter,
-- all film parameters visible in detail,
-- resolved people, species, locations, and vehicles in detail,
-- no existing Dart client for the Studio Ghibli API.
+* streaming-service-like film gallery,
+* film detail screen,
+* favorite toggle,
+* 1-5 star rating,
+* locally persisted favorites and ratings,
+* favorites screen with rating filter,
+* all film parameters visible in detail,
+* resolved people, species, locations, and vehicles in detail,
+* no existing Dart client for the Studio Ghibli API.
 
 Bonus work such as animations, logging interceptors, CI, extra polish, and broader tests is allowed only after the mandatory requirements are covered.
 
@@ -26,29 +26,53 @@ Bonus work such as animations, logging interceptors, CI, extra polish, and broad
 
 Read only the context needed for the task:
 
-- `.agents/context/assignment.md` for requirements and acceptance criteria.
-- `.agents/context/api.md` for Studio Ghibli API rules and edge cases.
-- `.agents/context/architecture.md` for preferred Flutter, Riverpod, model, and persistence patterns.
-- `.agents/context/verification.md` for code generation and checks.
-- `.agents/context/readme-requirements.md` for README expectations.
+* `.agents/context/assignment.md` for requirements and acceptance criteria.
+* `.agents/context/api.md` for Studio Ghibli API rules and edge cases.
+* `.agents/context/architecture.md` for preferred Flutter, Riverpod, model, and persistence patterns.
+* `.agents/context/verification.md` for code generation and checks.
+* `.agents/context/readme-requirements.md` for README expectations.
 
 ## Implementation Rules
 
-- Use Riverpod as the state-management approach.
-- Keep dependencies minimal and justified.
-- Use Freezed and json_serializable where they reduce meaningful boilerplate.
-- Do not edit generated files manually.
-- Separate API DTOs from domain/UI models when it improves clarity.
-- Persist favorites and ratings by film ID.
-- Handle loading, empty, error, retry, and partial-reference-failure states gracefully.
-- Keep UI components focused and avoid unnecessary rebuilds.
+* Use Riverpod as the state-management approach.
+* Keep dependencies minimal and justified.
+* Use Freezed and json_serializable where they reduce meaningful boilerplate.
+* Do not edit generated files manually.
+* Separate API DTOs from domain/UI models when it improves clarity.
+* Persist favorites and ratings by film ID.
+* Handle loading, empty, error, retry, and partial-reference-failure states gracefully.
+* Keep UI components focused and avoid unnecessary rebuilds.
 
 ## Verification
 
-For code changes, run the relevant checks before finishing. If model files, generated annotations, or JSON mapping changed, run code generation before format/analyze/test:
+For code changes, run the relevant checks before finishing. If model files, generated annotations, or JSON mapping changed, run code generation before format/analyze/test.
+
+This project is developed on Windows. Flutter/Dart verification commands are known to hang or behave unreliably inside the Codex sandbox.
+
+Do not attempt a sandboxed run first for these commands. The first attempt must already use escalated execution.
+
+Run these commands with `sandbox_permissions: "require_escalated"`:
+
+* `dart run build_runner build` when code generation is required
+* `dart format .`
+* `flutter analyze`
+* `flutter test`
+
+Use this justification when escalation is required:
+
+* `Flutter/Dart tooling hangs or is unreliable in the Windows sandbox for this project.`
+
+Use narrow approval prefixes such as:
+
+* `["dart", "run", "build_runner"]`
+* `["dart", "format"]`
+* `["flutter", "analyze"]`
+* `["flutter", "test"]`
+
+If one of these commands fails or times out with escalated execution, stop and report the exact command and output. Do not retry the same command in the sandbox.
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 ```bash

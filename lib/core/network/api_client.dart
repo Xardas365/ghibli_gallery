@@ -1,14 +1,31 @@
+import 'package:dio/dio.dart';
+import 'package:ghibli_gallery/core/network/api_exception.dart';
+import 'package:ghibli_gallery/core/network/dio_provider.dart';
+
 class ApiClient {
-  ApiClient({Uri? baseUri})
-    : baseUri = baseUri ?? Uri.parse('https://ghibliapi.vercel.app');
+  ApiClient({Dio? dio}) : _dio = dio ?? createDio();
 
-  final Uri baseUri;
+  final Dio _dio;
 
-  Uri resolve(String path) => baseUri.resolve(path);
+  Future<T> get<T>(
+    String pathOrUrl, {
+    required T Function(Object? json) parser,
+  }) async {
+    try {
+      final response = await _get(pathOrUrl);
+      return parser(response.data);
+    } on DioException catch (exception) {
+      throw ApiException.fromDioException(exception);
+    }
+  }
 
-  Future<Object?> getJson(String pathOrUrl) {
-    throw UnimplementedError(
-      'HTTP client implementation belongs in the API step.',
-    );
+  Future<Response<Object?>> _get(String pathOrUrl) {
+    final uri = Uri.parse(pathOrUrl);
+
+    if (uri.hasScheme) {
+      return _dio.getUri<Object?>(uri);
+    }
+
+    return _dio.get<Object?>(pathOrUrl);
   }
 }

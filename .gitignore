@@ -12,6 +12,9 @@
 .swiftpm/
 migrate_working_dir/
 
+# Dart & Flutter DevTools
+devtools_options.yaml
+
 # IntelliJ related
 *.iml
 *.ipr

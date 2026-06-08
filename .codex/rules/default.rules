@@ -1,0 +1,55 @@
+prefix_rule(
+    pattern = ["dart", "format"],
+    decision = "prompt",
+    justification = "Flutter/Dart tooling hangs or is unreliable in the Windows sandbox for this project.",
+    match = [
+        "dart format .",
+    ],
+)
+
+prefix_rule(
+    pattern = ["flutter", "analyze"],
+    decision = "prompt",
+    justification = "Flutter/Dart tooling hangs or is unreliable in the Windows sandbox for this project.",
+    match = [
+        "flutter analyze",
+    ],
+)
+
+prefix_rule(
+    pattern = ["flutter", "test"],
+    decision = "prompt",
+    justification = "Flutter/Dart tooling hangs or is unreliable in the Windows sandbox for this project.",
+    match = [
+        "flutter test",
+    ],
+)
+
+prefix_rule(
+    pattern = ["dart", "run", "build_runner"],
+    decision = "allow",
+    justification = "Flutter/Dart tooling hangs or is unreliable in the Windows sandbox for this project.",
+    match = [
+        "dart run build_runner build",
+    ],
+)
+
+# Allow Codex to ask for manual approval for npx in general.
+prefix_rule(
+    pattern = ["npx"],
+    decision = "prompt",
+    justification = "npx may download and execute packages from the internet. Review manually before allowing.",
+    match = [
+        "npx @resvg/resvg-js --help",
+    ],
+)
+
+# Block the auto-yes variant because it skips npm confirmation.
+prefix_rule(
+    pattern = ["npx", "--yes"],
+    decision = "forbidden",
+    justification = "Do not use npx --yes because it may auto-download and execute packages without an npm prompt. Ask the user first or use a pinned local dependency.",
+    match = [
+        "npx --yes @resvg/resvg-js --help",
+    ],
+)

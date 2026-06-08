@@ -18,7 +18,7 @@ Mention that the project uses Freezed and json_serializable, and include:
 
 ```bash
 flutter pub get
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 flutter run
 ```
 
@@ -33,4 +33,3 @@ Generated files are committed for easier review, but they should not be edited m
 ```
 
 Keep README concise and easy to review. README content must match the actual implementation and checks that were run.
-

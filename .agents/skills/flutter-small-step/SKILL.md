@@ -9,27 +9,35 @@ Use this skill to implement exactly one approved task.
 
 Before editing:
 
-- read `AGENTS.md`,
-- read `README.md`,
-- read the relevant files under `.agents/context/`,
-- inspect only relevant files,
-- identify the smallest safe change.
+* read `AGENTS.md`,
+* read `README.md`,
+* read the relevant files under `.agents/context/`,
+* inspect only relevant files,
+* identify the smallest safe change.
 
 Rules:
 
-- implement only the requested step,
-- do not add unrelated features,
-- do not add dependencies unless justified,
-- do not edit generated files manually,
-- keep widgets small,
-- keep Riverpod state focused,
-- keep DTO/domain/UI models separated.
+* implement only the requested step,
+* do not add unrelated features,
+* do not add dependencies unless justified,
+* do not edit generated files manually,
+* keep widgets small,
+* keep Riverpod state focused,
+* keep DTO/domain/UI models separated.
 
-After implementation, run the relevant checks for the kind of change. If model files, generated annotations, or JSON mapping changed, run code generation first:
+After implementation, run the relevant checks for the kind of change.
+
+For `dart format .`, `flutter analyze`, `flutter test`, and `dart run build_runner build`,
+request escalated execution immediately. Do not run these commands in the sandbox first.
+These commands are covered by `.codex/rules/default.rules`.
+
+If model files, generated annotations, or JSON mapping changed, run code generation first:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
+
+Then run the relevant verification commands:
 
 ```bash
 dart format .

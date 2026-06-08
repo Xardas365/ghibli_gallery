@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tomato score icon">
+  <defs>
+    <linearGradient id="tomatoBody" x1="12" y1="14" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff7469"/>
+      <stop offset="0.55" stop-color="#ef2f35"/>
+      <stop offset="1" stop-color="#b91522"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="18" y1="4" x2="46" y2="25" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8bd56d"/>
+      <stop offset="1" stop-color="#267b38"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="35" r="23" fill="url(#tomatoBody)"/>
+  <path fill="#d81f2e" d="M15 37c0-10 7-19 17-20 10 1 17 10 17 20 0 9-8 17-17 17s-17-8-17-17z" opacity=".35"/>
+  <path fill="url(#leaf)" d="M32 19c-3-7-9-10-17-9 3 5 7 8 12 9-4 0-8 2-11 6 7 2 12 1 16-3 4 4 9 5 16 3-3-4-7-6-11-6 5-1 9-4 12-9-8-1-14 2-17 9z"/>
+  <rect x="31" y="9" width="3" height="13" fill="#2f8f3f" rx="1.5"/>
+  <ellipse cx="24" cy="27" rx="7" ry="5" fill="#ff9b91" opacity=".45" transform="rotate(-25 24 27)"/>
+  <circle cx="43" cy="42" r="5" fill="#9f1020" opacity=".25"/>
+  <path fill="none" stroke="#7c0f1a" stroke-linecap="round" stroke-width="2" d="M18 45c4 7 12 10 20 7"/>
+</svg>
