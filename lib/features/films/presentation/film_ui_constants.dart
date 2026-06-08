@@ -43,3 +43,8 @@ abstract final class FilmRatingBounds {
   static const min = 1;
   static const max = 5;
 }
+
+abstract final class FilmLoadingCopy {
+  static const primary = 'Catbus is on the way...';
+  static const secondary = 'Loading the Ghibli collection...';
+}

@@ -125,8 +125,8 @@ class FilmCard extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: 0,
+                    right: 0,
                     child: _FavoriteButton(
                       isFavorite: userData?.isFavorite ?? false,
                       onPressed: onFavoriteToggle,

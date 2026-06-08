@@ -106,40 +106,10 @@ class GhibliLoadingState extends StatelessWidget {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 6),
-                  const SizedBox(
-                    width: 72,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _LoadingDot(),
-                        _LoadingDot(),
-                        _LoadingDot(),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LoadingDot extends StatelessWidget {
-  const _LoadingDot();
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(
-      width: 10,
-      height: 10,
-      child: DecoratedBox(
-        decoration: ShapeDecoration(
-          color: Colors.white70,
-          shape: CircleBorder(),
         ),
       ),
     );

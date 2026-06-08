@@ -9,6 +9,7 @@ import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_gallery/features/films/domain/favorite_movie_storage.dart';
 import 'package:ghibli_gallery/features/films/domain/film.dart';
 import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/screens/favorite_films_screen.dart';
 import 'package:ghibli_gallery/features/films/presentation/screens/film_detail_screen.dart';
@@ -24,7 +25,8 @@ void main() {
     );
 
     expect(find.byTooltip('Search films'), findsOneWidget);
-    expect(find.text('Loading the Ghibli collection...'), findsOneWidget);
+    expect(find.text(FilmLoadingCopy.primary), findsOneWidget);
+    expect(find.text(FilmLoadingCopy.secondary), findsOneWidget);
   });
 
   testWidgets('bottom navigation is visible on gallery', (tester) async {
@@ -133,12 +135,12 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.byTooltip('Search films'));
-    await tester.pump();
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Kiki');
     await tester.pump();
 
     await tester.tap(find.byTooltip('Clear search'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
     expect(find.text("Kiki's Delivery Service"), findsOneWidget);
@@ -423,7 +425,8 @@ void main() {
     );
 
     expect(find.text('Film detail'), findsOneWidget);
-    expect(find.text('Loading film details...'), findsOneWidget);
+    expect(find.text(FilmLoadingCopy.primary), findsOneWidget);
+    expect(find.text(FilmLoadingCopy.secondary), findsOneWidget);
   });
 
   testWidgets('detail shows error state with retry', (tester) async {
@@ -884,12 +887,14 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(
       find.text(
-        'No favorite films yet',
+        'Totoro is saving your seat',
       ),
       findsOneWidget,
     );
     expect(
-      find.text('Tap the heart on any film to save it here.'),
+      find.text(
+        'Tap a heart and the Catbus will bring your favorite films here.',
+      ),
       findsOneWidget,
     );
     expect(find.text('Rating filter'), findsNothing);
@@ -949,7 +954,7 @@ void main() {
     expect(find.text('My Neighbor Totoro'), findsNothing);
     expect(
       find.text(
-        'No favorite films yet',
+        'Totoro is saving your seat',
       ),
       findsOneWidget,
     );
@@ -1164,12 +1169,12 @@ void main() {
 
     expect(
       find.text(
-        'No movies match this rating',
+        'The forest spirits found no films here',
       ),
       findsOneWidget,
     );
     expect(
-      find.text('Try another rating filter or clear the filter.'),
+      find.text('Try another star rating before they wander off.'),
       findsOneWidget,
     );
     expect(

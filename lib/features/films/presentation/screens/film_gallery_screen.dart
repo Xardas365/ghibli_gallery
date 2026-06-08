@@ -300,8 +300,8 @@ class _GalleryLoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const GhibliLoadingState(
-      primaryText: 'Catbus is on the way...',
-      secondaryText: 'Loading the Ghibli collection...',
+      primaryText: FilmLoadingCopy.primary,
+      secondaryText: FilmLoadingCopy.secondary,
     );
   }
 }

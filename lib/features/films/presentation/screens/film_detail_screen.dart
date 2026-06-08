@@ -73,7 +73,8 @@ class _DetailLoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const GhibliLoadingState(
-      primaryText: 'Loading film details...',
+      primaryText: FilmLoadingCopy.primary,
+      secondaryText: FilmLoadingCopy.secondary,
     );
   }
 }
