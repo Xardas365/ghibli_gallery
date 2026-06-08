@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ghibli_gallery/app/ghibli_scaffold.dart';
 import 'package:ghibli_gallery/app/router.dart';
 import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
@@ -19,9 +20,6 @@ class FilmGalleryScreen extends ConsumerStatefulWidget {
 }
 
 const _gridPadding = EdgeInsets.fromLTRB(16, 20, 16, 28);
-const _gridMainAxisSpacing = 18.0;
-const _gridCrossAxisSpacing = 16.0;
-const _gridChildAspectRatio = 0.64;
 
 class _FilmGalleryScreenState extends ConsumerState<FilmGalleryScreen> {
   late final TextEditingController _searchController;
@@ -56,7 +54,7 @@ class _FilmGalleryScreenState extends ConsumerState<FilmGalleryScreen> {
       selectedSection: GhibliMainSection.gallery,
       title: 'Ghibli Gallery',
       titleWidget: Image.asset(
-        'assets/images/gallery_title.png',
+        FilmAssets.galleryTitle,
         height: 40,
         fit: BoxFit.contain,
         semanticLabel: 'Ghibli Gallery',
@@ -368,19 +366,19 @@ class _GalleryFilmList extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final crossAxisCount = switch (constraints.maxWidth) {
-          >= 900 => 5,
-          >= 680 => 4,
-          >= 460 => 3,
-          _ => 2,
+          >= FilmGridLayout.largeWidth => FilmGridLayout.largeColumnCount,
+          >= FilmGridLayout.mediumWidth => FilmGridLayout.mediumColumnCount,
+          >= FilmGridLayout.compactWidth => FilmGridLayout.compactColumnCount,
+          _ => FilmGridLayout.narrowColumnCount,
         };
 
         return GridView.builder(
           padding: _gridPadding,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: _gridMainAxisSpacing,
-            crossAxisSpacing: _gridCrossAxisSpacing,
-            childAspectRatio: _gridChildAspectRatio,
+            mainAxisSpacing: FilmGridLayout.mainAxisSpacing,
+            crossAxisSpacing: FilmGridLayout.crossAxisSpacing,
+            childAspectRatio: FilmGridLayout.childAspectRatio,
           ),
           itemBuilder: (context, index) {
             return FilmCardEntrance(

@@ -5,9 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ghibli_gallery/app/theme.dart';
 import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
-const _tomatoScoreAsset = 'assets/images/tomato_score.svg';
 const Alignment _defaultPosterAlignment = Alignment.topCenter;
 
 const Map<String, Alignment> _posterAlignmentByFilmId = {};
@@ -210,7 +210,7 @@ class _RottenTomatoesRatingRow extends StatelessWidget {
         key: const ValueKey('film-card-rt-row'),
         children: [
           SvgPicture.asset(
-            _tomatoScoreAsset,
+            FilmAssets.tomatoScore,
             key: const ValueKey('film-card-rt-icon'),
             height: 14,
             width: 14,
@@ -244,7 +244,11 @@ class _RottenTomatoesStars extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (var index = 1; index <= 5; index += 1)
+          for (
+            var index = FilmRatingBounds.min;
+            index <= FilmRatingBounds.max;
+            index += 1
+          )
             Icon(
               _starIcon(index, rating),
               size: 11,

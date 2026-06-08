@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-const _loadingAsset = 'assets/images/loading.gif';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 
 class GhibliLoadingState extends StatelessWidget {
   const GhibliLoadingState({
@@ -63,7 +62,7 @@ class GhibliLoadingState extends StatelessWidget {
                           fit: StackFit.expand,
                           children: [
                             Image.asset(
-                              _loadingAsset,
+                              FilmAssets.loading,
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.low,
                               excludeFromSemantics: true,

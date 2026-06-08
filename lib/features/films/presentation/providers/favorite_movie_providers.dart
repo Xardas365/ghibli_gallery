@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ghibli_gallery/features/films/data/film_infrastructure_providers.dart';
 import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 
 final favoriteMovieControllerProvider =
     AsyncNotifierProvider<FavoriteMovieController, List<FavoriteMovie>>(
@@ -86,7 +87,8 @@ class RatingFilter extends Notifier<int?> {
   }
 
   void setRating(int? rating) {
-    if (rating != null && (rating < 1 || rating > 5)) {
+    if (rating != null &&
+        (rating < FilmRatingBounds.min || rating > FilmRatingBounds.max)) {
       throw ArgumentError.value(
         rating,
         'rating',

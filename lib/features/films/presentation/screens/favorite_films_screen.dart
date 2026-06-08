@@ -6,18 +6,12 @@ import 'package:ghibli_gallery/app/ghibli_scaffold.dart';
 import 'package:ghibli_gallery/app/router.dart';
 import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_gallery/features/films/domain/film.dart';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_entrance.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loading_state.dart';
-
-const _fallbackConfusedNonAsset = 'assets/images/fallback.gif';
-const _favoritesNoMoviesAsset = 'assets/images/no_movies.png';
-const _gridPadding = EdgeInsets.fromLTRB(16, 12, 16, 28);
-const _gridMainAxisSpacing = 18.0;
-const _gridCrossAxisSpacing = 16.0;
-const _gridChildAspectRatio = 0.64;
 
 class FavoriteFilmsScreen extends ConsumerWidget {
   const FavoriteFilmsScreen({super.key});
@@ -31,17 +25,10 @@ class FavoriteFilmsScreen extends ConsumerWidget {
     final films = filmsState.value;
     final favorites = favoritesState.value;
     final allFavorites = allFavoritesState.value;
-    final shownFavoritesCount = films != null && favorites != null
-        ? _favoriteFilms(films, favorites).length
-        : null;
-    final totalFavoritesCount = films != null && allFavorites != null
-        ? _favoriteFilms(films, allFavorites).length
-        : null;
-    final ratingCounts = films != null && allFavorites != null
-        ? _ratingCounts(films, allFavorites)
-        : null;
-    final showRatingFilter =
-        totalFavoritesCount != null && totalFavoritesCount > 0;
+    final shownFavoritesCount = films != null && favorites != null ? _favoriteFilms(films, favorites).length : null;
+    final totalFavoritesCount = films != null && allFavorites != null ? _favoriteFilms(films, allFavorites).length : null;
+    final ratingCounts = films != null && allFavorites != null ? _ratingCounts(films, allFavorites) : null;
+    final showRatingFilter = totalFavoritesCount != null && totalFavoritesCount > 0;
 
     return GhibliScaffold(
       selectedSection: GhibliMainSection.favorites,
@@ -151,7 +138,7 @@ class _RatingFilterBar extends ConsumerWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  for (var rating = 5; rating >= 1; rating -= 1) ...[
+                  for (var rating = FilmRatingBounds.max; rating >= FilmRatingBounds.min; rating -= 1) ...[
                     Expanded(
                       child: _RatingFilterChip(
                         rating: rating,
@@ -228,12 +215,8 @@ class _RatingFilterChip extends StatelessWidget {
         : isEmpty
         ? colorScheme.onSurfaceVariant.withValues(alpha: 0.62)
         : colorScheme.onSurface;
-    final backgroundColor = selected
-        ? colorScheme.primaryContainer
-        : colorScheme.surfaceContainerLow;
-    final borderColor = selected
-        ? colorScheme.primary.withValues(alpha: 0.7)
-        : colorScheme.outlineVariant.withValues(alpha: 0.72);
+    final backgroundColor = selected ? colorScheme.primaryContainer : colorScheme.surfaceContainerLow;
+    final borderColor = selected ? colorScheme.primary.withValues(alpha: 0.7) : colorScheme.outlineVariant.withValues(alpha: 0.72);
 
     return Opacity(
       opacity: isEmpty && !selected ? 0.72 : 1,
@@ -365,9 +348,7 @@ class _FavoriteFilmsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (filmsState.hasError ||
-        favoritesState.hasError ||
-        allFavoritesState.hasError) {
+    if (filmsState.hasError || favoritesState.hasError || allFavoritesState.hasError) {
       return const _FavoritesErrorState();
     }
 
@@ -427,15 +408,11 @@ class _FavoritesEmptyState extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isFilteredEmpty = selectedRating != null;
-    final messageTitle = isFilteredEmpty
-        ? 'No movies match this rating'
-        : 'No favorite films yet';
+    final messageTitle = isFilteredEmpty ? 'No movies match this rating' : 'No favorite films yet';
     final messageSubtitle = isFilteredEmpty
         ? 'Try another rating filter or clear the filter.'
         : 'Tap the heart on any film to save it here.';
-    final emptyImage = isFilteredEmpty
-        ? _fallbackConfusedNonAsset
-        : _favoritesNoMoviesAsset;
+    final emptyImage = isFilteredEmpty ? FilmAssets.fallback : FilmAssets.noMovies;
     final imageWidth = (MediaQuery.sizeOf(context).width - 64).clamp(
       260.0,
       320.0,
@@ -455,9 +432,7 @@ class _FavoritesEmptyState extends StatelessWidget {
                 width: imageWidth,
                 height: imageHeight,
                 fit: BoxFit.contain,
-                semanticLabel: isFilteredEmpty
-                    ? 'No movies match this rating'
-                    : 'No favorite movies',
+                semanticLabel: isFilteredEmpty ? 'No movies match this rating' : 'No favorite movies',
               ),
               const SizedBox(height: 20),
               Text(
@@ -494,19 +469,19 @@ class _FavoriteFilmGrid extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final crossAxisCount = switch (constraints.maxWidth) {
-          >= 900 => 5,
-          >= 680 => 4,
-          >= 460 => 3,
-          _ => 2,
+          >= FilmGridLayout.largeWidth => FilmGridLayout.largeColumnCount,
+          >= FilmGridLayout.mediumWidth => FilmGridLayout.mediumColumnCount,
+          >= FilmGridLayout.compactWidth => FilmGridLayout.compactColumnCount,
+          _ => FilmGridLayout.narrowColumnCount,
         };
 
         return GridView.builder(
-          padding: _gridPadding,
+          padding: FilmGridLayout.favoritesPadding,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: _gridMainAxisSpacing,
-            crossAxisSpacing: _gridCrossAxisSpacing,
-            childAspectRatio: _gridChildAspectRatio,
+            mainAxisSpacing: FilmGridLayout.mainAxisSpacing,
+            crossAxisSpacing: FilmGridLayout.crossAxisSpacing,
+            childAspectRatio: FilmGridLayout.childAspectRatio,
           ),
           itemBuilder: (context, index) {
             final favoriteFilm = favoriteFilms[index];
@@ -545,9 +520,7 @@ Future<void> _toggleFavoriteFromCard(
   String filmId,
 ) async {
   try {
-    await ref
-        .read(favoriteMovieControllerProvider.notifier)
-        .toggleFavorite(filmId);
+    await ref.read(favoriteMovieControllerProvider.notifier).toggleFavorite(filmId);
   } on Object {
     if (!context.mounted) {
       return;
@@ -581,8 +554,7 @@ List<_FavoriteFilm> _favoriteFilms(
 
   return [
     for (final favorite in favorites)
-      if (filmsById[favorite.filmId] case final Film film)
-        _FavoriteFilm(film: film, userData: favorite),
+      if (filmsById[favorite.filmId] case final Film film) _FavoriteFilm(film: film, userData: favorite),
   ];
 }
 
@@ -591,7 +563,7 @@ Map<int, int> _ratingCounts(
   List<FavoriteMovie> favorites,
 ) {
   final counts = {
-    for (var rating = 1; rating <= 5; rating += 1) rating: 0,
+    for (var rating = FilmRatingBounds.min; rating <= FilmRatingBounds.max; rating += 1) rating: 0,
   };
 
   for (final favoriteFilm in _favoriteFilms(films, favorites)) {

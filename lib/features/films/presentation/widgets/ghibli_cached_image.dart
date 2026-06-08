@@ -1,22 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 
 const Duration _placeholderFadeDuration = Duration(milliseconds: 260);
 const Curve _placeholderFadeCurve = Curves.easeOut;
-const _fallbackImageAsset = 'assets/images/fallback.gif';
-const List<String> _galleryPlaceholderAssets = [
-  'assets/images/placeholder/1.png',
-  'assets/images/placeholder/2.png',
-  'assets/images/placeholder/3.png',
-];
-const List<String> _widePlaceholderAssets = [
-  'assets/images/placeholder/wide_1.png',
-  'assets/images/placeholder/wide_2.png',
-  'assets/images/placeholder/wide_3.png',
-  'assets/images/placeholder/wide_4.png',
-  'assets/images/placeholder/wide_5.png',
-  'assets/images/placeholder/wide_6.png',
-];
 
 enum GhibliPlaceholderSet {
   gallery,
@@ -114,8 +101,8 @@ class GhibliCachedImage extends StatelessWidget {
     }
 
     final placeholders = switch (set) {
-      GhibliPlaceholderSet.gallery => _galleryPlaceholderAssets,
-      GhibliPlaceholderSet.wide => _widePlaceholderAssets,
+      GhibliPlaceholderSet.gallery => FilmAssets.galleryPlaceholders,
+      GhibliPlaceholderSet.wide => FilmAssets.widePlaceholders,
     };
     if (placeholders.isEmpty) {
       return null;
@@ -196,7 +183,7 @@ class GhibliImageFallback extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Image.asset(
-            _fallbackImageAsset,
+            FilmAssets.fallback,
             key: showKey ? ghibliImageFallbackKey : null,
             fit: BoxFit.contain,
             semanticLabel: 'Confused fallback image',

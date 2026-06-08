@@ -5,12 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ghibli_gallery/app/theme.dart';
 import 'package:ghibli_gallery/features/films/domain/film_details.dart';
+import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/favorite_movie_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/providers/film_providers.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loading_state.dart';
 
-const _tomatoScoreAsset = 'assets/images/tomato_score.svg';
 const _metadataRowMinHeight = 52.0;
 const _ratingActionHeight = 40.0;
 const _ratingActionWidth = 108.0;
@@ -161,7 +161,7 @@ class _DetailContent extends StatelessWidget {
                   ),
                   _MetadataRow(
                     label: 'Rotten Tomatoes',
-                    iconAsset: _tomatoScoreAsset,
+                    iconAsset: FilmAssets.tomatoScore,
                     value: _formatScore(film.rtScore),
                   ),
                 ],
@@ -369,7 +369,7 @@ class _HeroMetadata extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
-              _tomatoScoreAsset,
+              FilmAssets.tomatoScore,
               height: 18,
               width: 18,
               semanticsLabel: 'Rotten Tomatoes score',
@@ -589,7 +589,11 @@ class _RatingStars extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (var value = 1; value <= 5; value += 1)
+        for (
+          var value = FilmRatingBounds.min;
+          value <= FilmRatingBounds.max;
+          value += 1
+        )
           IconButton(
             tooltip: 'Rate $value star${value == 1 ? '' : 's'}',
             onPressed: isEnabled ? () => onChanged(value) : null,
