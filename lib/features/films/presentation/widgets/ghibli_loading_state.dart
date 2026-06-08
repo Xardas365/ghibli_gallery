@@ -22,9 +22,14 @@ class GhibliLoadingState extends StatelessWidget {
     final cardWidth = (screenWidth * 0.75).clamp(230.0, 360.0);
     final gifWidth = cardWidth - 28;
     final naturalGifHeight = gifWidth * 9 / 16;
-    final gifHeight = naturalGifHeight > 150
-        ? 150.0
-        : naturalGifHeight.clamp(110.0, screenHeight * 0.28);
+    final responsiveMaxGifHeight = (screenHeight * 0.28).clamp(0.0, 150.0);
+    final minGifHeight = responsiveMaxGifHeight < 110
+        ? responsiveMaxGifHeight
+        : 110.0;
+    final gifHeight = naturalGifHeight.clamp(
+      minGifHeight,
+      responsiveMaxGifHeight,
+    );
 
     return Center(
       child: Padding(
