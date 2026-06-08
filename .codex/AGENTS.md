@@ -6,27 +6,27 @@ This file is a compact navigation guide for Codex in this repository. The root `
 
 For any task, start with:
 
-- `AGENTS.md`
+* `AGENTS.md`
 
 Then read only the context files relevant to the request:
 
-- `.agents/context/assignment.md` for assignment requirements and UX acceptance criteria.
-- `.agents/context/api.md` for API endpoint rules, reference resolution, parsing, and API error handling.
-- `.agents/context/architecture.md` for dependencies, Riverpod, Freezed/json_serializable, folders, data modeling, and persistence.
-- `.agents/context/verification.md` for code generation, format, analyze, tests, CI, and final checklist.
-- `.agents/context/readme-requirements.md` for README content expectations.
+* `.agents/context/assignment.md` for assignment requirements and UX acceptance criteria.
+* `.agents/context/api.md` for API endpoint rules, reference resolution, parsing, and API error handling.
+* `.agents/context/architecture.md` for dependencies, Riverpod, Freezed/json_serializable, folders, data modeling, and persistence.
+* `.agents/context/verification.md` for code generation, format, analyze, tests, CI, and final checklist.
+* `.agents/context/readme-requirements.md` for README content expectations.
 
 ## Operating Rules
 
-- Keep the assignment small, clear, and reviewable.
-- Mandatory requirements come before bonus features.
-- Prefer existing project patterns over introducing new architecture.
-- Use Riverpod as the single state-management approach.
-- Keep dependencies minimal and justified.
-- Use Freezed/json_serializable where they improve correctness and readability.
-- Do not use an existing Dart client for the Studio Ghibli API.
-- Do not edit generated files manually.
-- Do not silently skip assignment requirements.
+* Keep the assignment small, clear, and reviewable.
+* Mandatory requirements come before bonus features.
+* Prefer existing project patterns over introducing new architecture.
+* Use Riverpod as the single state-management approach.
+* Keep dependencies minimal and justified.
+* Use Freezed/json_serializable where they improve correctness and readability.
+* Do not use an existing Dart client for the Studio Ghibli API.
+* Do not edit generated files manually.
+* Do not silently skip assignment requirements.
 
 ## Workflow
 
@@ -36,19 +36,29 @@ For Flutter/Dart verification commands in this project, do not run them in the
 sandbox. Use escalated execution automatically because sandboxed runs may hang
 or be unreliable on Windows.
 
+Do not attempt a sandboxed run first for these commands. The first attempt must
+already use escalated execution.
+
 Run these commands with `sandbox_permissions: "require_escalated"`:
 
-- `dart format .`
-- `flutter analyze`
-- `flutter test`
-- `dart run build_runner build` when code generation is required
+* `dart format .`
+* `flutter analyze`
+* `flutter test`
+* `dart run build_runner build` when code generation is required
+
+Use this justification when escalation is required:
+
+* `Flutter/Dart tooling hangs or is unreliable in the Windows sandbox for this project.`
 
 Use narrow approval prefixes such as:
 
-- `["dart", "format"]`
-- `["flutter", "analyze"]`
-- `["flutter", "test"]`
-- `["dart", "run", "build_runner"]`
+* `["dart", "format"]`
+* `["flutter", "analyze"]`
+* `["flutter", "test"]`
+* `["dart", "run", "build_runner"]`
+
+If one of these commands fails or times out with escalated execution, stop and
+report the exact command and output. Do not retry the same command in the sandbox.
 
 For non-trivial changes:
 
