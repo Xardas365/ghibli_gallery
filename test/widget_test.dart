@@ -718,11 +718,12 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('People'), findsOneWidget);
-    expect(find.text('Species'), findsOneWidget);
-    expect(find.text('Locations'), findsOneWidget);
-    expect(find.text('Vehicles'), findsOneWidget);
-    expect(find.text('No data available'), findsNWidgets(4));
+    expect(find.text('Related'), findsOneWidget);
+    expect(
+      find.text('No related data available for this film.'),
+      findsOneWidget,
+    );
+    expect(find.text('No data available'), findsNothing);
   });
 
   testWidgets('detail does not show raw related resource URLs', (tester) async {
@@ -732,6 +733,10 @@ void main() {
     );
     await tester.pump();
 
+    expect(find.text('People'), findsOneWidget);
+    expect(find.text('Vehicles'), findsOneWidget);
+    expect(find.text('Species'), findsNothing);
+    expect(find.text('Locations'), findsNothing);
     expect(find.text('Satsuki'), findsOneWidget);
     expect(find.text('Catbus'), findsOneWidget);
     expect(
@@ -762,7 +767,11 @@ void main() {
     await tester.pump();
 
     expect(find.text('My Neighbor Totoro'), findsOneWidget);
-    expect(find.text('No data available'), findsNWidgets(4));
+    expect(
+      find.text('No related data available for this film.'),
+      findsOneWidget,
+    );
+    expect(find.text('No data available'), findsNothing);
   });
 
   testWidgets('retry refetches detail provider', (tester) async {

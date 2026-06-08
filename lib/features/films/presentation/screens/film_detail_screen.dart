@@ -633,6 +633,16 @@ class _RelatedResources extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final people = _relatedDisplayValues(details.people);
+    final species = _relatedDisplayValues(details.species);
+    final locations = _relatedDisplayValues(details.locations);
+    final vehicles = _relatedDisplayValues(details.vehicles);
+    final sections = [
+      if (people.isNotEmpty) ('People', people),
+      if (species.isNotEmpty) ('Species', species),
+      if (locations.isNotEmpty) ('Locations', locations),
+      if (vehicles.isNotEmpty) ('Vehicles', vehicles),
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,25 +654,16 @@ class _RelatedResources extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        _RelatedSection(
-          title: 'People',
-          values: details.people,
-        ),
-        const SizedBox(height: 12),
-        _RelatedSection(
-          title: 'Species',
-          values: details.species,
-        ),
-        const SizedBox(height: 12),
-        _RelatedSection(
-          title: 'Locations',
-          values: details.locations,
-        ),
-        const SizedBox(height: 12),
-        _RelatedSection(
-          title: 'Vehicles',
-          values: details.vehicles,
-        ),
+        if (sections.isEmpty)
+          const _RelatedEmptyState()
+        else
+          for (var index = 0; index < sections.length; index += 1) ...[
+            _RelatedSection(
+              title: sections[index].$1,
+              values: sections[index].$2,
+            ),
+            if (index < sections.length - 1) const SizedBox(height: 12),
+          ],
       ],
     );
   }
@@ -681,10 +682,6 @@ class _RelatedSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final displayValues = values
-        .map((value) => value.trim())
-        .where((value) => value.isNotEmpty && !_looksLikeUrl(value))
-        .toList(growable: false);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -710,7 +707,7 @@ class _RelatedSection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  displayValues.length.toString(),
+                  values.length.toString(),
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
@@ -723,28 +720,46 @@ class _RelatedSection extends StatelessWidget {
             height: 1,
             color: colorScheme.outlineVariant.withValues(alpha: 0.64),
           ),
-          if (displayValues.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(14),
-              child: Text(
-                'No data available',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            )
-          else
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final value in displayValues) _RelatedChip(label: value),
-                ],
-              ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final value in values) _RelatedChip(label: value),
+              ],
             ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _RelatedEmptyState extends StatelessWidget {
+  const _RelatedEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.72),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Text(
+          'No related data available for this film.',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
       ),
     );
   }
@@ -970,6 +985,13 @@ String _formatScore(int? score) {
   }
 
   return '$score%';
+}
+
+List<String> _relatedDisplayValues(List<String> values) {
+  return values
+      .map((value) => value.trim())
+      .where((value) => value.isNotEmpty && !_looksLikeUrl(value))
+      .toList(growable: false);
 }
 
 bool _looksLikeUrl(String value) {
