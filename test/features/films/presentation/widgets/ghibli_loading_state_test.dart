@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ghibli_gallery/app/theme.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loading_state.dart';
 
 void main() {
@@ -12,8 +13,9 @@ void main() {
     });
 
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
+      MaterialApp(
+        theme: buildAppTheme(),
+        home: const Scaffold(
           body: GhibliLoadingState(
             primaryText: 'Catbus is on the way...',
             secondaryText: 'Loading the Ghibli collection...',

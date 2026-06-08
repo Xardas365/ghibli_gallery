@@ -43,6 +43,7 @@ ThemeData buildAppTheme() {
   return ThemeData(
     useMaterial3: true,
     colorScheme: colorScheme,
+    splashFactory: InkRipple.splashFactory,
     scaffoldBackgroundColor: ghibliBackground,
     dividerColor: ghibliDivider,
     textTheme: _buildTextTheme(colorScheme),

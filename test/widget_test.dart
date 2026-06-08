@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ghibli_gallery/app/ghibli_app.dart';
+import 'package:ghibli_gallery/app/theme.dart';
 import 'package:ghibli_gallery/features/films/data/film_infrastructure_providers.dart';
 import 'package:ghibli_gallery/features/films/domain/favorite_movie.dart';
 import 'package:ghibli_gallery/features/films/domain/favorite_movie_storage.dart';
@@ -256,6 +257,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        theme: buildAppTheme(),
         home: Scaffold(
           body: Center(
             child: SizedBox(
@@ -1471,8 +1473,9 @@ Future<void> _pumpDetailScreen(
           return storage ?? _FakeFavoriteMovieStorage();
         }),
       ],
-      child: const MaterialApp(
-        home: FilmDetailScreen(filmId: 'totoro-id'),
+      child: MaterialApp(
+        theme: buildAppTheme(),
+        home: const FilmDetailScreen(filmId: 'totoro-id'),
       ),
     ),
   );
@@ -1491,8 +1494,9 @@ Future<void> _pumpFavoritesScreen(
           return storage ?? _FakeFavoriteMovieStorage();
         }),
       ],
-      child: const MaterialApp(
-        home: FavoriteFilmsScreen(),
+      child: MaterialApp(
+        theme: buildAppTheme(),
+        home: const FavoriteFilmsScreen(),
       ),
     ),
   );

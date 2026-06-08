@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ghibli_gallery/app/theme.dart';
 import 'package:ghibli_gallery/features/films/presentation/film_ui_constants.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
@@ -93,6 +94,7 @@ Future<void> _pumpCachedImage(
 ) {
   return tester.pumpWidget(
     MaterialApp(
+      theme: buildAppTheme(),
       home: Scaffold(
         body: Center(
           child: SizedBox(
