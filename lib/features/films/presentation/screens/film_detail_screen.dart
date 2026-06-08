@@ -504,6 +504,23 @@ class _FilmUserRating extends ConsumerWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                const Spacer(),
+                if (rating != null)
+                  TextButton(
+                    onPressed: isBusy
+                        ? null
+                        : () async {
+                            await _runUserDataAction(
+                              context,
+                              () => ref
+                                  .read(
+                                    favoriteMovieControllerProvider.notifier,
+                                  )
+                                  .setRating(filmId, null),
+                            );
+                          },
+                    child: const Text('Clear rating'),
+                  ),
               ],
             ),
             const SizedBox(height: 4),
@@ -558,10 +575,8 @@ class _RatingStars extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Wrap(
-      spacing: 4,
-      runSpacing: 4,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         for (var value = 1; value <= 5; value += 1)
           IconButton(
@@ -593,11 +608,6 @@ class _RatingStars extends StatelessWidget {
                     : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
-          ),
-        if (rating != null)
-          TextButton(
-            onPressed: isEnabled ? () => onChanged(null) : null,
-            child: const Text('Clear rating'),
           ),
       ],
     );

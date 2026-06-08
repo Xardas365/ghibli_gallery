@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ghibli_gallery/app/theme.dart';
@@ -6,6 +8,13 @@ import 'package:ghibli_gallery/features/films/domain/film.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_cached_image.dart';
 
 const _tomatoScoreAsset = 'assets/images/tomato_score.svg';
+const Alignment _defaultPosterAlignment = Alignment.topCenter;
+
+const Map<String, Alignment> _posterAlignmentByFilmId = {};
+
+const Map<String, Alignment> _posterAlignmentByFilmTitle = {
+  'Ponyo': Alignment(-0.15, -0.75),
+};
 
 class FilmCard extends StatelessWidget {
   const FilmCard({
@@ -26,10 +35,19 @@ class FilmCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     const imageToTextFadeHeight = 64.0;
+    final posterAlignment = _posterAlignmentForFilm(film);
+    const blurSigma = 10.0;
+    const blurredPosterOpacity = 0.7;
 
     return Card(
-      elevation: 5,
-      shadowColor: Colors.black.withValues(alpha: 0.5),
+      elevation: 12,
+      shadowColor: Colors.black.withValues(alpha: 0.24),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outline.withValues(alpha: 0.32),
+        ),
+      ),
       clipBehavior: Clip.antiAlias,
       surfaceTintColor: Colors.transparent,
       child: InkWell(
@@ -42,7 +60,43 @@ class FilmCard extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  GhibliCachedImage(imageUrl: film.image),
+                  GhibliCachedImage(
+                    imageUrl: film.image,
+                    alignment: posterAlignment,
+                  ),
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(0, 0, 0, 0.28),
+                    ),
+                  ),
+                  Opacity(
+                    opacity: blurredPosterOpacity,
+                    child: ShaderMask(
+                      blendMode: BlendMode.dstIn,
+                      shaderCallback: (bounds) {
+                        return const RadialGradient(
+                          radius: 1.08,
+                          colors: [
+                            Colors.transparent,
+                            Colors.transparent,
+                            Colors.white,
+                          ],
+                          stops: [0, 0.68, 1],
+                        ).createShader(bounds);
+                      },
+                      child: ImageFiltered(
+                        imageFilter: ImageFilter.blur(
+                          sigmaX: blurSigma,
+                          sigmaY: blurSigma,
+                        ),
+                        child: GhibliCachedImage(
+                          imageUrl: film.image,
+                          alignment: posterAlignment,
+                          showFallbackKey: false,
+                        ),
+                      ),
+                    ),
+                  ),
                   Positioned(
                     left: 0,
                     right: 0,
@@ -237,32 +291,44 @@ class _FavoriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final tooltip = isFavorite ? 'Remove from favorites' : 'Add to favorites';
+    const blurSigma = 8.0;
+    const unselectedFillOpacity = 0.22;
+    const selectedFillOpacity = 0.34;
+    final iconColor = isFavorite
+        ? colorScheme.primary
+        : colorScheme.onSurface.withValues(alpha: 0.86);
+    final backgroundColor = isFavorite
+        ? Colors.black.withValues(alpha: selectedFillOpacity)
+        : Colors.black.withValues(alpha: unselectedFillOpacity);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.62),
-        border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.7),
+    return ClipOval(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: blurSigma,
+          sigmaY: blurSigma,
         ),
-        shape: BoxShape.circle,
-      ),
-      child: Semantics(
-        button: true,
-        label: tooltip,
-        child: IconButton(
-          visualDensity: VisualDensity.compact,
-          padding: const EdgeInsets.all(6),
-          constraints: const BoxConstraints.tightFor(
-            width: 32,
-            height: 32,
+        child: Material(
+          color: backgroundColor,
+          shape: const CircleBorder(),
+          child: Semantics(
+            button: true,
+            label: tooltip,
+            child: IconButton(
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.all(6),
+              constraints: const BoxConstraints.tightFor(
+                width: 32,
+                height: 32,
+              ),
+              tooltip: tooltip,
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_outline,
+                color: iconColor,
+                size: 18,
+              ),
+              onPressed: onPressed,
+            ),
           ),
-          tooltip: tooltip,
-          icon: Icon(
-            isFavorite ? Icons.favorite : Icons.favorite_outline,
-            color: colorScheme.primary,
-            size: 18,
-          ),
-          onPressed: onPressed,
         ),
       ),
     );
@@ -303,4 +369,10 @@ class _RatingIndicator extends StatelessWidget {
       ),
     );
   }
+}
+
+Alignment _posterAlignmentForFilm(Film film) {
+  return _posterAlignmentByFilmId[film.id] ??
+      _posterAlignmentByFilmTitle[film.title] ??
+      _defaultPosterAlignment;
 }

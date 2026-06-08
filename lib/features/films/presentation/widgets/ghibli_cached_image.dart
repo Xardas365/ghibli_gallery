@@ -10,29 +10,40 @@ class GhibliCachedImage extends StatelessWidget {
   const GhibliCachedImage({
     required this.imageUrl,
     this.fit = BoxFit.cover,
+    this.alignment = Alignment.center,
+    this.showFallbackKey = true,
     this.iconSize = 44,
     super.key,
   });
 
   final String imageUrl;
   final BoxFit fit;
+  final Alignment alignment;
+  final bool showFallbackKey;
   final double iconSize;
 
   @override
   Widget build(BuildContext context) {
     final url = imageUrl.trim();
     if (url.isEmpty) {
-      return GhibliImageFallback(iconSize: iconSize);
+      return GhibliImageFallback(
+        iconSize: iconSize,
+        showKey: showFallbackKey,
+      );
     }
 
     return CachedNetworkImage(
       imageUrl: url,
       fit: fit,
+      alignment: alignment,
       fadeInDuration: Duration.zero,
       fadeOutDuration: Duration.zero,
       placeholder: (context, url) => const GhibliImageLoadingPlaceholder(),
       errorWidget: (context, url, error) {
-        return GhibliImageFallback(iconSize: iconSize);
+        return GhibliImageFallback(
+          iconSize: iconSize,
+          showKey: showFallbackKey,
+        );
       },
     );
   }
@@ -63,10 +74,12 @@ class GhibliImageLoadingPlaceholder extends StatelessWidget {
 class GhibliImageFallback extends StatelessWidget {
   const GhibliImageFallback({
     this.iconSize = 44,
+    this.showKey = true,
     super.key,
   });
 
   final double iconSize;
+  final bool showKey;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +94,7 @@ class GhibliImageFallback extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Image.asset(
             _fallbackImageAsset,
-            key: ghibliImageFallbackKey,
+            key: showKey ? ghibliImageFallbackKey : null,
             fit: BoxFit.contain,
             semanticLabel: 'Confused fallback image',
             errorBuilder: (context, error, stackTrace) {
