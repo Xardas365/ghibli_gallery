@@ -17,6 +17,11 @@ class FilmGalleryScreen extends ConsumerStatefulWidget {
   ConsumerState<FilmGalleryScreen> createState() => _FilmGalleryScreenState();
 }
 
+const _gridPadding = EdgeInsets.fromLTRB(16, 20, 16, 28);
+const _gridMainAxisSpacing = 18.0;
+const _gridCrossAxisSpacing = 16.0;
+const _gridChildAspectRatio = 0.64;
+
 class _FilmGalleryScreenState extends ConsumerState<FilmGalleryScreen> {
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
@@ -376,12 +381,12 @@ class _GalleryFilmList extends StatelessWidget {
         };
 
         return GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+          padding: _gridPadding,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 18,
-            crossAxisSpacing: 16,
-            childAspectRatio: 0.62,
+            mainAxisSpacing: _gridMainAxisSpacing,
+            crossAxisSpacing: _gridCrossAxisSpacing,
+            childAspectRatio: _gridChildAspectRatio,
           ),
           itemBuilder: (context, index) {
             return FilmCardEntrance(

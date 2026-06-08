@@ -12,6 +12,10 @@ import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dar
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_entrance.dart';
 
 const _fallbackConfusedNonAsset = 'assets/images/fallback_confused_non.gif';
+const _gridPadding = EdgeInsets.fromLTRB(16, 12, 16, 28);
+const _gridMainAxisSpacing = 18.0;
+const _gridCrossAxisSpacing = 16.0;
+const _gridChildAspectRatio = 0.64;
 
 class FavoriteFilmsScreen extends ConsumerWidget {
   const FavoriteFilmsScreen({super.key});
@@ -471,12 +475,12 @@ class _FavoriteFilmGrid extends ConsumerWidget {
         };
 
         return GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          padding: _gridPadding,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 18,
-            crossAxisSpacing: 16,
-            childAspectRatio: 0.62,
+            mainAxisSpacing: _gridMainAxisSpacing,
+            crossAxisSpacing: _gridCrossAxisSpacing,
+            childAspectRatio: _gridChildAspectRatio,
           ),
           itemBuilder: (context, index) {
             final favoriteFilm = favoriteFilms[index];

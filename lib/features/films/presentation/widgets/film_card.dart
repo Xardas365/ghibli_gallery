@@ -25,6 +25,7 @@ class FilmCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    const imageToTextFadeHeight = 64.0;
 
     return Card(
       elevation: 5,
@@ -42,17 +43,26 @@ class FilmCard extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   GhibliCachedImage(imageUrl: film.image),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 0.16),
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.34),
-                        ],
-                        stops: const [0, 0.48, 1],
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: IgnorePointer(
+                      child: SizedBox(
+                        height: imageToTextFadeHeight,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                colorScheme.surfaceContainer,
+                              ],
+                              stops: const [0.32, 1],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -81,11 +91,6 @@ class FilmCard extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainer,
-                  border: Border(
-                    top: BorderSide(
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.7),
-                    ),
-                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
