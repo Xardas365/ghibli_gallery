@@ -295,6 +295,8 @@ class _FavoriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final tooltip = isFavorite ? 'Remove from favorites' : 'Add to favorites';
+    const hitTargetSize = 48.0;
+    const visualSize = 32.0;
     const blurSigma = 8.0;
     const unselectedFillOpacity = 0.22;
     const selectedFillOpacity = 0.34;
@@ -305,32 +307,38 @@ class _FavoriteButton extends StatelessWidget {
         ? Colors.black.withValues(alpha: selectedFillOpacity)
         : Colors.black.withValues(alpha: unselectedFillOpacity);
 
-    return ClipOval(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: blurSigma,
-          sigmaY: blurSigma,
-        ),
-        child: Material(
-          color: backgroundColor,
-          shape: const CircleBorder(),
-          child: Semantics(
-            button: true,
-            label: tooltip,
-            child: IconButton(
-              visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.all(6),
-              constraints: const BoxConstraints.tightFor(
-                width: 32,
-                height: 32,
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        enabled: onPressed != null,
+        label: tooltip,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onPressed,
+          child: SizedBox.square(
+            dimension: hitTargetSize,
+            child: Center(
+              child: ClipOval(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: blurSigma,
+                    sigmaY: blurSigma,
+                  ),
+                  child: Material(
+                    color: backgroundColor,
+                    shape: const CircleBorder(),
+                    child: SizedBox.square(
+                      dimension: visualSize,
+                      child: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_outline,
+                        color: iconColor,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              tooltip: tooltip,
-              icon: Icon(
-                isFavorite ? Icons.favorite : Icons.favorite_outline,
-                color: iconColor,
-                size: 18,
-              ),
-              onPressed: onPressed,
             ),
           ),
         ),
