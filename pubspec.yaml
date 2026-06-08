@@ -38,6 +38,7 @@ flutter:
     - assets/images/loading.gif
     - assets/images/no_movies.png
     - assets/images/tomato_score.svg
+    - assets/images/placeholder/
     - assets/images/splash/splash_logo.png
     - assets/images/splash/splash_logo_android12.png
 

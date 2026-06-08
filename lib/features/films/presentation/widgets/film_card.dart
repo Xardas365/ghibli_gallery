@@ -63,6 +63,8 @@ class FilmCard extends StatelessWidget {
                   GhibliCachedImage(
                     imageUrl: film.image,
                     alignment: posterAlignment,
+                    placeholderSet: GhibliPlaceholderSet.gallery,
+                    placeholderKey: film.id,
                   ),
                   const DecoratedBox(
                     decoration: BoxDecoration(
@@ -93,6 +95,8 @@ class FilmCard extends StatelessWidget {
                           imageUrl: film.image,
                           alignment: posterAlignment,
                           showFallbackKey: false,
+                          placeholderSet: GhibliPlaceholderSet.gallery,
+                          placeholderKey: film.id,
                         ),
                       ),
                     ),

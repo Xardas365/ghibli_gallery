@@ -251,6 +251,8 @@ class _DetailHeroHeader extends StatelessWidget {
           GhibliCachedImage(
             imageUrl: heroImageUrl,
             iconSize: 52,
+            placeholderSet: GhibliPlaceholderSet.wide,
+            placeholderKey: film.id,
           ),
           DecoratedBox(
             decoration: BoxDecoration(

@@ -2,6 +2,25 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 const _fallbackImageAsset = 'assets/images/fallback.gif';
+const List<String> _galleryPlaceholderAssets = [
+  'assets/images/placeholder/1.png',
+  'assets/images/placeholder/2.png',
+  'assets/images/placeholder/3.png',
+];
+const List<String> _widePlaceholderAssets = [
+  'assets/images/placeholder/wide_1.png',
+  'assets/images/placeholder/wide_2.png',
+  'assets/images/placeholder/wide_3.png',
+  'assets/images/placeholder/wide_4.png',
+  'assets/images/placeholder/wide_5.png',
+  'assets/images/placeholder/wide_6.png',
+];
+
+enum GhibliPlaceholderSet {
+  gallery,
+  wide,
+}
+
 const ValueKey<String> ghibliImageFallbackKey = ValueKey(
   'ghibli-image-fallback',
 );
@@ -13,6 +32,8 @@ class GhibliCachedImage extends StatelessWidget {
     this.alignment = Alignment.center,
     this.showFallbackKey = true,
     this.iconSize = 44,
+    this.placeholderSet,
+    this.placeholderKey,
     super.key,
   });
 
@@ -21,6 +42,8 @@ class GhibliCachedImage extends StatelessWidget {
   final Alignment alignment;
   final bool showFallbackKey;
   final double iconSize;
+  final GhibliPlaceholderSet? placeholderSet;
+  final String? placeholderKey;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +61,21 @@ class GhibliCachedImage extends StatelessWidget {
       alignment: alignment,
       fadeInDuration: Duration.zero,
       fadeOutDuration: Duration.zero,
-      placeholder: (context, url) => const GhibliImageLoadingPlaceholder(),
+      placeholder: (context, url) {
+        final placeholderAssetPath = _placeholderAssetPath();
+        if (placeholderAssetPath == null) {
+          return const GhibliImageLoadingPlaceholder();
+        }
+
+        return Image.asset(
+          placeholderAssetPath,
+          fit: fit,
+          alignment: alignment,
+          errorBuilder: (context, error, stackTrace) {
+            return const GhibliImageLoadingPlaceholder();
+          },
+        );
+      },
       errorWidget: (context, url, error) {
         return GhibliImageFallback(
           iconSize: iconSize,
@@ -47,6 +84,36 @@ class GhibliCachedImage extends StatelessWidget {
       },
     );
   }
+
+  String? _placeholderAssetPath() {
+    final set = placeholderSet;
+    if (set == null) {
+      return null;
+    }
+
+    final key = (placeholderKey ?? imageUrl).trim();
+    if (key.isEmpty) {
+      return null;
+    }
+
+    final placeholders = switch (set) {
+      GhibliPlaceholderSet.gallery => _galleryPlaceholderAssets,
+      GhibliPlaceholderSet.wide => _widePlaceholderAssets,
+    };
+    if (placeholders.isEmpty) {
+      return null;
+    }
+
+    return placeholders[_stableStringHash(key) % placeholders.length];
+  }
+}
+
+int _stableStringHash(String value) {
+  var hash = 0;
+  for (final unit in value.codeUnits) {
+    hash = (hash * 31 + unit) % 2147483647;
+  }
+  return hash;
 }
 
 class GhibliImageLoadingPlaceholder extends StatelessWidget {
