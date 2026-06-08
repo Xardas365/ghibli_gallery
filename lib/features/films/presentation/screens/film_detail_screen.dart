@@ -12,6 +12,8 @@ import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loadin
 
 const _tomatoScoreAsset = 'assets/images/tomato_score.svg';
 const _metadataRowMinHeight = 52.0;
+const _ratingActionHeight = 40.0;
+const _ratingActionWidth = 108.0;
 
 class FilmDetailScreen extends ConsumerWidget {
   const FilmDetailScreen({required this.filmId, super.key});
@@ -472,6 +474,7 @@ class _FilmUserRating extends ConsumerWidget {
     final userDataState = ref.watch(favoriteMovieByFilmIdProvider(filmId));
     final userData = userDataState.value;
     final rating = userData?.rating;
+    final hasRating = rating != null;
     final isBusy = userDataState.isLoading;
     final hasError = userDataState.hasError;
     final theme = Theme.of(context);
@@ -505,22 +508,28 @@ class _FilmUserRating extends ConsumerWidget {
                   ),
                 ),
                 const Spacer(),
-                if (rating != null)
-                  TextButton(
-                    onPressed: isBusy
-                        ? null
-                        : () async {
-                            await _runUserDataAction(
-                              context,
-                              () => ref
-                                  .read(
-                                    favoriteMovieControllerProvider.notifier,
-                                  )
-                                  .setRating(filmId, null),
-                            );
-                          },
-                    child: const Text('Clear rating'),
-                  ),
+                SizedBox(
+                  width: _ratingActionWidth,
+                  height: _ratingActionHeight,
+                  child: hasRating
+                      ? TextButton(
+                          onPressed: isBusy
+                              ? null
+                              : () async {
+                                  await _runUserDataAction(
+                                    context,
+                                    () => ref
+                                        .read(
+                                          favoriteMovieControllerProvider
+                                              .notifier,
+                                        )
+                                        .setRating(filmId, null),
+                                  );
+                                },
+                          child: const Text('Clear rating'),
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ],
             ),
             const SizedBox(height: 4),
