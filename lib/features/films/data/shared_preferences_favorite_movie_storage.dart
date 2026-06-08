@@ -116,13 +116,9 @@ class SharedPreferencesFavoriteMovieStorage implements FavoriteMovieStorage {
   Future<void> _writeMoviesByFilmId(
     Map<String, FavoriteMovie> moviesByFilmId,
   ) async {
-    try {
-      final jsonByFilmId = moviesByFilmId.map(
-        (filmId, movie) => MapEntry(filmId, movie.toJson()),
-      );
-      await _preferences.setString(storageKey, jsonEncode(jsonByFilmId));
-    } on Object {
-      return;
-    }
+    final jsonByFilmId = moviesByFilmId.map(
+      (filmId, movie) => MapEntry(filmId, movie.toJson()),
+    );
+    await _preferences.setString(storageKey, jsonEncode(jsonByFilmId));
   }
 }

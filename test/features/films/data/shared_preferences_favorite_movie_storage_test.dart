@@ -111,10 +111,58 @@ void main() {
       expect(await storage.getAll(), isEmpty);
       expect(await storage.getByFilmId('film-id'), isNull);
     });
+
+    test('save propagates write failures', () async {
+      final storage = SharedPreferencesFavoriteMovieStorage(
+        preferences: _FailingWriteSharedPreferences(),
+      );
+
+      await expectLater(
+        storage.save(FavoriteMovie(filmId: 'film-id', isFavorite: true)),
+        throwsA(same(_writeFailure)),
+      );
+    });
+
+    test('setFavorite propagates write failures', () async {
+      final storage = SharedPreferencesFavoriteMovieStorage(
+        preferences: _FailingWriteSharedPreferences(),
+      );
+
+      await expectLater(
+        storage.setFavorite('film-id', isFavorite: true),
+        throwsA(same(_writeFailure)),
+      );
+    });
+
+    test('setRating propagates write failures', () async {
+      final storage = SharedPreferencesFavoriteMovieStorage(
+        preferences: _FailingWriteSharedPreferences(),
+      );
+
+      await expectLater(
+        storage.setRating('film-id', 4),
+        throwsA(same(_writeFailure)),
+      );
+    });
   });
 }
 
 Future<SharedPreferencesFavoriteMovieStorage> _createStorage() async {
   final preferences = await SharedPreferences.getInstance();
   return SharedPreferencesFavoriteMovieStorage(preferences: preferences);
+}
+
+final _writeFailure = StateError('write failed');
+
+class _FailingWriteSharedPreferences implements SharedPreferences {
+  @override
+  String? getString(String key) => null;
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    throw _writeFailure;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
