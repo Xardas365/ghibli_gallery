@@ -869,8 +869,22 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(
       find.text(
-        'No favorite films yet. Mark films as favorites from their detail pages.',
+        'No favorite films yet',
       ),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Tap the heart on any film to save it here.'),
+      findsOneWidget,
+    );
+    expect(find.text('Rating filter'), findsNothing);
+    expect(
+      find.byWidgetPredicate((widget) {
+        return widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName ==
+                'assets/images/no_movies.png';
+      }),
       findsOneWidget,
     );
   });
@@ -920,7 +934,7 @@ void main() {
     expect(find.text('My Neighbor Totoro'), findsNothing);
     expect(
       find.text(
-        'No favorite films yet. Mark films as favorites from their detail pages.',
+        'No favorite films yet',
       ),
       findsOneWidget,
     );
@@ -1113,9 +1127,21 @@ void main() {
 
     expect(
       find.text(
-        'The forest spirits checked every path, but no favorite lives in '
-        'your 1-star grove yet.',
+        'No movies match this rating',
       ),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Try another rating filter or clear the filter.'),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate((widget) {
+        return widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName ==
+                'assets/images/fallback.gif';
+      }),
       findsOneWidget,
     );
     expect(find.text('My Neighbor Totoro'), findsNothing);

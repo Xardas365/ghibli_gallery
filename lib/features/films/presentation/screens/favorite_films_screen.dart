@@ -13,6 +13,7 @@ import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_ent
 import 'package:ghibli_gallery/features/films/presentation/widgets/ghibli_loading_state.dart';
 
 const _fallbackConfusedNonAsset = 'assets/images/fallback.gif';
+const _favoritesNoMoviesAsset = 'assets/images/no_movies.png';
 const _gridPadding = EdgeInsets.fromLTRB(16, 12, 16, 28);
 const _gridMainAxisSpacing = 18.0;
 const _gridCrossAxisSpacing = 16.0;
@@ -39,6 +40,8 @@ class FavoriteFilmsScreen extends ConsumerWidget {
     final ratingCounts = films != null && allFavorites != null
         ? _ratingCounts(films, allFavorites)
         : null;
+    final showRatingFilter =
+        totalFavoritesCount != null && totalFavoritesCount > 0;
 
     return GhibliScaffold(
       selectedSection: GhibliMainSection.favorites,
@@ -46,12 +49,13 @@ class FavoriteFilmsScreen extends ConsumerWidget {
       body: _FavoritesBackground(
         child: Column(
           children: [
-            _RatingFilterBar(
-              selectedRating: selectedRating,
-              shownFavoritesCount: shownFavoritesCount,
-              totalFavoritesCount: totalFavoritesCount,
-              ratingCounts: ratingCounts,
-            ),
+            if (showRatingFilter)
+              _RatingFilterBar(
+                selectedRating: selectedRating,
+                shownFavoritesCount: shownFavoritesCount,
+                totalFavoritesCount: totalFavoritesCount,
+                ratingCounts: ratingCounts,
+              ),
             Expanded(
               child: _FavoriteFilmsBody(
                 filmsState: filmsState,
@@ -420,32 +424,61 @@ class _FavoritesEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rating = selectedRating;
-    final message = rating == null
-        ? 'No favorite films yet. Mark films as favorites from their detail pages.'
-        : 'The forest spirits checked every path, but no favorite lives in '
-              'your $rating-star grove yet.';
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final isFilteredEmpty = selectedRating != null;
+    final messageTitle = isFilteredEmpty
+        ? 'No movies match this rating'
+        : 'No favorite films yet';
+    final messageSubtitle = isFilteredEmpty
+        ? 'Try another rating filter or clear the filter.'
+        : 'Tap the heart on any film to save it here.';
+    final emptyImage = isFilteredEmpty
+        ? _fallbackConfusedNonAsset
+        : _favoritesNoMoviesAsset;
+    final imageWidth = (MediaQuery.sizeOf(context).width - 64).clamp(
+      260.0,
+      320.0,
+    );
+    const imageHeight = 150.0;
 
-    return _FavoritesStatePanel(
-      icon: selectedRating == null ? Icons.favorite_border : null,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isFilteredEmpty) ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                _fallbackConfusedNonAsset,
-                height: 112,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                emptyImage,
+                width: imageWidth,
+                height: imageHeight,
                 fit: BoxFit.contain,
-                semanticLabel: 'No favorites match this rating',
+                semanticLabel: isFilteredEmpty
+                    ? 'No movies match this rating'
+                    : 'No favorite movies',
               ),
-            ),
-            const SizedBox(height: 14),
-          ],
-          Text(message, textAlign: TextAlign.center),
-        ],
+              const SizedBox(height: 20),
+              Text(
+                messageTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                messageSubtitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
