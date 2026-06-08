@@ -55,7 +55,7 @@ class _FilmGalleryScreenState extends ConsumerState<FilmGalleryScreen> {
       selectedSection: GhibliMainSection.gallery,
       title: 'Ghibli Gallery',
       titleWidget: Image.asset(
-        'assets/images/ghibli_gallery_title.png',
+        'assets/images/gallery_title.png',
         height: 40,
         fit: BoxFit.contain,
         semanticLabel: 'Ghibli Gallery',

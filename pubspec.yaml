@@ -32,6 +32,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/ghibli_gallery_title.png
-    - assets/images/fallback_confused_non.gif
+    - assets/images/gallery_title.png
+    - assets/images/fallback.gif
     - assets/images/tomato_score.svg

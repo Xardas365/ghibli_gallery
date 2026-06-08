@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-const _fallbackImageAsset = 'assets/images/fallback_confused_non.gif';
+const _fallbackImageAsset = 'assets/images/fallback.gif';
 const ValueKey<String> ghibliImageFallbackKey = ValueKey(
   'ghibli-image-fallback',
 );

@@ -11,7 +11,7 @@ import 'package:ghibli_gallery/features/films/presentation/providers/film_provid
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card.dart';
 import 'package:ghibli_gallery/features/films/presentation/widgets/film_card_entrance.dart';
 
-const _fallbackConfusedNonAsset = 'assets/images/fallback_confused_non.gif';
+const _fallbackConfusedNonAsset = 'assets/images/fallback.gif';
 const _gridPadding = EdgeInsets.fromLTRB(16, 12, 16, 28);
 const _gridMainAxisSpacing = 18.0;
 const _gridCrossAxisSpacing = 16.0;
