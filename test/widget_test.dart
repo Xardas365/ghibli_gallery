@@ -144,7 +144,7 @@ void main() {
     expect(find.text("Kiki's Delivery Service"), findsOneWidget);
 
     await tester.tap(find.byTooltip('Close search'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.byType(TextField), findsNothing);
   });

@@ -37,6 +37,7 @@ Film detail resolves referenced people, species, locations, and vehicles into hu
 
 - `cached_network_image` image loading and fallback states for poster/banner requests.
 - Subtle card and screen-level UI animations via `flutter_animate` and built-in Flutter animations.
+- Animated gallery search bar show/hide interaction.
 - Debug-only Dio logging interceptor that logs method, sanitized URL, status, duration, and error type/status without bodies or headers.
 - GitHub Actions CI for `flutter pub get`, formatting, analysis, and tests.
 - RT scores render from a generic tomato SVG icon (not the official Rotten Tomatoes logo).

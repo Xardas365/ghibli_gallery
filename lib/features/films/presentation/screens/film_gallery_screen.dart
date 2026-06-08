@@ -20,6 +20,8 @@ class FilmGalleryScreen extends ConsumerStatefulWidget {
 }
 
 const _gridPadding = EdgeInsets.fromLTRB(16, 20, 16, 28);
+const _searchAnimationDuration = Duration(milliseconds: 220);
+const Curve _searchAnimationCurve = Curves.easeOutCubic;
 
 class _FilmGalleryScreenState extends ConsumerState<FilmGalleryScreen> {
   late final TextEditingController _searchController;
@@ -165,12 +167,12 @@ class _GalleryBody extends ConsumerWidget {
 
     return Column(
       children: [
-        if (isSearchVisible)
-          _GallerySearchField(
-            controller: searchController,
-            focusNode: searchFocusNode,
-            onClose: onCloseSearch,
-          ),
+        _AnimatedGallerySearchField(
+          isVisible: isSearchVisible,
+          controller: searchController,
+          focusNode: searchFocusNode,
+          onClose: onCloseSearch,
+        ),
         Expanded(
           child: filteredFilms.isEmpty
               ? _GalleryNoSearchResultsState(searchQuery: searchQuery)
@@ -181,11 +183,66 @@ class _GalleryBody extends ConsumerWidget {
   }
 }
 
+class _AnimatedGallerySearchField extends StatelessWidget {
+  const _AnimatedGallerySearchField({
+    required this.isVisible,
+    required this.controller,
+    required this.focusNode,
+    required this.onClose,
+  });
+
+  final bool isVisible;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: _searchAnimationDuration,
+      reverseDuration: _searchAnimationDuration,
+      switchInCurve: _searchAnimationCurve,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        final slideAnimation = Tween<Offset>(
+          begin: const Offset(0, -0.12),
+          end: Offset.zero,
+        ).animate(animation);
+
+        return ClipRect(
+          child: SizeTransition(
+            sizeFactor: animation,
+            axisAlignment: -1,
+            child: FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: slideAnimation,
+                child: child,
+              ),
+            ),
+          ),
+        );
+      },
+      child: isVisible
+          ? _GallerySearchField(
+              key: const ValueKey('gallery-search-field'),
+              controller: controller,
+              focusNode: focusNode,
+              onClose: onClose,
+            )
+          : const SizedBox.shrink(
+              key: ValueKey('gallery-search-hidden'),
+            ),
+    );
+  }
+}
+
 class _GallerySearchField extends StatelessWidget {
   const _GallerySearchField({
     required this.controller,
     required this.focusNode,
     required this.onClose,
+    super.key,
   });
 
   final TextEditingController controller;
