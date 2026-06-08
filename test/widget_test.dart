@@ -319,6 +319,21 @@ void main() {
     );
   });
 
+  testWidgets('gallery card favorite failure shows feedback', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      storage: _FakeFavoriteMovieStorage(throwOnSetFavorite: true),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Add to favorites'));
+    await tester.pump();
+
+    expect(find.text('Could not save your favorite.'), findsOneWidget);
+  });
+
   testWidgets(
     'tapping gallery card heart removes favorite and preserves rating',
     (
@@ -940,6 +955,28 @@ void main() {
     );
   });
 
+  testWidgets('favorites card favorite failure shows feedback', (tester) async {
+    await _pumpApp(
+      tester,
+      films: (ref) async => [totoro],
+      storage: _FakeFavoriteMovieStorage(
+        movies: [
+          FavoriteMovie(filmId: totoro.id, isFavorite: true),
+        ],
+        throwOnSetFavorite: true,
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('main-nav-favorites')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Remove from favorites'));
+    await tester.pump();
+
+    expect(find.text('Could not save your favorite.'), findsOneWidget);
+  });
+
   testWidgets('bottom navigation is visible on favorites', (tester) async {
     await _pumpApp(tester, films: (ref) async => [totoro]);
     await tester.pump();
@@ -1274,6 +1311,7 @@ Future<void> _pumpApp(
   required FutureOr<List<Film>> Function(dynamic ref) films,
   FutureOr<FilmDetails> Function(dynamic ref, String filmId)? details,
   List<FavoriteMovie> userData = const [],
+  _FakeFavoriteMovieStorage? storage,
 }) {
   return tester.pumpWidget(
     ProviderScope(
@@ -1281,7 +1319,7 @@ Future<void> _pumpApp(
         filmsProvider.overrideWith(films),
         if (details != null) filmDetailsProvider.overrideWith(details),
         favoriteMovieStorageProvider.overrideWith((ref) async {
-          return _FakeFavoriteMovieStorage(movies: userData);
+          return storage ?? _FakeFavoriteMovieStorage(movies: userData);
         }),
       ],
       child: const GhibliApp(),

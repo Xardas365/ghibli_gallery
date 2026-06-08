@@ -418,14 +418,8 @@ class _GalleryFilmCard extends ConsumerWidget {
     return FilmCard(
       film: film,
       userData: userDataState.value,
-      onFavoriteToggle: () {
-        unawaited(
-          ref
-              .read(favoriteMovieControllerProvider.notifier)
-              .toggleFavorite(
-                film.id,
-              ),
-        );
+      onFavoriteToggle: () async {
+        await _toggleFavoriteFromCard(context, ref, film.id);
       },
       onTap: () {
         unawaited(
@@ -434,6 +428,28 @@ class _GalleryFilmCard extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+Future<void> _toggleFavoriteFromCard(
+  BuildContext context,
+  WidgetRef ref,
+  String filmId,
+) async {
+  try {
+    await ref
+        .read(favoriteMovieControllerProvider.notifier)
+        .toggleFavorite(filmId);
+  } on Object {
+    if (!context.mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Could not save your favorite.'),
+      ),
     );
   }
 }

@@ -58,6 +58,8 @@ Runtime dependencies:
 Development dependencies:
 
 - `build_runner`, `freezed`, `json_serializable`: code generation.
+- `flutter_native_splash`: generates a consistent native launch screen before
+  Flutter renders the first frame.
 - `mocktail`: deterministic repository/API tests.
 - `very_good_analysis`: lint rules.
 - Flutter test tooling.
